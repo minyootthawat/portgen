@@ -186,13 +186,13 @@ export default function DashboardPage() {
         <div className="container-lg mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center shadow-sm">
                 <Zap className="w-4 h-4 text-white" />
               </div>
               <span className="font-semibold text-lg tracking-tight text-stone-900">PortGen</span>
             </Link>
             {isDemo && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-medium">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-medium">
                 <Zap className="w-3 h-3" />
                 {t.dashboard.demoMode}
               </span>
@@ -221,15 +221,15 @@ export default function DashboardPage() {
 
       {/* Demo Banner */}
       {isDemo && (
-        <div className="bg-indigo-50 border-b border-indigo-100">
+        <div className="bg-teal-50 border-b border-teal-100">
           <div className="container-lg mx-auto px-6 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-indigo-600" />
-              <span className="text-sm text-indigo-700">
+              <Zap className="w-4 h-4 text-teal-600" />
+              <span className="text-sm text-teal-700">
                 <strong>{t.dashboard.demoMode}:</strong> {t.dashboard.demoBanner}
               </span>
             </div>
-            <Link href="/login" className="text-sm text-indigo-600 hover:text-indigo-800 transition font-medium">
+            <Link href="/login" className="text-sm text-teal-600 hover:text-teal-800 transition font-medium">
               {t.dashboard.signUpReal}
             </Link>
           </div>
@@ -319,7 +319,7 @@ export default function DashboardPage() {
                   </div>
 
                   {portfolio.is_published && (
-                    <div className="absolute top-2 right-2 px-2 py-1 rounded-full bg-emerald-500 text-white text-xs font-semibold">
+                    <div className="absolute top-2 right-2 px-2 py-1 rounded-full bg-teal-500 text-white text-xs font-semibold">
                       {t.dashboard.live}
                     </div>
                   )}
@@ -338,7 +338,7 @@ export default function DashboardPage() {
                       <p className="text-xs text-stone-500">{portfolio.subdomain}.portgen.com</p>
                     </div>
                     {portfolio.is_published ? (
-                      <span className="px-2 py-1 rounded text-xs bg-emerald-50 text-emerald-600 font-medium">{t.dashboard.live}</span>
+                      <span className="px-2 py-1 rounded text-xs bg-teal-50 text-teal-600 font-medium">{t.dashboard.live}</span>
                     ) : (
                       <span className="px-2 py-1 rounded text-xs bg-stone-100 text-stone-500 font-medium">{t.dashboard.draft}</span>
                     )}

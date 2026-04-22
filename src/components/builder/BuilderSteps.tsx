@@ -35,9 +35,9 @@ export function BuilderSteps({ currentStep, onStepClick }: Props) {
               onClick={() => onStepClick(step)}
               className={`
                 flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium transition
-                ${isCompleted ? 'bg-sky-500 text-white' : ''}
-                ${isCurrent ? 'bg-sky-500/20 text-sky-400 border-2 border-sky-500' : ''}
-                ${!isCompleted && !isCurrent ? 'bg-slate-800 text-slate-500' : ''}
+                ${isCompleted ? 'bg-teal-600 text-white' : ''}
+                ${isCurrent ? 'bg-teal-500/20 text-teal-400 border-2 border-teal-500' : ''}
+                ${!isCompleted && !isCurrent ? 'bg-stone-800 text-stone-500' : ''}
               `}
             >
               {isCompleted ? <Check className="w-4 h-4" /> : index + 1}
@@ -48,8 +48,8 @@ export function BuilderSteps({ currentStep, onStepClick }: Props) {
               onClick={() => onStepClick(step)}
               className={`
                 text-sm cursor-pointer hidden sm:block
-                ${isCurrent ? 'text-white font-medium' : 'text-slate-500'}
-                ${isCompleted ? 'text-slate-400' : ''}
+                ${isCurrent ? 'text-white font-medium' : 'text-stone-500'}
+                ${isCompleted ? 'text-stone-400' : ''}
               `}
             >
               {STEP_LABELS[step]}
@@ -57,7 +57,7 @@ export function BuilderSteps({ currentStep, onStepClick }: Props) {
 
             {/* Arrow */}
             {index < STEP_ORDER.length - 1 && (
-              <div className={`w-8 h-px ${index < currentIndex ? 'bg-sky-500' : 'bg-slate-700'}`} />
+              <div className={`w-8 h-px ${index < currentIndex ? 'bg-teal-600' : 'bg-stone-700'}`} />
             )}
           </div>
         )
