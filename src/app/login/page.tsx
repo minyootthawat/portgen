@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useI18n } from '@/i18n/context'
 import { signInWithGoogle, signInWithGithub, signInWithMagicLink } from '@/lib/supabase'
 import { Github, Mail, ArrowRight, Loader2, Eye, EyeOff, Zap } from 'lucide-react'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import Link from 'next/link'
 
 const MOCK_USER = {
@@ -62,6 +63,11 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-stone-100">
       <div className="w-full max-w-sm">
+        {/* Floating Theme Toggle */}
+        <div className="flex justify-end mb-4">
+          <ThemeToggle />
+        </div>
+
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-4">

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useI18n } from '@/i18n/context'
 import { supabase, getSession, getPortfolios } from '@/lib/supabase'
 import { Plus, ExternalLink, Trash2, Loader2, Crown, Zap, ArrowLeft } from 'lucide-react'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import type { Portfolio } from '@/types'
 
 const DEMO_PORTFOLIOS: Portfolio[] = [
@@ -200,6 +201,7 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-stone-500">{user?.email || user?.name}</span>
+            <ThemeToggle />
             {!isPro && !isDemo && (
               <Link href="/upgrade" className="btn-secondary text-sm">
                 <Crown className="w-3.5 h-3.5" />

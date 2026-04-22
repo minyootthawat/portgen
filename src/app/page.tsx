@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useI18n } from '@/i18n/context'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import { Check, ArrowRight, Zap } from 'lucide-react'
 
 export default function LandingPage() {
@@ -34,6 +35,7 @@ export default function LandingPage() {
           {/* Actions */}
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
+            <ThemeToggle />
             <Link href="/login" className="btn-ghost text-sm">
               {t.nav.login}
             </Link>
