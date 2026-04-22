@@ -15,7 +15,7 @@ export default function LandingPage() {
         <div className="container-lg mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-sm">
+            <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center shadow-sm">
               <Zap className="w-4 h-4 text-white" />
             </div>
             <span className="font-semibold text-lg tracking-tight text-stone-900">PortGen</span>
@@ -37,7 +37,7 @@ export default function LandingPage() {
             <Link href="/login" className="btn-ghost text-sm">
               {t.nav.login}
             </Link>
-            <Link href="/login" className="btn-primary text-sm">
+            <Link href="/login" className="btn-primary text-sm bg-amber-500 hover:bg-amber-600 text-white">
               {t.nav.getStarted}
             </Link>
           </div>
@@ -45,19 +45,19 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="section">
+      <section className="section bg-gradient-to-b from-white to-teal-50">
         <div className="container mx-auto text-center max-w-3xl">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 text-sm text-indigo-700 mb-8">
-            <Check className="w-3.5 h-3.5 text-indigo-600" />
-            <span>{t.hero.badge}</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-100 text-sm text-teal-700 mb-8 border border-teal-200">
+            <Check className="w-3.5 h-3.5 text-teal-600" />
+            <span>🇹🇭 สร้าง Portfolio ภายใน 5 นาที</span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-stone-900 mb-6 leading-[1.1]">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-stone-900 mb-6 leading-[1.1]">
             {t.hero.title}
             <br />
-            <span className="text-stone-400">{t.hero.titleHighlight}</span>
+            <span className="text-teal-600">{t.hero.titleHighlight}</span>
           </h1>
 
           {/* Subtitle */}
@@ -79,7 +79,7 @@ export default function LandingPage() {
           {/* Social proof */}
           <div className="mt-16 flex flex-col items-center gap-2">
             <p className="text-sm text-stone-400">{t.hero.socialProof}</p>
-            <p className="text-xs text-stone-300">{t.hero.fromText}</p>
+            <p className="text-xs text-stone-300">2,000+ นักพัฒนาไทยและทั่วโลก</p>
           </div>
         </div>
       </section>
@@ -159,7 +159,7 @@ export default function LandingPage() {
                   t.pricing.features.community,
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-stone-600">
-                    <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                    <Check className="w-4 h-4 text-teal-600 flex-shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -171,12 +171,12 @@ export default function LandingPage() {
             </div>
 
             {/* Pro */}
-            <div className="card p-8 border-indigo-200 relative">
-              <div className="absolute -top-3 left-6 px-3 py-1 rounded-full bg-indigo-600 text-xs font-semibold text-white shadow-sm">
+            <div className="card p-8 border-teal-200 relative shadow-teal-100">
+              <div className="absolute -top-3 left-6 px-3 py-1 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 text-xs font-semibold text-white shadow-sm">
                 {t.pricing.popular}
               </div>
 
-              <div className="text-sm font-semibold text-indigo-700 mb-1">{t.pricing.pro}</div>
+              <div className="text-sm font-semibold text-teal-700 mb-1">{t.pricing.pro}</div>
               <div className="text-4xl font-bold tracking-tight text-stone-900 mb-1">
                 $5<span className="text-lg font-normal text-stone-400">/{t.pricing.perMonth}</span>
               </div>
@@ -193,7 +193,7 @@ export default function LandingPage() {
                   t.pricing.features.earlyAccess,
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-stone-600">
-                    <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                    <Check className="w-4 h-4 text-teal-600 flex-shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -211,13 +211,13 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="section bg-stone-900 text-white">
+      <section className="section bg-gradient-to-br from-teal-600 to-teal-700 text-white">
         <div className="container mx-auto text-center max-w-2xl">
           <h2 className="text-3xl font-bold tracking-tight mb-4">{t.cta.title}</h2>
-          <p className="text-stone-400 text-base mb-9">
+          <p className="text-teal-100 text-base mb-9">
             {t.cta.subtitle}
           </p>
-          <Link href="/login" className="inline-flex items-center gap-2 px-7 py-3 rounded-lg bg-white text-stone-900 font-semibold text-base hover:bg-stone-100 transition-colors">
+          <Link href="/login" className="inline-flex items-center gap-2 px-7 py-3 rounded-lg bg-white text-teal-700 font-semibold text-base hover:bg-teal-50 transition-colors shadow-lg">
             {t.cta.button}
             <ArrowRight className="w-4 h-4" />
           </Link>
@@ -228,7 +228,7 @@ export default function LandingPage() {
       <footer className="py-8 px-6 border-t border-stone-200">
         <div className="container-lg mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded bg-indigo-600" />
+            <div className="w-5 h-5 rounded bg-teal-600" />
             <span className="font-semibold text-sm text-stone-500">PortGen</span>
           </div>
           <p className="text-stone-400 text-sm">

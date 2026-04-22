@@ -17,7 +17,7 @@ const translations: Record<Language, Translations> = { en, th }
 const I18nContext = createContext<I18nContextType | undefined>(undefined)
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>('en')
+  const [language, setLanguage] = useState<Language>('th')
   const [isInitialized, setIsInitialized] = useState(false)
 
   // Load language from localStorage on mount

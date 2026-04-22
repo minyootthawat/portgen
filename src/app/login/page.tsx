@@ -65,7 +65,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-teal-600 flex items-center justify-center shadow-sm">
               <Zap className="w-4 h-4 text-white" />
             </div>
             <span className="font-semibold text-xl tracking-tight text-stone-900">PortGen</span>
@@ -82,8 +82,8 @@ export default function LoginPage() {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-indigo-600" />
+                <div className="w-10 h-10 rounded-lg bg-teal-50 flex items-center justify-center">
+                  <Zap className="w-5 h-5 text-teal-600" />
                 </div>
                 <div>
                   <p className="font-medium text-sm text-stone-900">{t.login.tryDemo}</p>
@@ -109,7 +109,7 @@ export default function LoginPage() {
                 <div>
                   <p className="font-medium text-stone-900">{MOCK_USER.name}</p>
                   <p className="text-sm text-stone-500">{MOCK_USER.email}</p>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-600 text-white text-xs font-semibold mt-1">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-teal-600 text-white text-xs font-semibold mt-1">
                     Pro Plan
                   </span>
                 </div>
@@ -140,7 +140,7 @@ export default function LoginPage() {
         <div className="card p-6">
           {magicLinkSent ? (
             <div className="text-center py-6">
-              <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center mx-auto mb-4">
                 <Mail className="w-6 h-6" />
               </div>
               <h2 className="text-lg font-semibold text-stone-900 mb-2">{t.login.checkEmail}</h2>
