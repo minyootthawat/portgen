@@ -22,7 +22,21 @@ export default function LandingPage() {
             <span className="font-semibold text-lg tracking-tight text-stone-900">PortGen</span>
           </div>
 
-          {/* Nav links */}
+          {/* Mobile menu button */}
+          <button
+            className="md:hidden p-2 rounded-md text-stone-500 hover:text-stone-900 hover:bg-stone-100"
+            onClick={() => {
+              const menu = document.getElementById('mobile-menu')
+              if (menu) menu.classList.toggle('hidden')
+            }}
+            aria-label="Toggle menu"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+
+          {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">
               {t.nav.features}
@@ -32,8 +46,8 @@ export default function LandingPage() {
             </a>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-3">
+          {/* Desktop actions */}
+          <div className="hidden md:flex items-center gap-3">
             <LanguageSwitcher />
             <ThemeToggle />
             <Link href="/login" className="btn-ghost text-sm">
@@ -43,6 +57,18 @@ export default function LandingPage() {
               {t.nav.getStarted}
             </Link>
           </div>
+        </div>
+
+        {/* Mobile menu */}
+        <div id="mobile-menu" className="hidden md:hidden border-t border-stone-200 px-6 py-4 space-y-3">
+          <a href="#features" className="block text-sm text-stone-600 hover:text-stone-900"> {t.nav.features}</a>
+          <a href="#pricing" className="block text-sm text-stone-600 hover:text-stone-900"> {t.nav.pricing}</a>
+          <div className="flex items-center gap-3 pt-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
+          <Link href="/login" className="btn-ghost text-sm w-full justify-center">{t.nav.login}</Link>
+          <Link href="/login" className="btn-primary text-sm bg-amber-500 hover:bg-amber-600 text-white w-full justify-center">{t.nav.getStarted}</Link>
         </div>
       </nav>
 

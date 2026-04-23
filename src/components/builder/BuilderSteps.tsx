@@ -23,13 +23,13 @@ export function BuilderSteps({ currentStep, onStepClick }: Props) {
   const currentIndex = STEP_ORDER.indexOf(currentStep)
 
   return (
-    <div className="flex items-center gap-2 overflow-x-auto">
+    <div className="flex items-center gap-2 overflow-x-auto snap-x snap-mandatory">
       {STEP_ORDER.map((step, index) => {
         const isCompleted = index < currentIndex
         const isCurrent = step === currentStep
 
         return (
-          <div key={step} className="flex items-center gap-2">
+          <div key={step} className="flex items-center gap-2 snap-start">
             {/* Step circle */}
             <button
               onClick={() => onStepClick(step)}
