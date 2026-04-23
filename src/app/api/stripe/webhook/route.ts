@@ -9,9 +9,41 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
+type SubscriptionStatus = 'active' | 'canceled' | 'past_due' | 'trialing'
+
+interface SubscriptionRecord {
+  id?: number
+  user_id: string
+  stripe_subscription_id: string
+  stripe_price_id: string
+  status: SubscriptionStatus
+  current_period_start: string
+  current_period_end: string
+  cancel_at_period_end: boolean
+}
+
+// Map Stripe subscription status to our Subscription status type
+function mapSubscriptionStatus(status: Stripe.Subscription.Status): SubscriptionStatus {
+  switch (status) {
+    case 'active':
+    case 'trialing':
+      return 'active'
+    case 'canceled':
+      return 'canceled'
+    case 'past_due':
+      return 'past_due'
+    default:
+      return 'canceled'
+  }
+}
+
 export async function POST(request: Request) {
   const body = await request.text()
-  const signature = request.headers.get('stripe-signature')!
+  const signature = request.headers.get('stripe-signature')
+
+  if (!signature) {
+    return NextResponse.json({ error: 'Missing stripe-signature header' }, { status: 400 })
+  }
 
   let event: Stripe.Event
 
@@ -32,28 +64,51 @@ export async function POST(request: Request) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
-        const userId = session.metadata?.userId
 
-        if (userId && session.subscription) {
-          const subscription = await stripe.subscriptions.retrieve(
-            session.subscription as string
-          )
-
-          await supabase.from('subscriptions').insert({
-            user_id: userId,
-            stripe_subscription_id: subscription.id,
-            stripe_price_id: subscription.items.data[0].price.id,
-            status: subscription.status,
-            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-            cancel_at_period_end: subscription.cancel_at_period_end,
-          })
-
-          await supabase
-            .from('profiles')
-            .update({ plan: 'pro' })
-            .eq('id', userId)
+        if (session.mode !== 'subscription' || !session.subscription) {
+          break
         }
+
+        const userId = session.metadata?.userId
+        if (!userId) {
+          console.error('checkout.session.completed: missing userId in metadata')
+          break
+        }
+
+        const subscription = await stripe.subscriptions.retrieve(
+          session.subscription as string
+        )
+
+        const subscriptionRecord: Omit<SubscriptionRecord, 'id'> = {
+          user_id: userId,
+          stripe_subscription_id: subscription.id,
+          stripe_price_id: subscription.items.data[0].price.id,
+          status: mapSubscriptionStatus(subscription.status),
+          current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+          current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+          cancel_at_period_end: subscription.cancel_at_period_end,
+        }
+
+        const { error: subError } = await supabase
+          .from('subscriptions')
+          .insert(subscriptionRecord)
+
+        if (subError) {
+          console.error('Failed to insert subscription record:', subError)
+          throw subError
+        }
+
+        // Update profile plan to pro
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ plan: 'pro' })
+          .eq('id', userId)
+
+        if (profileError) {
+          console.error('Failed to update profile plan:', profileError)
+          throw profileError
+        }
+
         break
       }
 
@@ -61,24 +116,44 @@ export async function POST(request: Request) {
         const subscription = event.data.object as Stripe.Subscription
         const userId = subscription.metadata?.userId
 
-        if (userId) {
-          await supabase
-            .from('subscriptions')
-            .update({
-              status: subscription.status,
+        if (!userId) {
+          console.error('customer.subscription.updated: missing userId in metadata')
+          break
+        }
+
+        const newPlan = ['active', 'trialing'].includes(subscription.status) ? 'pro' : 'free'
+
+        const { error: subError } = await supabase
+          .from('subscriptions')
+          .upsert(
+            {
+              stripe_subscription_id: subscription.id,
+              status: mapSubscriptionStatus(subscription.status),
               current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
               current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
               cancel_at_period_end: subscription.cancel_at_period_end,
-            })
-            .eq('stripe_subscription_id', subscription.id)
+            },
+            {
+              onConflict: 'stripe_subscription_id',
+              ignoreDuplicates: false,
+            }
+          )
 
-          // Update profile plan
-          const newPlan = subscription.status === 'active' ? 'pro' : 'free'
-          await supabase
-            .from('profiles')
-            .update({ plan: newPlan })
-            .eq('id', userId)
+        if (subError) {
+          console.error('Failed to upsert subscription:', subError)
+          throw subError
         }
+
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ plan: newPlan })
+          .eq('id', userId)
+
+        if (profileError) {
+          console.error('Failed to update profile plan on subscription update:', profileError)
+          throw profileError
+        }
+
         break
       }
 
@@ -86,30 +161,81 @@ export async function POST(request: Request) {
         const subscription = event.data.object as Stripe.Subscription
         const userId = subscription.metadata?.userId
 
-        if (userId) {
-          await supabase
-            .from('subscriptions')
-            .update({ status: 'canceled' })
-            .eq('stripe_subscription_id', subscription.id)
-
-          await supabase
-            .from('profiles')
-            .update({ plan: 'free' })
-            .eq('id', userId)
+        if (!userId) {
+          console.error('customer.subscription.deleted: missing userId in metadata')
+          break
         }
+
+        const { error: subError } = await supabase
+          .from('subscriptions')
+          .update({ status: 'canceled' })
+          .eq('stripe_subscription_id', subscription.id)
+
+        if (subError) {
+          console.error('Failed to cancel subscription:', subError)
+          throw subError
+        }
+
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ plan: 'free' })
+          .eq('id', userId)
+
+        if (profileError) {
+          console.error('Failed to update profile plan on subscription deletion:', profileError)
+          throw profileError
+        }
+
         break
       }
 
       case 'invoice.payment_failed': {
         const invoice = event.data.object as Stripe.Invoice
-        const subscriptionId = invoice.subscription as string
+        const subscriptionId = invoice.subscription as string | null
 
-        await supabase
+        if (!subscriptionId) {
+          break
+        }
+
+        const { error } = await supabase
           .from('subscriptions')
           .update({ status: 'past_due' })
           .eq('stripe_subscription_id', subscriptionId)
+
+        if (error) {
+          console.error('Failed to mark subscription as past_due:', error)
+          throw error
+        }
+
         break
       }
+
+      case 'invoice.payment_succeeded': {
+        const invoice = event.data.object as Stripe.Invoice
+        const subscriptionId = invoice.subscription as string | null
+
+        if (!subscriptionId) {
+          break
+        }
+
+        // Ensure subscription is active after successful payment
+        const { error } = await supabase
+          .from('subscriptions')
+          .update({ status: 'active' })
+          .eq('stripe_subscription_id', subscriptionId)
+          .eq('status', 'past_due')
+
+        if (error) {
+          console.error('Failed to restore subscription status:', error)
+          // Don't throw — this is a best-effort recovery
+        }
+
+        break
+      }
+
+      default:
+        // Unhandled event type — not an error
+        break
     }
 
     return NextResponse.json({ received: true })
