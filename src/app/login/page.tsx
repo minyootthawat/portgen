@@ -23,6 +23,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [magicLinkSent, setMagicLinkSent] = useState(false)
   const [showDemo, setShowDemo] = useState(false)
+  const [emailError, setEmailError] = useState('')
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true)
@@ -44,6 +45,11 @@ export default function LoginPage() {
 
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault()
+    setEmailError('')
+    if (!email) {
+      setEmailError('Email is required')
+      return
+    }
     setIsLoading(true)
     const { error } = await signInWithMagicLink(email)
     if (error) {
@@ -199,11 +205,14 @@ export default function LoginPage() {
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); setEmailError('') }}
                   placeholder="you@example.com"
                   required
-                  className="input"
+                  className={`input${emailError ? ' border-red-500' : ''}`}
                 />
+                {emailError && (
+                  <p className="text-red-500 text-sm">{emailError}</p>
+                )}
                 <button
                   type="submit"
                   disabled={isLoading}

@@ -11,6 +11,7 @@ afterEach(() => {
 const localStorageMock = {
   getItem: vi.fn((key: string) => {
     if (key === 'portgen-theme') return 'light'
+    if (key === 'portgen_language') return 'en' // default to English in tests
     return null
   }),
   setItem: vi.fn(),
