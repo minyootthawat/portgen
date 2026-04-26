@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useI18n } from '@/i18n/context'
 import { useBuilderStore } from '@/lib/store'
 import { supabase, getSession, getPortfolio, createPortfolio, updatePortfolio, publishPortfolio } from '@/lib/supabase'
-import { Eye, Save, Rocket, ChevronLeft, ChevronRight, Code, Check, Loader2, X } from 'lucide-react'
+import { Eye, Save, Rocket, ChevronLeft, ChevronRight, Code, Check, Loader2, X, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { BuilderSteps } from '@/components/builder/BuilderSteps'
 import { ThemeSelector } from '@/components/builder/ThemeSelector'
 import dynamic from 'next/dynamic'
@@ -31,6 +31,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
   const [publishing, setPublishing] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [showJSXEditor, setShowJSXEditor] = useState(false)
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
   const { portfolio, setStep, step, updatePortfolio: updateStore, reset } = useBuilderStore()
 
@@ -87,6 +88,11 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
 
   const stepIndex = STEPS.indexOf(step)
 
+  const showToast = (type: 'success' | 'error', message: string) => {
+    setToast({ type, message })
+    setTimeout(() => setToast(null), 4000)
+  }
+
   const handleSave = async () => {
     setSaving(true)
     try {
@@ -98,15 +104,16 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
         const { error } = await updatePortfolio(params.id, portfolio)
         if (error) throw error
       }
+      showToast('success', isNew ? t.builder.portfolioSaved : t.builder.changesSaved)
     } catch (err: any) {
-      alert(err.message)
+      showToast('error', err.message)
     }
     setSaving(false)
   }
 
   const handlePublish = async () => {
     if (!portfolio.name) {
-      alert(t.builder.pleaseAddName)
+      showToast('error', t.builder.pleaseAddName)
       setStep('info')
       return
     }
@@ -118,11 +125,11 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
       const id = isNew ? (await createPortfolio(portfolio)).data?.id : params.id
       if (id) {
         await publishPortfolio(id)
-        alert(t.builder.portfolioPublished)
+        showToast('success', t.builder.portfolioPublished)
         router.push('/dashboard')
       }
     } catch (err: any) {
-      alert(err.message)
+      showToast('error', err.message)
     }
     setPublishing(false)
   }
@@ -198,6 +205,23 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
           </button>
         </div>
       </nav>
+
+      {/* Toast */}
+      {toast && (
+        <div
+          className={`fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-medium animate-in slide-in-from-top-2 duration-200 ${
+            toast.type === 'success'
+              ? 'bg-teal-50 dark:bg-teal-900/90 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-700'
+              : 'bg-red-50 dark:bg-red-900/90 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-700'
+          }`}
+        >
+          {toast.type === 'success' ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+          {toast.message}
+          <button onClick={() => setToast(null)} className="ml-1 hover:opacity-70">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="flex-1 flex">

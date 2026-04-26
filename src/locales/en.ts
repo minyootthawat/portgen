@@ -161,6 +161,7 @@ export const en = {
     draft: 'Draft',
     views: 'views',
     upgradeToPro: 'Upgrade to Pro',
+    confirmDelete: 'Are you sure you want to delete this portfolio? This action cannot be undone.',
   },
 
   // Builder
@@ -245,6 +246,8 @@ export const en = {
     of: 'of',
     pleaseAddName: 'Please add your name first!',
     portfolioPublished: 'Portfolio published! Share your link.',
+    portfolioSaved: 'Portfolio saved successfully.',
+    changesSaved: 'Changes saved successfully.',
     jsxSaved: 'JSX saved! You can now export this as HTML.',
   },
 

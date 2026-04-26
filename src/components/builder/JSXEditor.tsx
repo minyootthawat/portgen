@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, Code, Save, Loader2 } from 'lucide-react'
+import { X, Code, Save, Loader2, AlertCircle, Info, Check } from 'lucide-react'
 import { useI18n } from '@/i18n/context'
 import type { Portfolio } from '@/types'
 
@@ -174,6 +174,7 @@ export function JSXEditor({ portfolio, onChange, onClose }: Props) {
   const [code, setCode] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
 
   useEffect(() => {
     // Initialize with current template
@@ -201,9 +202,12 @@ export function JSXEditor({ portfolio, onChange, onClose }: Props) {
         },
       })
       localStorage.setItem(`portfolio-jsx-${portfolio.id}`, code)
-      alert(t.builder.jsxSaved)
+      setSuccess(true)
+      setError('')
+      setTimeout(() => setSuccess(false), 3000)
     } catch (err: any) {
       setError(err.message)
+      setSuccess(false)
     }
     setSaving(false)
   }
@@ -246,18 +250,28 @@ export function JSXEditor({ portfolio, onChange, onClose }: Props) {
         />
       </div>
 
+      {/* Success */}
+      {success && (
+        <div className="px-4 py-2 bg-teal-500/10 border-t border-teal-500/30 text-teal-400 text-sm flex items-center gap-2">
+          <Check className="w-4 h-4" />
+          {t.builder.jsxSaved}
+        </div>
+      )}
+
       {/* Error */}
       {error && (
-        <div className="px-4 py-2 bg-red-500/10 border-t border-red-500/30 text-red-400 text-sm">
+        <div className="px-4 py-2 bg-red-500/10 border-t border-red-500/30 text-red-400 text-sm flex items-center gap-2">
+          <AlertCircle className="w-4 h-4" />
           {error}
         </div>
       )}
 
       {/* Help */}
       <div className="px-4 py-3 border-t border-slate-800 bg-slate-900/50">
-        <p className="text-xs text-slate-500">
-          💡 Edit the JSX to customize your portfolio. Use {'{'}props{'}'} to access portfolio data.
-          When you're done, save and use "Export HTML" to generate a static file.
+        <p className="text-xs text-slate-500 flex items-center gap-1.5">
+          <Info className="w-3.5 h-3.5 flex-shrink-0" />
+          Edit the JSX to customize your portfolio. Use {'{'}props{'}'} to access portfolio data.
+          When you are done, save and use "Export HTML" to generate a static file.
         </p>
       </div>
     </div>

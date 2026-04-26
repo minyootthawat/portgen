@@ -71,7 +71,7 @@ export interface SocialLink {
 }
 
 // Theme System
-export type ThemeId = 'gradient-dark' | 'minimal-light' | 'brutalist'
+export type ThemeId = 'gradient-dark' | 'minimal-light' | 'brutalist' | 'cyberpunk' | 'nordic' | 'sunset'
 
 export interface ThemeConfig {
   primary_color?: string

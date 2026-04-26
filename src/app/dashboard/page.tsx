@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useI18n } from '@/i18n/context'
-import { supabase, getSession, getPortfolios } from '@/lib/supabase'
+import { supabase, getSession, getPortfolios, deletePortfolio } from '@/lib/supabase'
 import { Plus, ExternalLink, Trash2, Loader2, Crown, Zap } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import type { Portfolio } from '@/types'
@@ -57,8 +57,16 @@ export default function DashboardPage() {
     router.push('/')
   }
 
-  const handleDeletePortfolio = (id: string) => {
-    setPortfolios(portfolios.filter((p) => p.id !== id))
+  const handleDeletePortfolio = async (id: string) => {
+    if (!confirm(t.dashboard.confirmDelete || 'Are you sure you want to delete this portfolio? This cannot be undone.')) {
+      return
+    }
+    try {
+      await deletePortfolio(id)
+      setPortfolios(portfolios.filter((p) => p.id !== id))
+    } catch (err: any) {
+      alert(err.message)
+    }
   }
 
   if (loading) {

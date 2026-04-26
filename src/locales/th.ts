@@ -163,6 +163,7 @@ export const th: Translations = {
     draft: 'ฉบับร่าง',
     views: 'views',
     upgradeToPro: 'อัพเกรดเป็น Pro',
+    confirmDelete: 'คุณแน่ในหรือไม่ที่จะลบพอร์ตโฟลิโอนี้? การดำเนินการนี้ไม่สามารถเลิกทำได้',
   },
 
   // Builder
@@ -247,6 +248,8 @@ export const th: Translations = {
     of: 'จาก',
     pleaseAddName: 'กรุณาเพิ่มชื่อของคุณก่อน!',
     portfolioPublished: 'พอร์ตโฟลิโอเผยแพร่แล้ว! แชร์ลิงก์ได้เลย',
+    portfolioSaved: 'บันทึกพอร์ตโฟลิโอแล้ว',
+    changesSaved: 'บันทึกการเปลี่ยนแปลงแล้ว',
     jsxSaved: 'บันทึก JSX แล้ว! ตอนนี้คุณสามารถ export เป็น HTML ได้',
   },
 
