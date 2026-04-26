@@ -67,7 +67,7 @@ export function ThemeSelector({ selected, onSelect }: Props) {
             disabled={theme.isPro}
             className={`
               relative rounded-xl overflow-hidden border-2 transition cursor-pointer
-              ${isSelected ? 'border-sky-500 ring-2 ring-sky-500/30' : 'border-stone-300 dark:border-slate-600 hover:border-stone-400 dark:hover:border-slate-400'}
+              ${isSelected ? 'border-sky-500 dark:border-teal-500 ring-2 ring-sky-500/30 dark:ring-teal-500/30' : 'border-stone-300 dark:border-slate-600 hover:border-stone-400 dark:hover:border-slate-400'}
               ${theme.isPro ? 'opacity-50 dark:opacity-60' : ''}
               disabled:cursor-not-allowed
             `}
@@ -103,14 +103,14 @@ export function ThemeSelector({ selected, onSelect }: Props) {
                     {t.pricing.pro}
                   </span>
                 ) : (
-                  <span className="text-xs text-sky-400">{t.common.free}</span>
+                  <span className="text-xs text-sky-400 dark:text-teal-400">{t.common.free}</span>
                 )}
               </div>
             </div>
 
             {/* Selected indicator */}
             {isSelected && (
-              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-sky-500 flex items-center justify-center">
+              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-sky-500 dark:bg-teal-500 flex items-center justify-center">
                 <Check className="w-4 h-4 text-white" />
               </div>
             )}

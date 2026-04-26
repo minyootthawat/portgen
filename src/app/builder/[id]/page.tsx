@@ -155,7 +155,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
             <ChevronLeft className="w-4 h-4" />
             {t.builder.dashboard}
           </button>
-          <span className="text-zinc-300">|</span>
+          <span className="text-stone-300 dark:text-stone-600">|</span>
           <span className="font-medium text-stone-900 dark:text-white text-sm">
             {isNew ? t.builder.new : `${t.builder.editing} ${portfolio.name || t.builder.untitled}`}
           </span>
@@ -183,7 +183,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition text-sm text-stone-700 dark:text-stone-200 disabled:opacity-50"
+            className="btn-secondary text-sm"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             {t.builder.save}
@@ -191,7 +191,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
           <button
             onClick={handlePublish}
             disabled={publishing}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 transition text-sm font-medium text-white disabled:opacity-50"
+            className="btn-primary text-sm"
           >
             {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
             {t.builder.publish}
@@ -236,7 +236,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
             {stepIndex < STEPS.length - 1 ? (
               <button
                 onClick={nextStep}
-                className="flex items-center gap-1 px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 transition text-sm text-white"
+                className="btn-primary text-sm"
               >
                 {t.common.next}
                 <ChevronRight className="w-4 h-4" />
@@ -244,7 +244,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
             ) : (
               <button
                 onClick={handlePublish}
-                className="flex items-center gap-1 px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 transition text-sm text-white"
+                className="btn-primary text-sm"
               >
                 <Rocket className="w-4 h-4" />
                 {t.builder.previewStep.publishNow}
@@ -255,7 +255,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
 
         {/* Preview / JSX Editor Panel */}
         {(showPreview || showJSXEditor) && (
-          <div className="w-1/2 overflow-y-auto bg-stone-50">
+          <div className="w-1/2 overflow-y-auto bg-stone-50 dark:bg-stone-950">
             {showJSXEditor ? (
               <JSXEditor
                 portfolio={portfolio}
@@ -402,7 +402,7 @@ function BuilderStepContent({
                 className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-sm font-medium"
               >
                 {skill.name}
-                <button onClick={() => removeSkill(skill.id)} className="hover:text-teal-900">
+                <button onClick={() => removeSkill(skill.id)} className="hover:text-teal-900 dark:hover:text-teal-200">
                   <X className="w-3 h-3" />
                 </button>
               </span>
@@ -425,7 +425,7 @@ function BuilderStepContent({
             </div>
             <button
               onClick={addProject}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 transition text-sm text-white font-medium"
+              className="btn-primary text-sm"
             >
               <Check className="w-4 h-4" />
               {t.builder.projects.addProject}
@@ -547,7 +547,7 @@ function BuilderStepContent({
               {portfolio.subdomain || 'yourname'}.portgen.com
             </div>
 
-            <div className="pt-4 border-t border-stone-200">
+            <div className="pt-4 border-t border-stone-200 dark:border-stone-700">
               <h3 className="font-medium text-stone-700 dark:text-stone-200 mb-2">{t.builder.previewStep.whatsIncluded}</h3>
               <ul className="space-y-1 text-sm text-stone-600 dark:text-stone-400">
                 <li>✅ {portfolio.name || 'Your name'}</li>
@@ -563,7 +563,7 @@ function BuilderStepContent({
           <button
             onClick={onPublish}
             disabled={isPublishing}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 transition font-medium text-white disabled:opacity-50"
+            className="btn-primary"
           >
             {isPublishing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
             {t.builder.previewStep.publishNow}

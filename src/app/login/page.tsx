@@ -52,7 +52,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-stone-100">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-stone-100 dark:bg-stone-900">
       <div className="w-full max-w-sm">
         {/* Floating Theme Toggle */}
         <div className="flex justify-end mb-4">
@@ -65,22 +65,22 @@ export default function LoginPage() {
             <div className="w-9 h-9 rounded-lg bg-teal-600 flex items-center justify-center shadow-sm">
               <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="font-semibold text-xl tracking-tight text-stone-900">PortGen</span>
+            <span className="font-semibold text-xl tracking-tight text-stone-900 dark:text-white">PortGen</span>
           </Link>
-          <h1 className="text-2xl font-bold text-stone-900">{t.login.welcomeBack}</h1>
-          <p className="text-stone-500 text-sm mt-1">{t.login.continueToDashboard}</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">{t.login.welcomeBack}</h1>
+          <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">{t.login.continueToDashboard}</p>
         </div>
 
         {/* Login Card */}
         <div className="card p-6">
           {magicLinkSent ? (
             <div className="text-center py-6">
-              <div className="w-12 h-12 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center mx-auto mb-4">
                 <Mail className="w-6 h-6" />
               </div>
-              <h2 className="text-lg font-semibold text-stone-900 mb-2">{t.login.checkEmail}</h2>
-              <p className="text-stone-500 text-sm">
-                {t.login.magicLinkSent} <span className="font-medium text-stone-700">{email}</span>
+              <h2 className="text-lg font-semibold text-stone-900 dark:text-white mb-2">{t.login.checkEmail}</h2>
+              <p className="text-stone-500 dark:text-stone-400 text-sm">
+                {t.login.magicLinkSent} <span className="font-medium text-stone-700 dark:text-stone-300">{email}</span>
                 <br />
                 {t.login.clickToSignIn}
               </p>
@@ -92,7 +92,7 @@ export default function LoginPage() {
                 <button
                   onClick={handleGoogleSignIn}
                   disabled={isLoading}
-                  className="w-full py-2.5 px-4 rounded-lg border border-stone-200 bg-white text-stone-700 font-medium text-sm hover:bg-stone-50 transition flex items-center justify-center gap-3 disabled:opacity-50"
+                  className="w-full py-2.5 px-4 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 font-medium text-sm hover:bg-stone-50 dark:hover:bg-stone-700 transition flex items-center justify-center gap-3 disabled:opacity-50"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -106,7 +106,7 @@ export default function LoginPage() {
                 <button
                   onClick={handleGithubSignIn}
                   disabled={isLoading}
-                  className="w-full py-2.5 px-4 rounded-lg border border-stone-200 bg-white text-stone-700 font-medium text-sm hover:bg-stone-50 transition flex items-center justify-center gap-3 disabled:opacity-50"
+                  className="w-full py-2.5 px-4 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 font-medium text-sm hover:bg-stone-50 dark:hover:bg-stone-700 transition flex items-center justify-center gap-3 disabled:opacity-50"
                 >
                   <Github className="w-5 h-5" />
                   {t.login.continueWithGithub}
@@ -116,10 +116,10 @@ export default function LoginPage() {
               {/* Divider */}
               <div className="relative my-5">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-stone-200" />
+                  <div className="w-full border-t border-stone-200 dark:border-stone-700" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-3 bg-white text-stone-400">{t.login.orContinueWith}</span>
+                  <span className="px-3 bg-white dark:bg-stone-800 text-stone-400 dark:text-stone-500">{t.login.orContinueWith}</span>
                 </div>
               </div>
 
@@ -155,17 +155,17 @@ export default function LoginPage() {
           )}
         </div>
 
-        <p className="text-center text-stone-400 text-xs mt-5 leading-relaxed">
+        <p className="text-center text-stone-400 dark:text-stone-500 text-xs mt-5 leading-relaxed">
           {t.login.termsNote}
         </p>
 
         {/* Social proof */}
-        <div className="mt-8 flex items-center justify-center gap-3 text-sm text-stone-400">
+        <div className="mt-8 flex items-center justify-center gap-3 text-sm text-stone-400 dark:text-stone-500">
           <div className="flex -space-x-2">
             {['A', 'B', 'C', 'D'].map((i) => (
               <div
                 key={i}
-                className="w-8 h-8 rounded-full bg-stone-200 border-2 border-white flex items-center justify-center text-xs font-medium text-stone-600"
+                className="w-8 h-8 rounded-full bg-stone-200 dark:bg-stone-700 border-2 border-white dark:border-stone-900 flex items-center justify-center text-xs font-medium text-stone-600 dark:text-stone-300"
               >
                 {i}
               </div>

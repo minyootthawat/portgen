@@ -63,28 +63,28 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-stone-50">
-        <Loader2 className="w-8 h-8 animate-spin text-stone-400" />
+      <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950">
+        <Loader2 className="w-8 h-8 animate-spin text-stone-400 dark:text-stone-500" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-950">
       {/* Nav */}
-      <nav className="bg-white border-b border-stone-200">
+      <nav className="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800">
         <div className="container-lg mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center shadow-sm">
                 <Zap className="w-4 h-4 text-white" />
               </div>
-              <span className="font-semibold text-lg tracking-tight text-stone-900">PortGen</span>
+              <span className="font-semibold text-lg tracking-tight text-stone-900 dark:text-white">PortGen</span>
             </Link>
 
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-stone-500">{user?.email || user?.name}</span>
+            <span className="text-sm text-stone-500 dark:text-stone-400">{user?.email || user?.name}</span>
             <ThemeToggle />
             {!isPro && (
               <Link href="/upgrade" className="btn-secondary text-sm">
@@ -103,8 +103,8 @@ export default function DashboardPage() {
       <div className="container-lg mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-stone-900">{t.dashboard.title}</h1>
-            <p className="text-stone-500 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-white">{t.dashboard.title}</h1>
+            <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
               {portfolios.length === 0
                 ? t.dashboard.createFirst
                 : `${portfolios.length} portfolio${portfolios.length > 1 ? 's' : ''}`}
@@ -118,11 +118,11 @@ export default function DashboardPage() {
 
         {portfolios.length === 0 ? (
           <div className="card p-16 text-center">
-            <div className="w-12 h-12 rounded-xl bg-stone-100 flex items-center justify-center mx-auto mb-4">
-              <Plus className="w-6 h-6 text-stone-400" />
+            <div className="w-12 h-12 rounded-xl bg-stone-100 dark:bg-stone-800 flex items-center justify-center mx-auto mb-4">
+              <Plus className="w-6 h-6 text-stone-400 dark:text-stone-500" />
             </div>
-            <h2 className="text-lg font-semibold text-stone-900 mb-2">{t.dashboard.noPortfolios}</h2>
-            <p className="text-stone-500 text-sm mb-6">{t.dashboard.createAndShare}</p>
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-white mb-2">{t.dashboard.noPortfolios}</h2>
+            <p className="text-stone-500 dark:text-stone-400 text-sm mb-6">{t.dashboard.createAndShare}</p>
             <Link href="/builder/new" className="btn-primary">
               <Plus className="w-4 h-4" />
               {t.dashboard.createFirst}
@@ -138,8 +138,8 @@ export default function DashboardPage() {
                     portfolio.theme === 'gradient-dark'
                       ? 'bg-gradient-to-br from-indigo-800 to-stone-900'
                       : portfolio.theme === 'minimal-light'
-                      ? 'bg-stone-100'
-                      : 'bg-white'
+                      ? 'bg-stone-100 dark:bg-stone-800'
+                      : 'bg-white dark:bg-stone-800'
                   }`}
                 >
                   <div className="text-center p-4">
@@ -150,7 +150,7 @@ export default function DashboardPage() {
                           : portfolio.theme === 'brutalist'
                           ? 'bg-stone-900'
                           : portfolio.theme === 'minimal-light'
-                          ? 'bg-stone-300'
+                          ? 'bg-stone-300 dark:bg-stone-600'
                           : 'bg-stone-700'
                       }`}
                     >
@@ -164,12 +164,12 @@ export default function DashboardPage() {
                     </div>
                     <div
                       className={`h-2 w-16 rounded mx-auto mb-1 ${
-                        portfolio.theme === 'brutalist' ? 'bg-stone-900' : portfolio.theme === 'minimal-light' ? 'bg-stone-300' : 'bg-white/30'
+                        portfolio.theme === 'brutalist' ? 'bg-stone-900' : portfolio.theme === 'minimal-light' ? 'bg-stone-300 dark:bg-stone-600' : 'bg-white/30'
                       }`}
                     />
                     <div
                       className={`h-1.5 w-20 rounded mx-auto ${
-                        portfolio.theme === 'brutalist' ? 'bg-stone-900' : portfolio.theme === 'minimal-light' ? 'bg-stone-200' : 'bg-white/20'
+                        portfolio.theme === 'brutalist' ? 'bg-stone-900' : portfolio.theme === 'minimal-light' ? 'bg-stone-200 dark:bg-stone-700' : 'bg-white/20'
                       }`}
                     />
                   </div>
@@ -190,25 +190,25 @@ export default function DashboardPage() {
                 <div className="p-4">
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <h3 className="font-semibold text-stone-900">{portfolio.name || 'Untitled'}</h3>
-                      <p className="text-xs text-stone-500">{portfolio.subdomain}.portgen.com</p>
+                      <h3 className="font-semibold text-stone-900 dark:text-white">{portfolio.name || 'Untitled'}</h3>
+                      <p className="text-xs text-stone-500 dark:text-stone-400">{portfolio.subdomain}.portgen.com</p>
                     </div>
                     {portfolio.is_published ? (
-                      <span className="px-2 py-1 rounded text-xs bg-teal-50 text-teal-600 font-medium">{t.dashboard.live}</span>
+                      <span className="px-2 py-1 rounded text-xs bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 font-medium">{t.dashboard.live}</span>
                     ) : (
-                      <span className="px-2 py-1 rounded text-xs bg-stone-100 text-stone-500 font-medium">{t.dashboard.draft}</span>
+                      <span className="px-2 py-1 rounded text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 font-medium">{t.dashboard.draft}</span>
                     )}
                   </div>
 
                   {/* Skills preview */}
                   <div className="flex flex-wrap gap-1 mt-2 mb-3">
                     {(portfolio.skills || []).slice(0, 3).map((skill) => (
-                      <span key={skill.id} className="px-2 py-0.5 rounded text-xs bg-stone-100 text-stone-600 font-medium">
+                      <span key={skill.id} className="px-2 py-0.5 rounded text-xs bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 font-medium">
                         {skill.name}
                       </span>
                     ))}
                     {(portfolio.skills?.length ?? 0) > 3 && (
-                      <span className="px-2 py-0.5 rounded text-xs bg-stone-100 text-stone-500 font-medium">
+                      <span className="px-2 py-0.5 rounded text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 font-medium">
                         +{(portfolio.skills?.length ?? 0) - 3}
                       </span>
                     )}
@@ -217,7 +217,7 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-2 mt-4">
                     <Link
                       href={`/builder/${portfolio.id}`}
-                      className="flex-1 py-2 px-3 rounded-lg text-sm text-center bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium transition"
+                      className="flex-1 py-2 px-3 rounded-lg text-sm text-center bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 font-medium transition"
                     >
                       {t.dashboard.edit}
                     </Link>
@@ -226,16 +226,16 @@ export default function DashboardPage() {
                         href={`https://${portfolio.subdomain}.portgen.com`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 rounded-lg bg-stone-100 hover:bg-stone-200 transition"
+                        className="p-2 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition"
                       >
-                        <ExternalLink className="w-4 h-4 text-stone-600" />
+                        <ExternalLink className="w-4 h-4 text-stone-600 dark:text-stone-400" />
                       </a>
                     )}
                     <button
                       onClick={() => handleDeletePortfolio(portfolio.id)}
-                      className="p-2 rounded-lg bg-stone-100 hover:bg-stone-200 transition"
+                      className="p-2 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition"
                     >
-                      <Trash2 className="w-4 h-4 text-stone-600" />
+                      <Trash2 className="w-4 h-4 text-stone-600 dark:text-stone-400" />
                     </button>
                   </div>
                 </div>

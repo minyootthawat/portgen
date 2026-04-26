@@ -29,7 +29,7 @@ export function BuilderSteps({ currentStep, onStepClick }: Props) {
               className={`
                 flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium transition
                 ${isCompleted ? 'bg-teal-600 text-white' : ''}
-                ${isCurrent ? 'bg-teal-500/20 text-teal-600 dark:text-teal-400 border-2 border-teal-500 dark:border-teal-400' : ''}
+                ${isCurrent ? 'bg-teal-500/20 dark:bg-teal-500/20 text-teal-600 dark:text-teal-400 border-2 border-teal-500 dark:border-teal-400' : ''}
                 ${!isCompleted && !isCurrent ? 'bg-stone-200 dark:bg-stone-800 text-stone-400 dark:text-stone-500' : ''}
               `}
             >
