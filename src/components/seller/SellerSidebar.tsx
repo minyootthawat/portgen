@@ -13,6 +13,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Zap,
+  Wallet,
+  Gamepad2,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -45,6 +47,17 @@ const mainNavItems: NavItem[] = [
     href: '/seller/orders',
     icon: <ShoppingCart className="w-5 h-5" />,
     badge: 5,
+  },
+  {
+    label: 'Wallet',
+    href: '/seller/wallet',
+    icon: <Wallet className="w-5 h-5" />,
+  },
+  {
+    label: 'Game Accounts',
+    href: '/seller/game-accounts',
+    icon: <Gamepad2 className="w-5 h-5" />,
+    badge: 8,
   },
   {
     label: 'Reviews',
