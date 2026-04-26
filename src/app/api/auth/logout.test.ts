@@ -15,6 +15,10 @@ describe('/api/auth/logout', () => {
 
     ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
       auth: {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: 'user-1' } },
+          error: null,
+        }),
         signOut: vi.fn().mockResolvedValue({
           error: null,
         }),
@@ -25,6 +29,7 @@ describe('/api/auth/logout', () => {
 
     const request = new Request('http://localhost/api/auth/logout', {
       method: 'POST',
+      headers: { 'Authorization': 'Bearer valid-token' },
     })
 
     const response = await POST(request)

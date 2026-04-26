@@ -17,6 +17,7 @@ describe('/api/portfolios/[id]', () => {
         user_id: 'user-1',
         name: 'My Portfolio',
         slug: 'my-portfolio',
+        is_published: true,
         is_deleted: false,
       }
 
@@ -88,10 +89,35 @@ describe('/api/portfolios/[id]', () => {
         }),
       } as ReturnType<typeof createClient>)
 
+      const mockClient = {
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null }),
+        },
+        from: vi.fn().mockReturnValue({
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                single: vi.fn().mockResolvedValue({ data: { user_id: 'user-1' }, error: null }),
+              }),
+            }),
+          }),
+          update: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                select: vi.fn().mockReturnValue({
+                  single: vi.fn().mockResolvedValue({ data: updated, error: null }),
+                }),
+              }),
+            }),
+          }),
+        }),
+      }
+      ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue(mockClient)
+
       const { PUT } = await import('@/app/api/portfolios/[id]/route')
       const request = new Request('http://localhost', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer valid-token' },
         body: JSON.stringify({ name: 'Updated Name' }),
       })
 
@@ -106,10 +132,36 @@ describe('/api/portfolios/[id]', () => {
     })
 
     it('returns 400 when no valid fields provided', async () => {
+      const { createClient } = await import('@supabase/supabase-js')
+      const mockClient = {
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null }),
+        },
+        from: vi.fn().mockReturnValue({
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                single: vi.fn().mockResolvedValue({ data: { user_id: 'user-1' }, error: null }),
+              }),
+            }),
+          }),
+          update: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                select: vi.fn().mockReturnValue({
+                  single: vi.fn().mockResolvedValue({ data: null, error: null }),
+                }),
+              }),
+            }),
+          }),
+        }),
+      }
+      ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue(mockClient)
+
       const { PUT } = await import('@/app/api/portfolios/[id]/route')
       const request = new Request('http://localhost', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer valid-token' },
         body: JSON.stringify({ unknown_field: 'value' }),
       })
 
@@ -123,10 +175,36 @@ describe('/api/portfolios/[id]', () => {
     })
 
     it('returns 400 for invalid JSON', async () => {
+      const { createClient } = await import('@supabase/supabase-js')
+      const mockClient = {
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null }),
+        },
+        from: vi.fn().mockReturnValue({
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                single: vi.fn().mockResolvedValue({ data: { user_id: 'user-1' }, error: null }),
+              }),
+            }),
+          }),
+          update: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                select: vi.fn().mockReturnValue({
+                  single: vi.fn().mockResolvedValue({ data: null, error: null }),
+                }),
+              }),
+            }),
+          }),
+        }),
+      }
+      ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue(mockClient)
+
       const { PUT } = await import('@/app/api/portfolios/[id]/route')
       const request = new Request('http://localhost', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer valid-token' },
         body: 'not-json',
       })
 
@@ -139,9 +217,18 @@ describe('/api/portfolios/[id]', () => {
 
     it('returns 404 when updating nonexistent portfolio', async () => {
       const { createClient } = await import('@supabase/supabase-js')
-
-      ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
+      const mockClient = {
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null }),
+        },
         from: vi.fn().mockReturnValue({
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                single: vi.fn().mockResolvedValue({ data: null, error: null }),
+              }),
+            }),
+          }),
           update: vi.fn().mockReturnValue({
             eq: vi.fn().mockReturnValue({
               eq: vi.fn().mockReturnValue({
@@ -152,12 +239,13 @@ describe('/api/portfolios/[id]', () => {
             }),
           }),
         }),
-      } as ReturnType<typeof createClient>)
+      }
+      ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue(mockClient)
 
       const { PUT } = await import('@/app/api/portfolios/[id]/route')
       const request = new Request('http://localhost', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer valid-token' },
         body: JSON.stringify({ name: 'Updated' }),
       })
 
@@ -188,22 +276,58 @@ describe('/api/portfolios/[id]', () => {
         }),
       } as ReturnType<typeof createClient>)
 
+      const mockClient = {
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null }),
+        },
+        from: vi.fn().mockReturnValue({
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                single: vi.fn().mockResolvedValue({ data: { user_id: 'user-1' }, error: null }),
+              }),
+            }),
+          }),
+          update: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                select: vi.fn().mockReturnValue({
+                  single: vi.fn().mockResolvedValue({ data: deleted, error: null }),
+                }),
+              }),
+            }),
+          }),
+        }),
+      }
+      ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue(mockClient)
+
       const { DELETE } = await import('@/app/api/portfolios/[id]/route')
-      const response = await DELETE(new Request('http://localhost'), {
+      const response = await DELETE(new Request('http://localhost', {
+        headers: { 'Authorization': 'Bearer valid-token' },
+      }), {
         params: Promise.resolve({ id: 'portfolio-1' }),
       })
 
       expect(response.status).toBe(200)
       const json = await response.json()
-      expect(json.data.is_deleted).toBe(true)
+      expect(json.data.deleted).toBe(true)
       expect(json.error).toBeNull()
     })
 
     it('returns 404 when deleting nonexistent portfolio', async () => {
       const { createClient } = await import('@supabase/supabase-js')
-
-      ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
+      const mockClient = {
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null }),
+        },
         from: vi.fn().mockReturnValue({
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                single: vi.fn().mockResolvedValue({ data: null, error: null }),
+              }),
+            }),
+          }),
           update: vi.fn().mockReturnValue({
             eq: vi.fn().mockReturnValue({
               eq: vi.fn().mockReturnValue({
@@ -214,10 +338,13 @@ describe('/api/portfolios/[id]', () => {
             }),
           }),
         }),
-      } as ReturnType<typeof createClient>)
+      }
+      ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue(mockClient)
 
       const { DELETE } = await import('@/app/api/portfolios/[id]/route')
-      const response = await DELETE(new Request('http://localhost'), {
+      const response = await DELETE(new Request('http://localhost', {
+        headers: { 'Authorization': 'Bearer valid-token' },
+      }), {
         params: Promise.resolve({ id: 'nonexistent' }),
       })
 

@@ -98,10 +98,23 @@ describe('/api/portfolios', () => {
         }),
       } as ReturnType<typeof createClient>)
 
+      ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null }),
+        },
+        from: vi.fn().mockReturnValue({
+          insert: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({ data: newPortfolio, error: null }),
+            }),
+          }),
+        }),
+      } as ReturnType<typeof createClient>)
+
       const { POST } = await import('@/app/api/portfolios/route')
       const request = new Request('http://localhost/api/portfolios', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer valid-token' },
         body: JSON.stringify({
           user_id: 'user-1',
           name: 'My Portfolio',
@@ -118,11 +131,25 @@ describe('/api/portfolios', () => {
     })
 
     it('returns 400 when required fields are missing', async () => {
+      const { createClient } = await import('@supabase/supabase-js')
+      ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null }),
+        },
+        from: vi.fn().mockReturnValue({
+          insert: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({ data: null, error: null }),
+            }),
+          }),
+        }),
+      } as ReturnType<typeof createClient>)
+
       const { POST } = await import('@/app/api/portfolios/route')
 
       const request = new Request('http://localhost/api/portfolios', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer valid-token' },
         body: JSON.stringify({ user_id: 'user-1' }), // missing name, slug, subdomain
       })
 
@@ -161,10 +188,23 @@ describe('/api/portfolios', () => {
         }),
       } as ReturnType<typeof createClient>)
 
+      ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null }),
+        },
+        from: vi.fn().mockReturnValue({
+          insert: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({ data: null, error: { message: 'Insert failed' } }),
+            }),
+          }),
+        }),
+      } as ReturnType<typeof createClient>)
+
       const { POST } = await import('@/app/api/portfolios/route')
       const request = new Request('http://localhost/api/portfolios', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer valid-token' },
         body: JSON.stringify({
           user_id: 'user-1',
           name: 'Portfolio',

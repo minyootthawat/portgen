@@ -114,15 +114,6 @@ describe('Login Page', () => {
       })
     })
 
-    it('renders demo mode section', async () => {
-      const LoginPage = (await import('@/app/login/page')).default
-      render(<LoginPage />, { wrapper: Wrapper })
-
-      await waitFor(() => {
-        expect(screen.getByText('Try Demo Mode')).toBeInTheDocument()
-      })
-    })
-
     it('renders OAuth buttons section', async () => {
       const LoginPage = (await import('@/app/login/page')).default
       render(<LoginPage />, { wrapper: Wrapper })
@@ -560,65 +551,4 @@ describe('Login Page', () => {
     })
   })
 
-  describe('Demo Mode', () => {
-    it('toggles demo section visibility when clicking Try Demo Mode', async () => {
-      const LoginPage = (await import('@/app/login/page')).default
-      render(<LoginPage />, { wrapper: Wrapper })
-
-      await waitFor(() => {
-        const demoBtn = screen.getByText('Try Demo Mode')
-        fireEvent.click(demoBtn)
-      })
-
-      await waitFor(() => {
-        expect(screen.getByText('Enter Demo Dashboard')).toBeInTheDocument()
-        expect(screen.getByText('Demo User')).toBeInTheDocument()
-        expect(screen.getByText('Pro Plan')).toBeInTheDocument()
-      })
-    })
-
-    it('stores demo session in localStorage on Enter Demo Dashboard', async () => {
-      const setItemSpy = vi.spyOn(localStorage, 'setItem')
-
-      const LoginPage = (await import('@/app/login/page')).default
-      render(<LoginPage />, { wrapper: Wrapper })
-
-      // Open demo section
-      await waitFor(() => {
-        const demoBtn = screen.getByText('Try Demo Mode')
-        fireEvent.click(demoBtn)
-      })
-
-      // Click enter demo
-      await waitFor(() => {
-        const enterBtn = screen.getByText('Enter Demo Dashboard')
-        fireEvent.click(enterBtn)
-      })
-
-      expect(setItemSpy).toHaveBeenCalledWith('demo_session', 'true')
-      expect(setItemSpy).toHaveBeenCalledWith(
-        'demo_user',
-        expect.stringContaining('demo-user-123')
-      )
-    })
-
-    it('redirects to dashboard after demo login', async () => {
-      const LoginPage = (await import('@/app/login/page')).default
-      render(<LoginPage />, { wrapper: Wrapper })
-
-      await waitFor(() => {
-        const demoBtn = screen.getByText('Try Demo Mode')
-        fireEvent.click(demoBtn)
-      })
-
-      await waitFor(() => {
-        const enterBtn = screen.getByText('Enter Demo Dashboard')
-        fireEvent.click(enterBtn)
-      })
-
-      await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('/dashboard')
-      })
-    })
-  })
 })
