@@ -4,7 +4,7 @@
 -- ============================================================
 
 -- Enable UUID extension
-create extension if not exists "uuid-ossp";
+create extension if not exists "pgcrypto";
 
 -- ============================================================
 -- USERS (extends Supabase auth.users)
@@ -60,7 +60,7 @@ create trigger on_auth_user_created
 -- PORTFOLIOS
 -- ============================================================
 create table public.portfolios (
-  id uuid not null default uuid_generate_v4() primary key,
+  id uuid not null default gen_random_uuid() primary key,
   user_id uuid not null references public.profiles(id) on delete cascade,
   slug text unique not null,
   subdomain text unique not null,
@@ -136,7 +136,7 @@ create trigger update_portfolios_updated_at
 -- SUBSCRIPTIONS (Stripe)
 -- ============================================================
 create table public.subscriptions (
-  id uuid not null default uuid_generate_v4() primary key,
+  id uuid not null default gen_random_uuid() primary key,
   user_id uuid not null references public.profiles(id) on delete cascade,
   stripe_subscription_id text not null unique,
   stripe_price_id text not null,
