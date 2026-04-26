@@ -131,6 +131,10 @@ export const en = {
     enterDemo: 'Enter Demo Dashboard',
     noAccountNeeded: 'No account needed. Demo data only.',
     orContinueWith: 'or continue with email',
+    continueWithGoogle: 'Continue with Google',
+    continueWithGithub: 'Continue with GitHub',
+    emailRequired: 'Email is required',
+    proPlan: 'Pro Plan',
     checkEmail: 'Check your email',
     magicLinkSent: 'We sent a magic link to',
     clickToSignIn: 'Click the link to sign in.',
@@ -176,7 +180,7 @@ export const en = {
       projects: 'Projects',
       social: 'Social',
       theme: 'Theme',
-      previewStep: 'Preview',
+      preview: 'Preview',
     },
     info: {
       title: 'Basic Information',
@@ -239,6 +243,9 @@ export const en = {
     previous: 'Previous',
     stepOf: 'Step',
     of: 'of',
+    pleaseAddName: 'Please add your name first!',
+    portfolioPublished: 'Portfolio published! Share your link.',
+    jsxSaved: 'JSX saved! You can now export this as HTML.',
   },
 
   // Common
@@ -257,6 +264,7 @@ export const en = {
     back: 'Back',
     yes: 'Yes',
     no: 'No',
+    free: 'Free',
   },
 }
 

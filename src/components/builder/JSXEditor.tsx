@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { X, Code, Save, Loader2 } from 'lucide-react'
+import { useI18n } from '@/i18n/context'
 import type { Portfolio } from '@/types'
 
 // This is a simplified JSX template editor
@@ -169,6 +170,7 @@ interface Props {
 }
 
 export function JSXEditor({ portfolio, onChange, onClose }: Props) {
+  const { t } = useI18n()
   const [code, setCode] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -199,7 +201,7 @@ export function JSXEditor({ portfolio, onChange, onClose }: Props) {
         },
       })
       localStorage.setItem(`portfolio-jsx-${portfolio.id}`, code)
-      alert('JSX saved! You can now export this as HTML.')
+      alert(t.builder.jsxSaved)
     } catch (err: any) {
       setError(err.message)
     }

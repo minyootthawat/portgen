@@ -106,7 +106,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
 
   const handlePublish = async () => {
     if (!portfolio.name) {
-      alert('Please add your name first!')
+      alert(t.builder.pleaseAddName)
       setStep('info')
       return
     }
@@ -118,7 +118,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
       const id = isNew ? (await createPortfolio(portfolio)).data?.id : params.id
       if (id) {
         await publishPortfolio(id)
-        alert('🎉 Portfolio published! Share your link.')
+        alert(t.builder.portfolioPublished)
         router.push('/dashboard')
       }
     } catch (err: any) {

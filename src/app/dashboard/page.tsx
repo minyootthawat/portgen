@@ -16,6 +16,7 @@ export default function DashboardPage() {
   const [user, setUser] = useState<any>(null)
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
   const [isPro, setIsPro] = useState(false)
+  const [isDemo, setIsDemo] = useState(false)
 
   useEffect(() => {
     const checkUser = async () => {
@@ -35,9 +36,19 @@ export default function DashboardPage() {
         .eq('id', session.user.id)
         .single()
       setIsPro(profile?.plan === 'pro')
+      setIsDemo(false)
 
       setLoading(false)
     }
+
+    // Check demo mode
+    const demoSession = typeof window !== 'undefined' ? localStorage.getItem('demo_session') : null
+    if (demoSession) {
+      setIsDemo(true)
+      setLoading(false)
+      return
+    }
+
     checkUser()
   }, [router])
 

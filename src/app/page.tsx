@@ -78,7 +78,7 @@ export default function LandingPage() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-100 text-sm text-teal-700 mb-8 border border-teal-200">
             <Check className="w-3.5 h-3.5 text-teal-600" />
-            <span>🇹🇭 สร้าง Portfolio ภายใน 5 นาที</span>
+            <span>{t.hero.badge}</span>
           </div>
 
           {/* Headline */}
@@ -107,7 +107,7 @@ export default function LandingPage() {
           {/* Social proof */}
           <div className="mt-16 flex flex-col items-center gap-2">
             <p className="text-sm text-stone-400">{t.hero.socialProof}</p>
-            <p className="text-xs text-stone-300">2,000+ นักพัฒนาไทยและทั่วโลก</p>
+            <p className="text-xs text-stone-300">{t.hero.fromText}</p>
           </div>
         </div>
       </section>

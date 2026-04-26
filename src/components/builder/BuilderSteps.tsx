@@ -1,16 +1,8 @@
 'use client'
 
 import { Check } from 'lucide-react'
+import { useI18n } from '@/i18n/context'
 import type { BuilderStep } from '@/types'
-
-const STEP_LABELS: Record<BuilderStep, string> = {
-  info: 'Info',
-  skills: 'Skills',
-  projects: 'Projects',
-  social: 'Social',
-  theme: 'Theme',
-  preview: 'Preview',
-}
 
 const STEP_ORDER: BuilderStep[] = ['info', 'skills', 'projects', 'social', 'theme', 'preview']
 
@@ -20,6 +12,7 @@ interface Props {
 }
 
 export function BuilderSteps({ currentStep, onStepClick }: Props) {
+  const { t } = useI18n()
   const currentIndex = STEP_ORDER.indexOf(currentStep)
 
   return (
@@ -52,7 +45,7 @@ export function BuilderSteps({ currentStep, onStepClick }: Props) {
                 ${isCompleted ? 'text-stone-400' : ''}
               `}
             >
-              {STEP_LABELS[step]}
+              {t.builder.steps[step]}
             </span>
 
             {/* Arrow */}

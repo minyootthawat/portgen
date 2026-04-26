@@ -133,6 +133,10 @@ export const th: Translations = {
     enterDemo: 'เข้า Demo Dashboard',
     noAccountNeeded: 'ไม่ต้องมีบัญชี ใช้ข้อมูลตัวอย่างเท่านั้น',
     orContinueWith: 'หรือเข้าสู่ระบบด้วยอีเมล',
+    continueWithGoogle: 'ดำเนินการต่อด้วย Google',
+    continueWithGithub: 'ดำเนินการต่อด้วย GitHub',
+    emailRequired: 'ต้องระบุอีเมล',
+    proPlan: 'แพลน Pro',
     checkEmail: 'ตรวจสอบอีเมลของคุณ',
     magicLinkSent: 'เราส่ง magic link ไปที่',
     clickToSignIn: 'คลิกลิงก์เพื่อเข้าสู่ระบบ',
@@ -178,7 +182,7 @@ export const th: Translations = {
       projects: 'โปรเจกต์',
       social: 'โซเชียล',
       theme: 'ธีม',
-      previewStep: 'ตัวอย่าง',
+      preview: 'ตัวอย่าง',
     },
     info: {
       title: 'ข้อมูลพื้นฐาน',
@@ -241,6 +245,9 @@ export const th: Translations = {
     previous: 'ก่อนหน้า',
     stepOf: 'ขั้นตอน',
     of: 'จาก',
+    pleaseAddName: 'กรุณาเพิ่มชื่อของคุณก่อน!',
+    portfolioPublished: 'พอร์ตโฟลิโอเผยแพร่แล้ว! แชร์ลิงก์ได้เลย',
+    jsxSaved: 'บันทึก JSX แล้ว! ตอนนี้คุณสามารถ export เป็น HTML ได้',
   },
 
   // Common
@@ -259,5 +266,6 @@ export const th: Translations = {
     back: 'กลับ',
     yes: 'ใช่',
     no: 'ไม่',
+    free: 'ฟรี',
   },
 }

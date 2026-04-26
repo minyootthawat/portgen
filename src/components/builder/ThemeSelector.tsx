@@ -1,6 +1,7 @@
 'use client'
 
 import { Check, Lock } from 'lucide-react'
+import { useI18n } from '@/i18n/context'
 
 const THEMES = [
   {
@@ -53,6 +54,7 @@ interface Props {
 }
 
 export function ThemeSelector({ selected, onSelect }: Props) {
+  const { t } = useI18n()
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       {THEMES.map((theme) => {
@@ -97,10 +99,10 @@ export function ThemeSelector({ selected, onSelect }: Props) {
                 {theme.isPro ? (
                   <span className="flex items-center gap-1 text-xs text-purple-400">
                     <Lock className="w-3 h-3" />
-                    Pro
+                    {t.pricing.pro}
                   </span>
                 ) : (
-                  <span className="text-xs text-sky-400">Free</span>
+                  <span className="text-xs text-sky-400">{t.common.free}</span>
                 )}
               </div>
             </div>
