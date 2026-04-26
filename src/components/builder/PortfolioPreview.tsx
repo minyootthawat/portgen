@@ -8,11 +8,11 @@ interface Props {
 
 export function PortfolioPreview({ portfolio }: Props) {
   return (
-    <div className="h-full flex flex-col bg-slate-900">
+    <div className="h-full flex flex-col bg-stone-100 dark:bg-slate-900">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
-        <span className="text-sm text-slate-400">Live Preview</span>
-        <span className="text-xs text-slate-500">{portfolio.subdomain || 'yourname'}.portgen.com</span>
+      <div className="px-4 py-3 border-b border-stone-200 dark:border-slate-800 flex items-center justify-between">
+        <span className="text-sm text-stone-500 dark:text-slate-400">Live Preview</span>
+        <span className="text-xs text-stone-400 dark:text-slate-500">{portfolio.subdomain || 'yourname'}.portgen.com</span>
       </div>
 
       {/* Preview iframe */}

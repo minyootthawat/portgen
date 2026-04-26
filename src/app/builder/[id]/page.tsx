@@ -137,26 +137,26 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-stone-50">
+      <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950">
         <Loader2 className="w-8 h-8 animate-spin text-stone-400" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 flex flex-col">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 flex flex-col">
       {/* Builder Nav */}
-      <nav className="bg-white border-b border-stone-100 px-4 py-3 flex items-center justify-between">
+      <nav className="bg-white dark:bg-stone-900 border-b border-stone-100 dark:border-stone-800 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.push('/dashboard')}
-            className="flex items-center gap-1 text-sm text-stone-500 hover:text-stone-900 transition"
+            className="flex items-center gap-1 text-sm text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition"
           >
             <ChevronLeft className="w-4 h-4" />
             {t.builder.dashboard}
           </button>
           <span className="text-zinc-300">|</span>
-          <span className="font-medium text-stone-900 text-sm">
+          <span className="font-medium text-stone-900 dark:text-white text-sm">
             {isNew ? t.builder.new : `${t.builder.editing} ${portfolio.name || t.builder.untitled}`}
           </span>
         </div>

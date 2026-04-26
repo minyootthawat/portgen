@@ -29,8 +29,8 @@ export function BuilderSteps({ currentStep, onStepClick }: Props) {
               className={`
                 flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium transition
                 ${isCompleted ? 'bg-teal-600 text-white' : ''}
-                ${isCurrent ? 'bg-teal-500/20 text-teal-400 border-2 border-teal-500' : ''}
-                ${!isCompleted && !isCurrent ? 'bg-stone-800 text-stone-500' : ''}
+                ${isCurrent ? 'bg-teal-500/20 text-teal-600 dark:text-teal-400 border-2 border-teal-500 dark:border-teal-400' : ''}
+                ${!isCompleted && !isCurrent ? 'bg-stone-200 dark:bg-stone-800 text-stone-400 dark:text-stone-500' : ''}
               `}
             >
               {isCompleted ? <Check className="w-4 h-4" /> : index + 1}
@@ -41,8 +41,8 @@ export function BuilderSteps({ currentStep, onStepClick }: Props) {
               onClick={() => onStepClick(step)}
               className={`
                 text-sm cursor-pointer hidden sm:block
-                ${isCurrent ? 'text-white font-medium' : 'text-stone-500'}
-                ${isCompleted ? 'text-stone-400' : ''}
+                ${isCurrent ? 'text-stone-900 dark:text-white font-medium' : 'text-stone-400 dark:text-stone-500'}
+                ${isCompleted ? 'text-stone-500 dark:text-stone-400' : ''}
               `}
             >
               {t.builder.steps[step]}
@@ -50,7 +50,7 @@ export function BuilderSteps({ currentStep, onStepClick }: Props) {
 
             {/* Arrow */}
             {index < STEP_ORDER.length - 1 && (
-              <div className={`w-8 h-px ${index < currentIndex ? 'bg-teal-600' : 'bg-stone-700'}`} />
+              <div className={`w-6 sm:w-8 h-px hidden sm:block ${index < currentIndex ? 'bg-teal-600' : 'bg-stone-300 dark:bg-stone-700'}`} />
             )}
           </div>
         )

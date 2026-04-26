@@ -12,14 +12,14 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white text-stone-900">
       {/* Nav */}
-      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-stone-200">
+      <nav className="sticky top-0 z-50 bg-white/90 dark:bg-stone-900/90 backdrop-blur-sm border-b border-stone-200 dark:border-stone-700">
         <div className="container-lg mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center shadow-sm">
               <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="font-semibold text-lg tracking-tight text-stone-900">PortGen</span>
+            <span className="font-semibold text-lg tracking-tight text-stone-900 dark:text-white">PortGen</span>
           </div>
 
           {/* Mobile menu button */}
@@ -38,10 +38,10 @@ export default function LandingPage() {
 
           {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">
+            <a href="#features" className="text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors">
               {t.nav.features}
             </a>
-            <a href="#pricing" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">
+            <a href="#pricing" className="text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors">
               {t.nav.pricing}
             </a>
           </div>
@@ -50,7 +50,7 @@ export default function LandingPage() {
           <div className="hidden md:flex items-center gap-3">
             <LanguageSwitcher />
             <ThemeToggle />
-            <Link href="/login" className="btn-ghost text-sm">
+            <Link href="/login" className="btn-ghost text-sm dark:text-stone-300">
               {t.nav.login}
             </Link>
             <Link href="/login" className="btn-primary text-sm bg-amber-500 hover:bg-amber-600 text-white">

@@ -10,7 +10,12 @@ interface RegisterBody {
   name?: string
 }
 
+function isValidEmail(email: string): boolean {
+  return typeof email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
 export async function POST(request: Request) {
+  // TODO (security): Add rate limiting per IP: 5 req/min, per email: 3 req/hour
   let body: RegisterBody
 
   try {
@@ -31,9 +36,23 @@ export async function POST(request: Request) {
     )
   }
 
+  if (!isValidEmail(email)) {
+    return NextResponse.json(
+      { data: null, error: 'Invalid email format' },
+      { status: 400 }
+    )
+  }
+
   if (password.length < 6) {
     return NextResponse.json(
       { data: null, error: 'Password must be at least 6 characters' },
+      { status: 400 }
+    )
+  }
+
+  if (name !== undefined && (typeof name !== 'string' || name.length > 100)) {
+    return NextResponse.json(
+      { data: null, error: 'name must be a string of at most 100 characters' },
       { status: 400 }
     )
   }

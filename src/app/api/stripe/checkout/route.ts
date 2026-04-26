@@ -19,6 +19,7 @@ function isValidEmail(email: string): boolean {
 }
 
 export async function POST(request: Request) {
+  // TODO (security): Add rate limiting per user: 5 req/min, per IP: 10 req/min
   let body: CheckoutBody
 
   try {

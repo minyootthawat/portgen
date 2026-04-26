@@ -9,6 +9,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
+// In-memory set to track processed event IDs (for replay attack prevention)
+// In production, use Redis with TTL. TODO (security): Replace with Redis.
+const processedEvents = new Set<string>()
+
 type SubscriptionStatus = 'active' | 'canceled' | 'past_due' | 'trialing'
 
 interface SubscriptionRecord {
@@ -56,6 +60,23 @@ export async function POST(request: Request) {
   } catch (err: any) {
     console.error('Webhook signature verification failed:', err.message)
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
+  }
+
+  // Replay attack prevention: reject events older than 5 minutes
+  const fiveMinutesAgo = Math.floor(Date.now() / 1000) - 300
+  if (event.created && event.created < fiveMinutesAgo) {
+    console.warn('Webhook event rejected: too old', event.id, event.created)
+    return NextResponse.json({ error: 'Event too old' }, { status: 400 })
+  }
+
+  // Deduplicate by event ID (in-memory; use Redis in production)
+  if (processedEvents.has(event.id)) {
+    return NextResponse.json({ received: true })
+  }
+  processedEvents.add(event.id)
+  // Prune old entries to prevent unbounded memory growth
+  if (processedEvents.size > 10000) {
+    processedEvents.clear()
   }
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
