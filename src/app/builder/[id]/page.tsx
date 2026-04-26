@@ -8,8 +8,15 @@ import { supabase, getSession, getPortfolio, createPortfolio, updatePortfolio, p
 import { Eye, Save, Rocket, ChevronLeft, ChevronRight, Code, Check, Loader2, X } from 'lucide-react'
 import { BuilderSteps } from '@/components/builder/BuilderSteps'
 import { ThemeSelector } from '@/components/builder/ThemeSelector'
-import { JSXEditor } from '@/components/builder/JSXEditor'
-import { PortfolioPreview } from '@/components/builder/PortfolioPreview'
+import dynamic from 'next/dynamic'
+
+// Lazy-load heavy components that are conditionally rendered
+const JSXEditor = dynamic(() => import('@/components/builder/JSXEditor').then((m) => m.JSXEditor), {
+  loading: () => <div className="flex items-center justify-center h-full text-stone-400 text-sm">Loading editor...</div>,
+})
+const PortfolioPreview = dynamic(() => import('@/components/builder/PortfolioPreview').then((m) => m.PortfolioPreview), {
+  loading: () => <div className="flex items-center justify-center h-full text-stone-400 text-sm">Loading preview...</div>,
+})
 import type { Translations } from '@/locales/en'
 import type { BuilderStep } from '@/types'
 

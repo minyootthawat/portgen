@@ -5,109 +5,9 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useI18n } from '@/i18n/context'
 import { supabase, getSession, getPortfolios } from '@/lib/supabase'
-import { Plus, ExternalLink, Trash2, Loader2, Crown, Zap, ArrowLeft } from 'lucide-react'
+import { Plus, ExternalLink, Trash2, Loader2, Crown, Zap } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import type { Portfolio } from '@/types'
-
-const DEMO_PORTFOLIOS: Portfolio[] = [
-  {
-    id: 'demo-1',
-    user_id: 'demo-user-123',
-    slug: 'demo-portfolio',
-    subdomain: 'johndoe',
-    name: 'John Doe',
-    tagline: 'Full-Stack Developer • React & Node.js',
-    about: 'Passionate developer with 5 years of experience building web applications.',
-    avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=john',
-    skills: [
-      { id: '1', name: 'React', level: 'expert' },
-      { id: '2', name: 'TypeScript', level: 'expert' },
-      { id: '3', name: 'Node.js', level: 'intermediate' },
-      { id: '4', name: 'Next.js', level: 'expert' },
-      { id: '5', name: 'Python', level: 'intermediate' },
-      { id: '6', name: 'PostgreSQL', level: 'intermediate' },
-    ],
-    projects: [
-      {
-        id: 'p1',
-        title: 'E-Commerce Platform',
-        description: 'A full-stack e-commerce solution with Stripe payments.',
-        tags: ['React', 'Node.js', 'PostgreSQL', 'Stripe'],
-        live_url: 'https://demo.com',
-        repo_url: 'https://github.com/demo',
-        order: 0,
-      },
-      {
-        id: 'p2',
-        title: 'Task Management App',
-        description: 'Collaborative task manager with real-time updates.',
-        tags: ['Next.js', 'Supabase', 'Tailwind'],
-        live_url: 'https://demo.com',
-        repo_url: 'https://github.com/demo',
-        order: 1,
-      },
-    ],
-    social_links: [
-      { id: 's1', platform: 'github', url: 'https://github.com/johndoe', label: 'GitHub' },
-      { id: 's2', platform: 'linkedin', url: 'https://linkedin.com/in/johndoe', label: 'LinkedIn' },
-      { id: 's3', platform: 'twitter', url: 'https://twitter.com/johndoe', label: 'Twitter' },
-    ],
-    theme: 'minimal-light',
-    theme_config: {},
-    is_published: true,
-    is_deleted: false,
-    view_count: 1247,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    published_at: new Date().toISOString(),
-  },
-  {
-    id: 'demo-2',
-    user_id: 'demo-user-123',
-    slug: 'demo-portfolio-2',
-    subdomain: 'johndoe-designs',
-    name: 'John Doe Designs',
-    tagline: 'UI/UX Designer • Creative Developer',
-    about: 'Creating beautiful digital experiences with a focus on user-centered design.',
-    avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=johndesign',
-    skills: [
-      { id: '1', name: 'Figma', level: 'expert' },
-      { id: '2', name: 'React', level: 'intermediate' },
-      { id: '3', name: 'CSS', level: 'expert' },
-      { id: '4', name: 'Framer Motion', level: 'intermediate' },
-    ],
-    projects: [
-      {
-        id: 'p1',
-        title: 'Design System',
-        description: 'A comprehensive design system with 50+ components.',
-        tags: ['Figma', 'React', 'Storybook'],
-        live_url: 'https://demo.com',
-        repo_url: 'https://github.com/demo',
-        order: 0,
-      },
-    ],
-    social_links: [
-      { id: 's1', platform: 'github', url: 'https://github.com/johndoe', label: 'GitHub' },
-      { id: 's2', platform: 'website', url: 'https://johndoe.design', label: 'Website' },
-    ],
-    theme: 'gradient-dark',
-    theme_config: {},
-    is_published: false,
-    is_deleted: false,
-    view_count: 0,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-]
-
-const DEMO_USER = {
-  id: 'demo-user-123',
-  email: 'demo@portgen.dev',
-  name: 'Demo User',
-  avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=demo',
-  plan: 'pro' as const,
-}
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -116,23 +16,9 @@ export default function DashboardPage() {
   const [user, setUser] = useState<any>(null)
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
   const [isPro, setIsPro] = useState(false)
-  const [isDemo, setIsDemo] = useState(false)
 
   useEffect(() => {
     const checkUser = async () => {
-      const demoSession = localStorage.getItem('demo_session')
-      if (demoSession === 'true') {
-        const demoUserData = localStorage.getItem('demo_user')
-        if (demoUserData) {
-          setUser(JSON.parse(demoUserData))
-          setIsDemo(true)
-          setIsPro(true)
-          setPortfolios(DEMO_PORTFOLIOS)
-          setLoading(false)
-          return
-        }
-      }
-
       const { data: { session } } = await getSession()
       if (!session) {
         router.push('/login')
@@ -156,20 +42,12 @@ export default function DashboardPage() {
   }, [router])
 
   const handleSignOut = async () => {
-    if (isDemo) {
-      localStorage.removeItem('demo_session')
-      localStorage.removeItem('demo_user')
-      router.push('/')
-    } else {
-      await supabase.auth.signOut()
-      router.push('/')
-    }
+    await supabase.auth.signOut()
+    router.push('/')
   }
 
   const handleDeletePortfolio = (id: string) => {
-    if (isDemo) {
-      setPortfolios(portfolios.filter((p) => p.id !== id))
-    }
+    setPortfolios(portfolios.filter((p) => p.id !== id))
   }
 
   if (loading) {
@@ -192,51 +70,23 @@ export default function DashboardPage() {
               </div>
               <span className="font-semibold text-lg tracking-tight text-stone-900">PortGen</span>
             </Link>
-            {isDemo && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-medium">
-                <Zap className="w-3 h-3" />
-                {t.dashboard.demoMode}
-              </span>
-            )}
+
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-stone-500">{user?.email || user?.name}</span>
             <ThemeToggle />
-            {!isPro && !isDemo && (
+            {!isPro && (
               <Link href="/upgrade" className="btn-secondary text-sm">
                 <Crown className="w-3.5 h-3.5" />
                 {t.dashboard.upgradeToPro}
               </Link>
             )}
-            {isDemo && (
-              <Link href="/login" className="btn-ghost text-sm">
-                <ArrowLeft className="w-3.5 h-3.5" />
-                {t.dashboard.exitDemo}
-              </Link>
-            )}
             <button onClick={handleSignOut} className="btn-ghost text-sm">
-              {isDemo ? t.dashboard.exitDemo : t.dashboard.signOut}
+              {t.dashboard.signOut}
             </button>
           </div>
         </div>
       </nav>
-
-      {/* Demo Banner */}
-      {isDemo && (
-        <div className="bg-teal-50 border-b border-teal-100">
-          <div className="container-lg mx-auto px-6 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-teal-600" />
-              <span className="text-sm text-teal-700">
-                <strong>{t.dashboard.demoMode}:</strong> {t.dashboard.demoBanner}
-              </span>
-            </div>
-            <Link href="/login" className="text-sm text-teal-600 hover:text-teal-800 transition font-medium">
-              {t.dashboard.signUpReal}
-            </Link>
-          </div>
-        </div>
-      )}
 
       {/* Content */}
       <div className="container-lg mx-auto px-6 py-12">
@@ -247,14 +97,9 @@ export default function DashboardPage() {
               {portfolios.length === 0
                 ? t.dashboard.createFirst
                 : `${portfolios.length} portfolio${portfolios.length > 1 ? 's' : ''}`}
-              {isDemo && ` (${t.dashboard.demoMode})`}
             </p>
           </div>
-          <Link
-            href='/builder/new'
-            onClick={isDemo ? () => {} : undefined}
-            className="btn-primary"
-          >
+          <Link href='/builder/new' className="btn-primary">
             <Plus className="w-4 h-4" />
             {t.dashboard.newPortfolio}
           </Link>
@@ -267,12 +112,10 @@ export default function DashboardPage() {
             </div>
             <h2 className="text-lg font-semibold text-stone-900 mb-2">{t.dashboard.noPortfolios}</h2>
             <p className="text-stone-500 text-sm mb-6">{t.dashboard.createAndShare}</p>
-            {!isDemo && (
-              <Link href="/builder/new" className="btn-primary">
-                <Plus className="w-4 h-4" />
-                {t.dashboard.createFirst}
-              </Link>
-            )}
+            <Link href="/builder/new" className="btn-primary">
+              <Plus className="w-4 h-4" />
+              {t.dashboard.createFirst}
+            </Link>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -377,19 +220,12 @@ export default function DashboardPage() {
                         <ExternalLink className="w-4 h-4 text-stone-600" />
                       </a>
                     )}
-                    {!isDemo && (
-                      <button className="p-2 rounded-lg bg-stone-100 hover:bg-stone-200 transition">
-                        <Trash2 className="w-4 h-4 text-stone-600" />
-                      </button>
-                    )}
-                    {isDemo && (
-                      <button
-                        onClick={() => handleDeletePortfolio(portfolio.id)}
-                        className="p-2 rounded-lg bg-red-50 hover:bg-red-100 transition"
-                      >
-                        <Trash2 className="w-4 h-4 text-red-500" />
-                      </button>
-                    )}
+                    <button
+                      onClick={() => handleDeletePortfolio(portfolio.id)}
+                      className="p-2 rounded-lg bg-stone-100 hover:bg-stone-200 transition"
+                    >
+                      <Trash2 className="w-4 h-4 text-stone-600" />
+                    </button>
                   </div>
                 </div>
               </div>

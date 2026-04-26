@@ -4,17 +4,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useI18n } from '@/i18n/context'
 import { signInWithGoogle, signInWithGithub, signInWithMagicLink } from '@/lib/supabase'
-import { Github, Mail, ArrowRight, Loader2, Eye, EyeOff, Zap } from 'lucide-react'
+import { Github, Mail, ArrowRight, Loader2, Zap } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import Link from 'next/link'
-
-const MOCK_USER = {
-  id: 'demo-user-123',
-  email: 'demo@portgen.dev',
-  name: 'Demo User',
-  avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=demo',
-  plan: 'pro' as const,
-}
 
 export default function LoginPage() {
   const router = useRouter()
@@ -22,7 +14,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [magicLinkSent, setMagicLinkSent] = useState(false)
-  const [showDemo, setShowDemo] = useState(false)
   const [emailError, setEmailError] = useState('')
 
   const handleGoogleSignIn = async () => {
@@ -60,12 +51,6 @@ export default function LoginPage() {
     setIsLoading(false)
   }
 
-  const handleDemoLogin = () => {
-    localStorage.setItem('demo_session', 'true')
-    localStorage.setItem('demo_user', JSON.stringify(MOCK_USER))
-    router.push('/dashboard')
-  }
-
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-stone-100">
       <div className="w-full max-w-sm">
@@ -84,68 +69,6 @@ export default function LoginPage() {
           </Link>
           <h1 className="text-2xl font-bold text-stone-900">{t.login.welcomeBack}</h1>
           <p className="text-stone-500 text-sm mt-1">{t.login.continueToDashboard}</p>
-        </div>
-
-        {/* Demo Toggle */}
-        <div className="mb-4">
-          <button
-            onClick={() => setShowDemo(!showDemo)}
-            className="w-full p-4 rounded-xl border border-stone-200 bg-white hover:border-stone-300 hover:shadow-sm transition text-left"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-teal-50 flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-teal-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-sm text-stone-900">{t.login.tryDemo}</p>
-                  <p className="text-xs text-stone-500">{t.login.tryDemoDesc}</p>
-                </div>
-              </div>
-              {showDemo ? (
-                <EyeOff className="w-5 h-5 text-stone-400" />
-              ) : (
-                <Eye className="w-5 h-5 text-stone-400" />
-              )}
-            </div>
-          </button>
-
-          {showDemo && (
-            <div className="mt-3 p-4 rounded-xl border border-stone-200 bg-white">
-              <div className="flex items-center gap-4 mb-4">
-                <img
-                  src={MOCK_USER.avatar_url}
-                  alt={MOCK_USER.name}
-                  className="w-12 h-12 rounded-full bg-stone-100"
-                />
-                <div>
-                  <p className="font-medium text-stone-900">{MOCK_USER.name}</p>
-                  <p className="text-sm text-stone-500">{MOCK_USER.email}</p>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-teal-600 text-white text-xs font-semibold mt-1">
-                    Pro Plan
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-1.5 text-sm text-stone-600 mb-4">
-                <p>• {t.login.demoFeatures.portfolios} {t.login.demoFeatures.portfoliosPre}</p>
-                <p>• {t.login.demoFeatures.customThemes} {t.login.demoFeatures.customThemesUnlock}</p>
-                <p>• {t.login.demoFeatures.allFeatures} {t.login.demoFeatures.allFeaturesAvailable}</p>
-              </div>
-
-              <button
-                onClick={handleDemoLogin}
-                className="btn-primary w-full justify-center"
-              >
-                {t.login.enterDemo}
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <p className="text-center text-xs text-stone-400 mt-3">
-                {t.login.noAccountNeeded}
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Login Card */}

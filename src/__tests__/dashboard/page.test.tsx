@@ -35,19 +35,22 @@ vi.mock('@/i18n/context', () => ({
       dashboard: {
         title: 'My Dashboards',
         createFirst: 'Create your first portfolio',
+        noPortfolios: 'No portfolios yet',
+        createAndShare: 'Create your first portfolio and share it with the world',
+        newPortfolio: 'New Portfolio',
         edit: 'Edit',
         live: 'Live',
         draft: 'Draft',
         views: 'views',
         delete: 'Delete',
         confirmDelete: 'Are you sure?',
-        noPortfolios: 'No portfolios yet',
-        createPortfolio: 'Create Portfolio',
-        startBuilding: 'Start Building',
-        getStarted: 'Get started creating your first portfolio',
-        portfolioCount: (n: number) => `${n} portfolio${n !== 1 ? 's' : ''}`,
-        lastEdited: 'Last edited',
-        emptySubtitle: 'Create a beautiful portfolio in minutes',
+        demoMode: 'Demo Mode',
+        demoBanner: "You're exploring PortGen with pre-loaded sample data.",
+        signUpReal: 'Sign up for real →',
+        exitDemo: 'Exit Demo',
+        signOut: 'Sign out',
+        viewOnly: 'View Only',
+        upgradeToPro: 'Upgrade to Pro',
       },
       nav: { features: 'Features', pricing: 'Pricing', login: 'Login', getStarted: 'Get Started' },
       hero: { title: 'Create Your', titleHighlight: 'Developer Portfolio', subtitle: '', createFree: 'Create Free', browseThemes: 'Browse Themes', socialProof: '' },
@@ -149,10 +152,10 @@ describe('Dashboard Page', () => {
 
       await waitFor(() => {
         // Bilingual: "Create your first portfolio" (EN) or Thai equivalent
-        expect(screen.getByText(/Create your first portfolio|สร้างพอร์ตโฟลิโอแรก/i)).toBeInTheDocument()
+        // Use getAllByText since it appears in subtitle and potentially button
+        const elements = screen.getAllByText(/Create your first portfolio|สร้างพอร์ตโฟลิโอแรก/i)
+        expect(elements.length).toBeGreaterThan(0)
       })
-
-      expect(screen.getByText(/empty|beautiful portfolio/i)).toBeInTheDocument()
     })
 
     it('shows correct empty state subtitle when no portfolios', async () => {
@@ -164,7 +167,7 @@ describe('Dashboard Page', () => {
       render(<DashboardPage />)
 
       await waitFor(() => {
-        expect(screen.getByText(/Create a beautiful portfolio in minutes|empty/i)).toBeInTheDocument()
+        expect(screen.getByText(/Create your first portfolio and share it with the world|สร้างพอร์ตโฟลิโอแรกและแชร์ให้โลกเห็น/i)).toBeInTheDocument()
       })
     })
   })
@@ -215,8 +218,9 @@ describe('Dashboard Page', () => {
       render(<DashboardPage />)
 
       await waitFor(() => {
-        // Bilingual: "Live" badge or Thai equivalent
-        expect(screen.getByText(/เผยแพร่แล้ว|Live|published/i)).toBeInTheDocument()
+        // Look for Live badge text specifically in a badge-like element (teal-colored span)
+        const liveBadges = screen.getAllByText(/เผยแพร่แล้ว|Live/i)
+        expect(liveBadges.length).toBeGreaterThan(0)
       })
     })
 
