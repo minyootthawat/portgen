@@ -1,5 +1,7 @@
 # Portfolio Generator
 
+[![CI/CD](https://github.com/$(git remote get-url origin | sed 's/.*github.com[:/]\(.*\)\.git/\1/' | sed 's/.*\///')/actions/workflows/ci.yml/badge.svg)](https://github.com/$(git remote get-url origin | sed 's/.*github.com[:/]\(.*\)\.git/\1/' | sed 's/.*\///')/actions)
+
 AI-powered portfolio builder with Stripe billing and Supabase auth.
 
 ## Tech Stack
@@ -9,6 +11,25 @@ AI-powered portfolio builder with Stripe billing and Supabase auth.
 - **Database/Auth:** Supabase
 - **Payments:** Stripe
 - **Deployment:** Vercel
+
+## CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+| Event | Action |
+|---|---|
+| Push to `main` | Run tests → Deploy to Vercel **production** |
+| PR to `main` | Run tests → Deploy to Vercel **preview** → Comment preview URL on PR |
+
+### Required GitHub Secrets
+
+Add these secrets to your GitHub repo under **Settings → Secrets and variables → Actions**:
+
+| Secret | Where to find it |
+|---|---|
+| `VERCEL_TOKEN` | [vercel.com/account/tokens](https://vercel.com/account/tokens) — create a token with scope |
+| `VERCEL_ORG_ID` | Run `vercel project ls` locally, or find in Vercel project settings |
+| `VERCEL_PROJECT_ID` | Find in Vercel project settings under **Settings → General** |
 
 ## Setup
 
