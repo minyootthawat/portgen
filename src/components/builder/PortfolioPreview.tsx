@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import type { Portfolio } from '@/types'
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
 }
 
 export function PortfolioPreview({ portfolio }: Props) {
+  const t = useTranslations('builder')
   return (
     <div className="h-full flex flex-col bg-stone-100 dark:bg-slate-900">
       {/* Header */}
@@ -139,7 +141,11 @@ export function PortfolioPreview({ portfolio }: Props) {
                 <div className="mt-6 space-y-4">
                   {(portfolio as any).custom_sections?.map((section: any) => (
                     <div key={section.id}>
-                      <div className="text-center text-xs text-slate-500 uppercase tracking-wider mb-3">{section.title || section.type}</div>
+                      <div className="text-center text-xs text-slate-500 uppercase tracking-wider mb-3">
+                          {section.title
+                            ? t(`sectionTypes.${section.title}` as any, { default: section.title as string })
+                            : section.type}
+                        </div>
                       <div className="space-y-2">
                         {section.items?.map((item: any) => (
                           <div key={item.id} className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">

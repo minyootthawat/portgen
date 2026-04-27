@@ -790,7 +790,9 @@ export function BuilderEditor({
                     <DragHandle sectionId={section.id} />
                     <span className="text-lg">{SECTION_TYPE_META[section.type].icon}</span>
                     <div className="flex-1 min-w-0">
-                      <span className="text-sm font-medium text-stone-700 dark:text-stone-200">{section.title}</span>
+                      <span className="text-sm font-medium text-stone-700 dark:text-stone-200">
+                        {t(`sectionTypes.${section.title}` as any, { default: section.title as string })}
+                      </span>
                       <span className="text-xs text-stone-400 dark:text-stone-500 ml-2">
                         {section.type === 'info' && `${((section.data as InfoData).name || t('noName')).substring(0, 20)}`}
                         {section.type === 'skills' && t('countable.skills', { n: (section.data as SkillsData).items.length })}

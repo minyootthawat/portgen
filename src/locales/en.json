@@ -290,5 +290,76 @@
     "createAnother": "Create another",
     "shareText": "Check out my portfolio!",
     "linkCopied": "Link copied!"
+  },
+  "seller": {
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Manage your account settings and preferences",
+      "nav": {
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "security": "Security",
+        "payment": "Payment Methods",
+        "language": "Language & Region"
+      },
+      "profile": {
+        "title": "Profile Information",
+        "subtitle": "Update your personal details",
+        "fullName": "Full Name",
+        "email": "Email",
+        "phone": "Phone",
+        "storeName": "Store Name",
+        "bio": "Bio",
+        "bioPlaceholder": "Tell us about yourself...",
+        "save": "Save"
+      },
+      "avatar": {
+        "title": "Profile Picture",
+        "subtitle": "Your profile photo",
+        "uploadNew": "Upload New Photo",
+        "uploadHint": "JPG, PNG or GIF. Max 2MB"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "subtitle": "Choose how you receive notifications",
+        "emailNotifs": "Email Notifications",
+        "emailNotifsDesc": "Receive order updates via email",
+        "browserNotifs": "Browser Notifications",
+        "browserNotifsDesc": "Get instant notifications in your browser",
+        "marketingEmail": "Marketing Email",
+        "marketingEmailDesc": "Receive promotional offers and updates",
+        "weeklySummary": "Weekly Summary",
+        "weeklySummaryDesc": "Receive weekly performance reports for your store"
+      },
+      "security": {
+        "title": "Security",
+        "subtitle": "Keep your account safe",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm New Password",
+        "updatePassword": "Update Password",
+        "twoFactor": "Two-Factor Authentication",
+        "subtitle2FA": "Add an extra layer of security to your account",
+        "authApp": "Authenticator App",
+        "authAppDesc": "Use an authenticator app to get verification codes",
+        "enable": "Enable"
+      },
+      "payment": {
+        "title": "Payment Methods",
+        "subtitle": "Manage how you receive payments",
+        "expires": "Expires",
+        "default": "Default",
+        "setDefault": "Set as Default",
+        "addMethod": "Add Payment Method"
+      },
+      "languageRegion": {
+        "title": "Language & Region",
+        "subtitle": "Customize your experience",
+        "language": "Language",
+        "time": "Time Zone",
+        "currency": "Currency",
+        "save": "Save"
+      }
+    }
   }
 }

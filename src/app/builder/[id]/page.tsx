@@ -69,8 +69,8 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
               // Old format — convert to new
               const migrated: Section[] = p.custom_sections.map((cs: any) => {
                 const meta: Record<string, string> = {
-                  services: 'บริการ', experience: 'ประสบการณ์',
-                  education: 'การศึกษา', testimonials: 'รีวิว', certifications: 'ใบรับรอง'
+                  services: 'services', experience: 'experience',
+                  education: 'education', testimonials: 'testimonials', certifications: 'certifications'
                 }
                 return {
                   id: cs.id || `sec_${Date.now()}_${Math.random()}`,

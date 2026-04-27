@@ -19,15 +19,15 @@ export interface TestimonialsData { items: { id: string; quote: string; author: 
 export interface CertificationsData { items: { id: string; name: string; issuer: string; year: string; url: string }[] }
 
 export const SECTION_TYPE_META: Record<SectionType, { label: string; icon: string; description: string }> = {
-  info: { label: 'ข้อมูล', icon: '👤', description: 'ชื่อ แท็กไลน์ และรูปโปรไฟล์' },
-  skills: { label: 'ทักษะ', icon: '⚡', description: 'เทคโนโลยีและทักษะ' },
-  projects: { label: 'โปรเจกต์', icon: '🚀', description: 'ผลงานและโปรเจกต์' },
-  social: { label: 'โซเชียล', icon: '🔗', description: 'ลิงก์โซเชียลมีเดีย' },
-  services: { label: 'บริการ', icon: '💼', description: 'บริการที่คุณเสนอ' },
-  experience: { label: 'ประสบการณ์', icon: '💻', description: 'ประสบการณ์ทำงาน' },
-  education: { label: 'การศึกษา', icon: '🎓', description: 'การศึกษาและประกาศนียบัตร' },
-  testimonials: { label: 'รีวิว', icon: '💬', description: 'คำรีวิวจากลูกค้า' },
-  certifications: { label: 'ใบรับรอง', icon: '🏆', description: 'ใบรับรองและรางวัล' },
+  info: { label: 'info', icon: '👤', description: 'ชื่อ แท็กไลน์ และรูปโปรไฟล์' },
+  skills: { label: 'skills', icon: '⚡', description: 'เทคโนโลยีและทักษะ' },
+  projects: { label: 'projects', icon: '🚀', description: 'ผลงานและโปรเจกต์' },
+  social: { label: 'social', icon: '🔗', description: 'ลิงก์โซเชียลมีเดีย' },
+  services: { label: 'services', icon: '💼', description: 'บริการที่คุณเสนอ' },
+  experience: { label: 'experience', icon: '💻', description: 'ประสบการณ์ทำงาน' },
+  education: { label: 'education', icon: '🎓', description: 'การศึกษาและประกาศนียบัตร' },
+  testimonials: { label: 'testimonials', icon: '💬', description: 'คำรีวิวจากลูกค้า' },
+  certifications: { label: 'certifications', icon: '🏆', description: 'ใบรับรองและรางวัล' },
 }
 
 export function createDefaultSection(type: SectionType): Section {
