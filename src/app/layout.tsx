@@ -121,7 +121,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <NextIntlClientProvider>
+        <NextIntlClientProvider locale={locale}>
           <ThemeProvider>
             <AuthProvider>
               {children}

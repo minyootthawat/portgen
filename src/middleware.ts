@@ -43,18 +43,19 @@ export function middleware(request: NextRequest) {
 
   const locale = getLocale(request)
 
-  // Create response with locale set
+  // Set cookie
   const response = NextResponse.next()
   response.cookies.set(LOCALE_COOKIE, locale, {
     path: '/',
-    maxAge: 60 * 60 * 24 * 365, // 1 year
+    maxAge: 60 * 60 * 24 * 365,
     sameSite: 'lax',
   })
 
-  // Pass locale to server components via header
-  response.headers.set('x-locale', locale)
+  // Pass locale to server components via request headers (not response)
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-locale', locale)
 
-  return response
+  return NextResponse.next({ request: { headers: requestHeaders } })
 }
 
 export const config = {
