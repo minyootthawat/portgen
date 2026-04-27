@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { AuthDialog } from '@/components/AuthDialog'
+import { LangSwitcher } from '@/components/LangSwitcher'
 import { Check, ArrowRight, Sparkles, Play, Star, Users, LogOut } from 'lucide-react'
 
 export default function LandingPage() {
@@ -71,6 +72,7 @@ export default function LandingPage() {
 
           {/* Desktop actions */}
           <div className="hidden md:flex items-center gap-3">
+            <LangSwitcher />
             <ThemeToggle />
             {isLoading ? (
               <div className="w-20 h-8 bg-stone-200 dark:bg-stone-700 rounded-lg animate-pulse" />
@@ -99,6 +101,7 @@ export default function LandingPage() {
           <a href="#features" className="block text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white"> ฟีเจอร์</a>
           <a href="#pricing" className="block text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white"> ราคา</a>
           <div className="flex items-center gap-3 pt-2">
+            <LangSwitcher />
             <ThemeToggle />
           </div>
           <button onClick={() => setAuthOpen(true)} className="btn-primary text-sm bg-teal-600 hover:bg-teal-700 text-white w-full justify-center">เริ่มใช้ฟรี</button>

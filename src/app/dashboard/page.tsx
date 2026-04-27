@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { signOut, useSession } from 'next-auth/react'
 import { Plus, ExternalLink, Trash2, Loader2, Crown, ArrowRight, Sparkles } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { LangSwitcher } from '@/components/LangSwitcher'
 import type { Portfolio } from '@/types'
 
 export default function DashboardPage() {
@@ -119,6 +120,7 @@ export default function DashboardPage() {
 
           </div>
           <div className="flex items-center gap-2">
+            <LangSwitcher />
             <ThemeToggle />
             {!isPro && (
               <Link href="/upgrade" className="btn-secondary text-sm hidden sm:inline-flex">

@@ -1,0 +1,215 @@
+{
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "startFree": "Get Started Free",
+    "dashboard": "Dashboard"
+  },
+  "hero": {
+    "badge": "🚀 Free to start — no credit card needed",
+    "headline": "Beautiful portfolio in 5 minutes",
+    "headlineAccent": "— no coding required",
+    "subtitle": "Build a professional portfolio on your own. No need to hire anyone or learn technical skills. A few clicks and it's live.",
+    "goToDashboard": "Go to Dashboard",
+    "createFree": "Create portfolio — free, no credit card",
+    "viewExample": "See example",
+    "previewLabel": "Your portfolio will look like this →"
+  },
+  "socialProof": {
+    "tagline": "For developers who want their work to stand out"
+  },
+  "demoSection": {
+    "title": "See how it works",
+    "subtitle": "Watch how to build a portfolio in under 5 minutes",
+    "tryDemoNoSignup": "Try Demo — no signup needed"
+  },
+  "features": {
+    "sectionTitle": "Why PortGen?",
+    "sectionSubtitle": "Everything you need to look professional — no hassle",
+    "items": {
+      "templates": "Stunning templates that look expensive",
+      "templatesDesc": "Pick from beautifully designed templates. Your portfolio will look like you hired a pro.",
+      "instantOnline": "Go live the moment you're ready",
+      "instantOnlineDesc": "No waiting, no approval needed. Your portfolio is live the instant you hit publish.",
+      "fast": "Build it in under 5 minutes",
+      "fastDesc": "Fill in your info, pick a template, hit publish. Done. Really fast.",
+      "editable": "Edit anytime, as much as you want",
+      "editableDesc": "Add new projects, change photos, update your bio — edit whenever you like.",
+      "easy": "If you can use Facebook, you can use this",
+      "easyDesc": "No code, no complex menus. Point, click, type, done.",
+      "shareLink": "One link. No more PDF attachments",
+      "shareLinkDesc": "A single portfolio link you can send in email, messages, or job applications."
+    }
+  },
+  "testimonials": {
+    "sectionTitle": "Stories from real users",
+    "quotes": {
+      "q1": "I was scared it would be complicated. Finished in 10 minutes.",
+      "q2": "Applied for jobs for a year with no calls. Made a portfolio, got 3 interviews the next week.",
+      "q3": "No more attaching PDFs every time. Just share one link."
+    },
+    "authors": {
+      "a1": "Somsak T., Job Seeker",
+      "a2": "Nirandorn K., Graphic Designer",
+      "a3": "Priya S., Marketing Manager"
+    }
+  },
+  "stats": {
+    "freeStart": "Free to start",
+    "avgTime": "Avg. creation time",
+    "themes": "Beautiful themes",
+    "export": "Export",
+    "exportLabel": "HTML export anytime"
+  },
+  "pricing": {
+    "sectionTitle": "Straightforward pricing",
+    "sectionSubtitle": "Start free, upgrade when you're ready",
+    "free": "Free",
+    "freePerMonth": "/month",
+    "freeTagline": "Get started for free",
+    "pro": "Pro",
+    "proPerMonth": "/month",
+    "proTagline": "For people serious about their career",
+    "proBilling": "Billed monthly",
+    "popular": "Most popular",
+    "tryFree": "Start free",
+    "tryProFree": "Try Pro free",
+    "trialNote": "7-day free trial • Cancel anytime",
+    "freeFeatures": {
+      "1portfolio": "1 portfolio",
+      "3themes": "3 beautiful themes",
+      "subdomain": "subdomain on portgen.com",
+      "basicCustomize": "Basic customization",
+      "exportHtml": "Export HTML",
+      "communitySupport": "Community support"
+    },
+    "proFeatures": {
+      "unlimited": "Unlimited portfolios",
+      "15themes": "15+ beautiful themes",
+      "customDomain": "Custom Domain support",
+      "removeBranding": "Remove PortGen branding",
+      "analytics": "Analytics dashboard",
+      "prioritySupport": "Priority support",
+      "earlyAccess": "Early access to new themes"
+    }
+  },
+  "cta": {
+    "title": "Ready? Let's build your first portfolio",
+    "subtitle": "Join developers who stopped sending PDF resumes",
+    "button": "Create portfolio free →"
+  },
+  "footer": {
+    "credit": "© 2026 PortGen. Built with ❤️ for developers everywhere"
+  },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "registerTitle": "Create an account",
+    "loginSubtitle": "Sign in to access your dashboard",
+    "registerSubtitle": "Create an impressive portfolio in minutes",
+    "namePlaceholder": "Your name",
+    "passwordPlaceholder": "Password",
+    "confirmPasswordPlaceholder": "Confirm password",
+    "loginButton": "Sign in",
+    "registerButton": "Create account",
+    "orRegister": "Or create a new account",
+    "hasAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "loginLink": "Sign in",
+    "registerLink": "Create account",
+    "termsLogin": "By signing in, you agree to our Terms of Service and Privacy Policy.",
+    "termsRegister": "By signing up, you agree to our Terms of Service and Privacy Policy.",
+    "tryDemo": "Try Demo mode",
+    "usersUsing": "2,000+ developers using it",
+    "errors": {
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "invalidCredentials": "Incorrect email or password",
+      "nameRequired": "Name is required",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "passwordMismatch": "Passwords do not match",
+      "genericError": "Something went wrong. Please try again.",
+      "registeredButLoginFailed": "Account created, but sign-in failed. Please sign in manually."
+    }
+  },
+  "dashboard": {
+    "title": "Your Portfolios",
+    "emptyTitle": "Your first portfolio starts here",
+    "emptySubtitle": "Under 5 minutes — pick a template, add your info, share the link",
+    "createFirst": "Create your first portfolio",
+    "newPortfolio": "New portfolio",
+    "upgrade": "Upgrade",
+    "logout": "Logout",
+    "edit": "Edit",
+    "delete": "Delete portfolio",
+    "published": "Published",
+    "draft": "Draft",
+    "openWebsite": "Open website",
+    "loading": "Loading...",
+    "confirmDelete": "Delete this portfolio? This cannot be undone.",
+    "emptyList": "Create your first portfolio"
+  },
+  "builder": {
+    "loading": "Loading...",
+    "preview": "Preview",
+    "hide": "Hide",
+    "noSections": "No sections yet",
+    "noSectionsHint": "Click the button below to add your first section",
+    "addNameFirst": "Please add your name first!",
+    "sectionTypes": {
+      "info": "Info",
+      "skills": "Skills",
+      "projects": "Projects",
+      "social": "Links",
+      "services": "Services",
+      "experience": "Experience",
+      "education": "Education",
+      "testimonials": "Reviews",
+      "certifications": "Certifications"
+    },
+    "emptyMessages": {
+      "skills": "No skills yet — type above to add",
+      "projects": "No projects — click \"Add project\" to get started",
+      "services": "No services yet",
+      "experience": "No experience yet",
+      "education": "No education yet",
+      "testimonials": "No reviews yet",
+      "certifications": "No certifications yet"
+    },
+    "newItems": {
+      "experience": "New experience",
+      "education": "New education",
+      "testimonial": "New review"
+    },
+    "currentJob": "Currently working here",
+    "aboutYou": "About you",
+    "addButtons": {
+      "services": "Add service",
+      "experience": "Add experience",
+      "education": "Add education"
+    },
+    "placeholders": {
+      "serviceName": "Service name",
+      "serviceDesc": "Service description",
+      "icon": "Icon (emoji or name)",
+      "reviewerName": "Reviewer name",
+      "role": "Role",
+      "company": "Company"
+    },
+    "noName": "No name"
+  },
+  "success": {
+    "loading": "Loading...",
+    "errorTitle": "Something went wrong",
+    "goDashboard": "Go to Dashboard",
+    "success": "Success!",
+    "portfolioReady": "Your portfolio is ready",
+    "yourLink": "Your link",
+    "copied": "Copied!",
+    "copy": "Copy",
+    "totalViews": "Total views:",
+    "open": "Open",
+    "createAnother": "Create another",
+    "shareText": "Check out my portfolio!",
+    "linkCopied": "Link copied!"
+  }
+}
