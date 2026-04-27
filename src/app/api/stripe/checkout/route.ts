@@ -47,10 +47,19 @@ export async function POST(request: Request) {
   let customerId = profile.stripe_customer_id
 
   if (!customerId) {
-    const customer = await stripe.customers.create({
-      email,
-      metadata: { userId },
-    })
+    let customer
+    try {
+      customer = await stripe.customers.create({
+        email,
+        metadata: { userId },
+      })
+    } catch (err: any) {
+      console.error('Stripe customer creation failed:', err)
+      return NextResponse.json(
+        { error: err.message ?? 'Stripe customer creation failed' },
+        { status: 500 }
+      )
+    }
     customerId = customer.id
 
     const { modifiedCount } = await (profiles as any).updateOne(

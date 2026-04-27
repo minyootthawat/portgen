@@ -1,16 +1,4 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest'
-
-// Set required env vars BEFORE importing the route module.
-// The route evaluates Stripe config at module-load time, so env must be set first.
-beforeAll(() => {
-  process.env.STRIPE_SECRET_KEY = 'sk_test_mock'
-  process.env.STRIPE_PRICE_ID = 'price_mock_123'
-})
-
-afterAll(() => {
-  delete process.env.STRIPE_SECRET_KEY
-  delete process.env.STRIPE_PRICE_ID
-})
+import { describe, it, expect, vi } from 'vitest'
 
 // Mock getCollections from @/lib/mongodb
 const mockProfilesFindOne = vi.fn()
@@ -33,26 +21,36 @@ vi.mock('@/lib/mongodb', () => ({
   }),
 }))
 
-// Mock Stripe — must return a constructor (class) since route does `new Stripe(...)`
+// Mock Stripe
 const mockStripeCheckoutCreate = vi.fn()
 const mockStripeCustomersCreate = vi.fn()
 
-vi.mock('stripe', () => {
-  const MockStripe = function() {
+vi.mock('stripe', () => ({
+  default: function MockStripe() {
     return {
       customers: { create: mockStripeCustomersCreate },
       checkout: { sessions: { create: mockStripeCheckoutCreate } },
     }
-  }
-  return { default: MockStripe }
-})
+  },
+}))
+
+// Set env before importing route
+const setupEnv = () => {
+  process.env.STRIPE_SECRET_KEY = 'sk_test_mock'
+  process.env.STRIPE_PRICE_ID = 'price_mock_123'
+}
 
 describe('POST /api/stripe/checkout error handling', () => {
+  // Reset all mocks before each test
   beforeEach(() => {
-    vi.clearAllMocks()
+    mockProfilesFindOne.mockReset()
+    mockProfilesUpdateOne.mockReset()
+    mockStripeCheckoutCreate.mockReset()
+    mockStripeCustomersCreate.mockReset()
   })
 
   it('returns 400 when userId is missing', async () => {
+    setupEnv()
     const { POST } = await import('@/app/api/stripe/checkout/route')
     const request = new Request('http://localhost/api/stripe/checkout', {
       method: 'POST',
@@ -67,6 +65,7 @@ describe('POST /api/stripe/checkout error handling', () => {
   })
 
   it('returns 400 when userId is not a string', async () => {
+    setupEnv()
     const { POST } = await import('@/app/api/stripe/checkout/route')
     const request = new Request('http://localhost/api/stripe/checkout', {
       method: 'POST',
@@ -81,6 +80,7 @@ describe('POST /api/stripe/checkout error handling', () => {
   })
 
   it('returns 400 when email is missing', async () => {
+    setupEnv()
     const { POST } = await import('@/app/api/stripe/checkout/route')
     const request = new Request('http://localhost/api/stripe/checkout', {
       method: 'POST',
@@ -95,6 +95,7 @@ describe('POST /api/stripe/checkout error handling', () => {
   })
 
   it('returns 400 when email is invalid format', async () => {
+    setupEnv()
     const { POST } = await import('@/app/api/stripe/checkout/route')
     const request = new Request('http://localhost/api/stripe/checkout', {
       method: 'POST',
@@ -109,6 +110,7 @@ describe('POST /api/stripe/checkout error handling', () => {
   })
 
   it('returns 400 for invalid JSON body', async () => {
+    setupEnv()
     const { POST } = await import('@/app/api/stripe/checkout/route')
     const request = new Request('http://localhost/api/stripe/checkout', {
       method: 'POST',
@@ -123,6 +125,7 @@ describe('POST /api/stripe/checkout error handling', () => {
   })
 
   it('returns 404 when profile not found', async () => {
+    setupEnv()
     mockProfilesFindOne.mockResolvedValue(null)
 
     const { POST } = await import('@/app/api/stripe/checkout/route')
@@ -139,11 +142,12 @@ describe('POST /api/stripe/checkout error handling', () => {
   })
 
   it('returns 500 when Stripe customer creation fails', async () => {
+    setupEnv()
     mockProfilesFindOne.mockResolvedValue({
       _id: 'user-1',
       stripe_customer_id: null,
     })
-    mockStripeCustomersCreate.mockRejectedValue(new Error('Stripe API error'))
+    mockStripeCustomersCreate.mockImplementation(() => Promise.reject(new Error('Stripe API error')))
 
     const { POST } = await import('@/app/api/stripe/checkout/route')
     const request = new Request('http://localhost/api/stripe/checkout', {
@@ -159,6 +163,7 @@ describe('POST /api/stripe/checkout error handling', () => {
   })
 
   it('returns 500 when updateOne fails to persist customer ID', async () => {
+    setupEnv()
     mockProfilesFindOne.mockResolvedValue({
       _id: 'user-1',
       stripe_customer_id: null,
@@ -180,11 +185,12 @@ describe('POST /api/stripe/checkout error handling', () => {
   })
 
   it('returns 500 when Stripe checkout session creation fails', async () => {
+    setupEnv()
     mockProfilesFindOne.mockResolvedValue({
       _id: 'user-1',
       stripe_customer_id: 'cus_existing',
     })
-    mockStripeCheckoutCreate.mockRejectedValue(new Error('Checkout session failed'))
+    mockStripeCheckoutCreate.mockImplementation(() => Promise.reject(new Error('Checkout session failed')))
 
     const { POST } = await import('@/app/api/stripe/checkout/route')
     const request = new Request('http://localhost/api/stripe/checkout', {
