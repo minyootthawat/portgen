@@ -1,8 +1,34 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Mock createClient from @supabase/supabase-js — the routes use it directly
-vi.mock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(),
+// Mock bcryptjs
+vi.mock('bcryptjs', () => ({
+  default: {
+    hash: vi.fn().mockResolvedValue('hashed_password'),
+    compare: vi.fn().mockResolvedValue(true),
+  },
+}))
+
+// Mock getCollections from @/lib/mongodb
+const mockUsersFindOne = vi.fn()
+const mockUsersInsertOne = vi.fn()
+const mockProfilesInsertOne = vi.fn()
+
+vi.mock('@/lib/mongodb', () => ({
+  default: async () => ({
+    users: {
+      findOne: mockUsersFindOne,
+      insertOne: mockUsersInsertOne,
+    },
+    profiles: {
+      insertOne: mockProfilesInsertOne,
+    },
+    portfolios: { find: vi.fn(), insertOne: vi.fn() },
+    products: { find: vi.fn() },
+    orders: { insertOne: vi.fn() },
+    game_accounts: { find: vi.fn() },
+    seller_ledger_entries: { find: vi.fn() },
+    subscriptions: { findOne: vi.fn() },
+  }),
 }))
 
 describe('/api/auth/register', () => {
@@ -11,26 +37,9 @@ describe('/api/auth/register', () => {
   })
 
   it('valid register returns 200', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-    const mockUser = {
-      id: 'user-456',
-      email: 'newuser@example.com',
-      user_metadata: { name: 'New User' },
-    }
-    const mockSession = {
-      access_token: 'mock-access-token',
-      refresh_token: 'mock-refresh-token',
-      user: mockUser,
-    }
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      auth: {
-        signUp: vi.fn().mockResolvedValue({
-          data: { session: mockSession, user: mockUser },
-          error: null,
-        }),
-      },
-    } as ReturnType<typeof createClient>)
+    mockUsersFindOne.mockResolvedValue(null) // no existing user
+    mockUsersInsertOne.mockResolvedValue({ insertedId: { toString: () => 'user-456' } })
+    mockProfilesInsertOne.mockResolvedValue({ insertedId: { toString: () => 'profile-456' } })
 
     const { POST } = await import('@/app/api/auth/register/route')
 
@@ -45,16 +54,7 @@ describe('/api/auth/register', () => {
   })
 
   it('duplicate email returns 400', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      auth: {
-        signUp: vi.fn().mockResolvedValue({
-          data: { session: null, user: null },
-          error: { message: 'User already registered', code: 'user_already_exists' },
-        }),
-      },
-    } as ReturnType<typeof createClient>)
+    mockUsersFindOne.mockResolvedValue({ _id: 'existing-id', email: 'existing@example.com' })
 
     const { POST } = await import('@/app/api/auth/register/route')
 

@@ -15,8 +15,31 @@ vi.mock('stripe', () => ({
   },
 }))
 
-vi.mock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(),
+// Mock getCollections from @/lib/mongodb
+const mockProfilesUpdateOne = vi.fn()
+const mockProfilesUpsert = vi.fn()
+const mockSubscriptionsInsertOne = vi.fn()
+const mockSubscriptionsUpdateOne = vi.fn()
+
+vi.mock('@/lib/mongodb', () => ({
+  default: async () => ({
+    users: { findOne: vi.fn() },
+    profiles: {
+      updateOne: mockProfilesUpdateOne,
+      upsert: mockProfilesUpsert,
+      insertOne: vi.fn(),
+    },
+    portfolios: { find: vi.fn(), insertOne: vi.fn() },
+    products: { find: vi.fn() },
+    orders: { insertOne: vi.fn() },
+    game_accounts: { find: vi.fn() },
+    seller_ledger_entries: { find: vi.fn() },
+    subscriptions: {
+      findOne: vi.fn(),
+      insertOne: mockSubscriptionsInsertOne,
+      updateOne: mockSubscriptionsUpdateOne,
+    },
+  }),
 }))
 
 describe('POST /api/stripe/webhook', () => {
@@ -24,15 +47,14 @@ describe('POST /api/stripe/webhook', () => {
     vi.clearAllMocks()
     mockConstructEvent.mockReset()
     mockSubscriptionsRetrieve.mockReset()
+    mockProfilesUpdateOne.mockReset()
+    mockSubscriptionsUpdateOne.mockReset()
+    mockSubscriptionsInsertOne.mockReset()
     process.env.STRIPE_SECRET_KEY = 'sk_test_mock'
     process.env.STRIPE_WEBHOOK_SECRET = 'whsec_mock'
-    process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://mock.supabase.co'
-    process.env.SUPABASE_SERVICE_ROLE_KEY = 'mock-service-key'
   })
 
   it('returns 200 with valid signature', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-
     mockConstructEvent.mockReturnValue({
       type: 'customer.subscription.updated',
       data: {
@@ -46,17 +68,8 @@ describe('POST /api/stripe/webhook', () => {
         },
       },
     })
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      from: vi.fn().mockReturnValue({
-        update: vi.fn().mockReturnValue({
-          eq: vi.fn().mockResolvedValue({ error: null }),
-        }),
-        upsert: vi.fn().mockReturnValue({
-          eq: vi.fn().mockResolvedValue({ error: null }),
-        }),
-      }),
-    })
+    mockSubscriptionsUpdateOne.mockResolvedValue({ acknowledged: true, matchedCount: 1, modifiedCount: 1 })
+    mockProfilesUpdateOne.mockResolvedValue({ acknowledged: true, matchedCount: 1 })
 
     const { POST } = await import('@/app/api/stripe/webhook/route')
 
@@ -114,8 +127,6 @@ describe('POST /api/stripe/webhook', () => {
   })
 
   it('returns 200 for checkout.session.completed event', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-
     const mockSubscription = {
       id: 'sub_123',
       status: 'active',
@@ -137,17 +148,8 @@ describe('POST /api/stripe/webhook', () => {
       },
     })
     mockSubscriptionsRetrieve.mockResolvedValue(mockSubscription)
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      from: vi.fn().mockReturnValue({
-        insert: vi.fn().mockReturnValue({
-          eq: vi.fn().mockResolvedValue({ error: null }),
-        }),
-        update: vi.fn().mockReturnValue({
-          eq: vi.fn().mockResolvedValue({ error: null }),
-        }),
-      }),
-    })
+    mockSubscriptionsInsertOne.mockResolvedValue({ insertedId: 'sub_123' })
+    mockProfilesUpdateOne.mockResolvedValue({ acknowledged: true, matchedCount: 1 })
 
     const { POST } = await import('@/app/api/stripe/webhook/route')
 
@@ -171,8 +173,6 @@ describe('POST /api/stripe/webhook', () => {
   })
 
   it('returns 200 for customer.subscription.deleted event', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-
     mockConstructEvent.mockReturnValue({
       type: 'customer.subscription.deleted',
       data: {
@@ -182,14 +182,8 @@ describe('POST /api/stripe/webhook', () => {
         },
       },
     })
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      from: vi.fn().mockReturnValue({
-        update: vi.fn().mockReturnValue({
-          eq: vi.fn().mockResolvedValue({ error: null }),
-        }),
-      }),
-    })
+    mockSubscriptionsUpdateOne.mockResolvedValue({ acknowledged: true, matchedCount: 1 })
+    mockProfilesUpdateOne.mockResolvedValue({ acknowledged: true, matchedCount: 1 })
 
     const { POST } = await import('@/app/api/stripe/webhook/route')
 

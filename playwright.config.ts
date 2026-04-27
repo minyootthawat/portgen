@@ -8,12 +8,12 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'line',
   use: {
-    baseURL: 'http://localhost:3002',
+    baseURL: 'http://localhost:5002',
     trace: 'on-first-retry',
   },
   webServer: {
     command: 'pnpm dev --port 3002',
-    url: 'http://localhost:3002',
-    reuseExistingServer: false,
+    url: 'http://localhost:5002',
+    reuseExistingServer: true,
   },
 });

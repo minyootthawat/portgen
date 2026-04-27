@@ -22,94 +22,30 @@ interface Order {
 const columnHelper = createColumnHelper<Order>()
 
 const mockOrders: Order[] = [
-  {
-    id: 'ORD-2024-001',
-    customer: 'Sarah Miller',
-    email: 'sarah.miller@email.com',
-    product: 'Premium Portfolio Template',
-    amount: 49,
-    status: 'completed',
-    date: '2026-04-26',
-  },
-  {
-    id: 'ORD-2024-002',
-    customer: 'James Chen',
-    email: 'james.chen@email.com',
-    product: 'Basic Package',
-    amount: 19,
-    status: 'processing',
-    date: '2026-04-26',
-  },
-  {
-    id: 'ORD-2024-003',
-    customer: 'Emma Wilson',
-    email: 'emma.w@email.com',
-    product: 'Pro Bundle',
-    amount: 99,
-    status: 'shipped',
-    date: '2026-04-25',
-  },
-  {
-    id: 'ORD-2024-004',
-    customer: 'Michael Brown',
-    email: 'mbrown@email.com',
-    product: 'Premium Portfolio Template',
-    amount: 49,
-    status: 'completed',
-    date: '2026-04-25',
-  },
-  {
-    id: 'ORD-2024-005',
-    customer: 'Lisa Park',
-    email: 'lisa.park@email.com',
-    product: 'Basic Package',
-    amount: 19,
-    status: 'cancelled',
-    date: '2026-04-24',
-  },
-  {
-    id: 'ORD-2024-006',
-    customer: 'David Lee',
-    email: 'dlee@email.com',
-    product: 'Developer Resume Kit',
-    amount: 29,
-    status: 'pending',
-    date: '2026-04-24',
-  },
-  {
-    id: 'ORD-2024-007',
-    customer: 'Anna Smith',
-    email: 'anna.smith@email.com',
-    product: 'Minimal CV Theme',
-    amount: 19,
-    status: 'refunded',
-    date: '2026-04-23',
-  },
-  {
-    id: 'ORD-2024-008',
-    customer: 'Robert Johnson',
-    email: 'rjohnson@email.com',
-    product: 'Creative Agency Template',
-    amount: 59,
-    status: 'completed',
-    date: '2026-04-23',
-  },
+  { id: 'ORD-2024-001', customer: 'Sarah Miller', email: 'sarah.miller@email.com', product: 'Premium Portfolio Template', amount: 49, status: 'completed', date: '2026-04-26' },
+  { id: 'ORD-2024-002', customer: 'James Chen', email: 'james.chen@email.com', product: 'Basic Package', amount: 19, status: 'processing', date: '2026-04-26' },
+  { id: 'ORD-2024-003', customer: 'Emma Wilson', email: 'emma.w@email.com', product: 'Pro Bundle', amount: 99, status: 'shipped', date: '2026-04-25' },
+  { id: 'ORD-2024-004', customer: 'Michael Brown', email: 'mbrown@email.com', product: 'Premium Portfolio Template', amount: 49, status: 'completed', date: '2026-04-25' },
+  { id: 'ORD-2024-005', customer: 'Lisa Park', email: 'lisa.park@email.com', product: 'Basic Package', amount: 19, status: 'cancelled', date: '2026-04-24' },
+  { id: 'ORD-2024-006', customer: 'David Lee', email: 'dlee@email.com', product: 'Developer Resume Kit', amount: 29, status: 'pending', date: '2026-04-24' },
+  { id: 'ORD-2024-007', customer: 'Anna Smith', email: 'anna.smith@email.com', product: 'Minimal CV Theme', amount: 19, status: 'refunded', date: '2026-04-23' },
+  { id: 'ORD-2024-008', customer: 'Robert Johnson', email: 'rjohnson@email.com', product: 'Creative Agency Template', amount: 59, status: 'completed', date: '2026-04-23' },
 ]
 
 const statusConfig: Record<Order['status'], { label: string; className: string; icon: React.ElementType }> = {
-  pending: { label: 'Pending', className: 'badge-accent', icon: Package },
-  processing: { label: 'Processing', className: 'badge-accent', icon: Truck },
-  shipped: { label: 'Shipped', className: 'badge-info', icon: Truck },
-  completed: { label: 'Completed', className: 'badge-success', icon: CheckCircle },
-  cancelled: { label: 'Cancelled', className: 'badge-danger', icon: XCircle },
-  refunded: { label: 'Refunded', className: 'badge-neutral', icon: XCircle },
+  pending: { label: 'รอดำเนินการ', className: 'badge-accent', icon: Package },
+  processing: { label: 'กำลังดำเนินการ', className: 'badge-accent', icon: Truck },
+  shipped: { label: 'จัดส่งแล้ว', className: 'badge-info', icon: Truck },
+  completed: { label: 'เสร็จสิ้น', className: 'badge-success', icon: CheckCircle },
+  cancelled: { label: 'ยกเลิก', className: 'badge-danger', icon: XCircle },
+  refunded: { label: 'คืนเงิน', className: 'badge-neutral', icon: XCircle },
 }
 
 const stats = [
-  { label: 'Total Orders', value: '1,284', change: '+8%', trend: 'up' as const, icon: Package },
-  { label: 'Pending', value: '23', change: '+5', trend: 'up' as const, icon: Package },
-  { label: 'Completed', value: '1,156', change: '+12%', trend: 'up' as const, icon: CheckCircle },
-  { label: 'Refunded', value: '12', change: '-3', trend: 'down' as const, icon: XCircle },
+  { label: 'คำสั่งซื้อทั้งหมด', value: '1,284', change: '+8%', trend: 'up' as const, icon: Package },
+  { label: 'รอดำเนินการ', value: '23', change: '+5', trend: 'up' as const, icon: Package },
+  { label: 'เสร็จสิ้น', value: '1,156', change: '+12%', trend: 'up' as const, icon: CheckCircle },
+  { label: 'คืนเงิน', value: '12', change: '-3', trend: 'down' as const, icon: XCircle },
 ]
 
 export default function SellerOrdersPage() {
@@ -122,13 +58,11 @@ export default function SellerOrdersPage() {
 
   const columns = [
     columnHelper.accessor('id', {
-      header: 'Order ID',
-      cell: (info) => (
-        <span className="font-medium text-stone-900 dark:text-white">{info.getValue()}</span>
-      ),
+      header: 'รหัสคำสั่งซื้อ',
+      cell: (info) => <span className="font-medium text-stone-900 dark:text-white">{info.getValue()}</span>,
     }),
     columnHelper.accessor('customer', {
-      header: 'Customer',
+      header: 'ลูกค้า',
       cell: (info) => (
         <div>
           <p className="font-medium text-stone-900 dark:text-white">{info.getValue()}</p>
@@ -137,19 +71,15 @@ export default function SellerOrdersPage() {
       ),
     }),
     columnHelper.accessor('product', {
-      header: 'Product',
-      cell: (info) => (
-        <span className="text-stone-600 dark:text-stone-400">{info.getValue()}</span>
-      ),
+      header: 'สินค้า',
+      cell: (info) => <span className="text-stone-600 dark:text-stone-400">{info.getValue()}</span>,
     }),
     columnHelper.accessor('amount', {
-      header: 'Amount',
-      cell: (info) => (
-        <span className="font-medium text-stone-900 dark:text-white">${info.getValue()}</span>
-      ),
+      header: 'จำนวน',
+      cell: (info) => <span className="font-medium text-stone-900 dark:text-white">${info.getValue()}</span>,
     }),
     columnHelper.accessor('status', {
-      header: 'Status',
+      header: 'สถานะ',
       cell: (info) => {
         const config = statusConfig[info.getValue()]
         const Icon = config.icon
@@ -162,10 +92,8 @@ export default function SellerOrdersPage() {
       },
     }),
     columnHelper.accessor('date', {
-      header: 'Date',
-      cell: (info) => (
-        <span className="text-sm text-stone-500 dark:text-stone-400">{info.getValue()}</span>
-      ),
+      header: 'วันที่',
+      cell: (info) => <span className="text-sm text-stone-500 dark:text-stone-400">{info.getValue()}</span>,
     }),
     columnHelper.display({
       id: 'actions',
@@ -182,9 +110,9 @@ export default function SellerOrdersPage() {
     <div className="p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Orders</h1>
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">คำสั่งซื้อ</h1>
         <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
-          Manage and track your customer orders
+          จัดการและติดตามคำสั่งซื้อของลูกค้า
         </p>
       </div>
 
@@ -198,16 +126,16 @@ export default function SellerOrdersPage() {
       {/* Orders Table */}
       <div className="card overflow-hidden">
         <div className="px-6 py-4 border-b border-stone-200 dark:border-stone-700">
-          <SectionHeader title="Recent Orders" subtitle="Latest customer orders" />
+          <SectionHeader title="คำสั่งซื้อล่าสุด" subtitle="คำสั่งซื้อล่าสุดจากลูกค้า" />
         </div>
         <DataTable
           columns={columns}
           data={mockOrders}
           searchKey="customer"
-          searchPlaceholder="Search orders..."
+          searchPlaceholder="ค้นหาคำสั่งซื้อ..."
           pagination={pagination}
           onPaginationChange={(p) => setPagination((prev) => ({ ...prev, ...p }))}
-          emptyMessage="No orders found"
+          emptyMessage="ไม่พบคำสั่งซื้อ"
         />
       </div>
     </div>

@@ -1,14 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import Loading from '@/app/builder/[id]/loading'
 
 describe('loading.tsx', () => {
-  it('renders a spinner with animate-spin class', () => {
-    render(<Loading />)
-    const spinner = document.querySelector('[class*="animate-spin"]')
-    expect(spinner).toBeInTheDocument()
-  })
-
   it('renders non-empty DOM', () => {
     const { container } = render(<Loading />)
     expect(container).not.toBeEmptyDOMElement()
@@ -21,11 +15,15 @@ describe('loading.tsx', () => {
     expect(root?.className).toMatch(/flex/)
   })
 
-  it('renders text content indicating loading state', () => {
-    render(<Loading />)
-    // The loading component uses a lucide Loader2 icon — verify it's present
-    const spinner = document.querySelector('[class*="animate-spin"]')
-    expect(spinner).toBeInTheDocument()
-    expect(spinner?.tagName).toBe('svg')
+  it('renders skeleton loading elements', () => {
+    const { container } = render(<Loading />)
+    const skeletons = container.querySelectorAll('[class*="skeleton"]')
+    expect(skeletons.length).toBeGreaterThan(0)
+  })
+
+  it('renders loading text', () => {
+    const { container } = render(<Loading />)
+    const text = container.textContent
+    expect(text).toMatch(/Loading|loading|กำลัง/)
   })
 })

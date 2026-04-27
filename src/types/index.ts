@@ -37,6 +37,9 @@ export interface Portfolio {
   theme: ThemeId
   theme_config: ThemeConfig
 
+  // Custom Sections
+  custom_sections: CustomSection[]
+
   // Meta
   is_published: boolean
   is_deleted: boolean
@@ -44,6 +47,45 @@ export interface Portfolio {
   created_at: string
   updated_at: string
   published_at?: string
+}
+
+// Custom Sections
+export type CustomSectionType = 'services' | 'experience' | 'education' | 'testimonials' | 'certifications'
+
+export interface CustomSection {
+  id: string
+  type: CustomSectionType
+  title: string
+  order: number
+  icon?: string
+  items: CustomSectionItem[]
+}
+
+export interface CustomSectionItem {
+  id: string
+  // Common fields
+  title?: string
+  description?: string
+  // Services
+  service_title?: string
+  service_desc?: string
+  // Experience/Education
+  company?: string
+  school?: string
+  role?: string
+  degree?: string
+  period?: string
+  current?: boolean
+  // Testimonials
+  quote?: string
+  author?: string
+  authorRole?: string
+  authorCompany?: string
+  // Certifications
+  name?: string
+  issuer?: string
+  year?: string
+  url?: string
 }
 
 export interface Skill {
@@ -98,7 +140,7 @@ export interface BuilderState {
   previewUrl?: string
 }
 
-export type BuilderStep = 'info' | 'skills' | 'projects' | 'social' | 'theme' | 'preview'
+export type BuilderStep = 'info' | 'skills' | 'projects' | 'social' | 'sections' | 'theme' | 'preview'
 
 // Stripe
 export interface Subscription {

@@ -1,92 +1,124 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import getCollections from '@/lib/mongodb'
+import { ObjectId } from 'mongodb'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+function generateSubdomain(name: string): string {
+  const base = (name || 'portfolio')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .slice(0, 30)
+  return `${base}-${Date.now().toString(36)}`
+}
 
-// GET /api/portfolios — list all published portfolios (public, RLS-protected)
-export async function GET() {
-  // TODO (security): Add rate limiting per IP: 60 req/min
-  const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// GET /api/portfolios — list published portfolios or user's own portfolios
+export async function GET(request: Request) {
+  try {
+    const url = new URL(request.url)
+    const userId = url.searchParams.get('user_id')
+    const authHeader = request.headers.get('authorization')
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
 
-  const { data, error } = await supabase
-    .from('portfolios')
-    .select('id, name, slug, subdomain, tagline, avatar_url, skills, theme, published_at, view_count, created_at')
-    .eq('is_published', true)
-    .eq('is_deleted', false)
-    .order('created_at', { ascending: false })
-    .limit(50)
+    const { portfolios } = await getCollections()
 
-  if (error) {
+    let query: any = { is_deleted: false }
+
+    if (userId) {
+      // Filter by user_id (dashboard, profile page)
+      query.user_id = userId
+      if (!token || userId !== token) {
+        // Non-authenticated or mismatch: only published
+        query.is_published = true
+      }
+    } else if (!token) {
+      // No user_id and no token: public portfolios only
+      query.is_published = true
+    }
+
+    const results = await portfolios
+      .find(query)
+      .sort({ created_at: -1 })
+      .limit(50)
+      .toArray()
+
+    const data = results.map((r: any) => ({
+      id: r._id?.toString?.(),
+      user_id: r.user_id,
+      name: r.name,
+      slug: r.slug,
+      subdomain: r.subdomain,
+      tagline: r.tagline,
+      avatar_url: r.avatar_url,
+      skills: r.skills,
+      theme: r.theme,
+      published_at: r.published_at,
+      view_count: r.view_count,
+      is_published: r.is_published,
+      created_at: r.created_at,
+    }))
+
+    return NextResponse.json({ data, error: null })
+  } catch (error: any) {
     return NextResponse.json({ data: null, error: error.message }, { status: 500 })
   }
-
-  return NextResponse.json({ data, error: null })
 }
 
 // POST /api/portfolios — create a new portfolio (auth required)
 export async function POST(request: Request) {
-  // TODO (security): Add rate limiting per user: 10 req/min
-  let body: Record<string, unknown>
-
   try {
-    body = await request.json()
-  } catch {
-    return NextResponse.json({ data: null, error: 'Invalid JSON body' }, { status: 400 })
-  }
+    const body = await request.json()
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader?.startsWith('Bearer ')) {
+      return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
+    }
+    const token = authHeader.slice(7)
+    // Token is the user ID (JWT contains user id)
+    const userId = token
 
-  const authHeader = request.headers.get('authorization')
-  if (!authHeader?.startsWith('Bearer ')) {
-    return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
-  }
+    if (!userId) {
+      return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
+    }
 
-  const token = authHeader.slice(7)
-  const supabaseAdmin = createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+    const { name, tagline, about, avatar_url, skills, projects, social_links, theme, theme_config, custom_sections } = body
 
-  const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
-  if (authError || !user) {
-    return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
-  }
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+      return NextResponse.json({ data: null, error: 'name is required' }, { status: 400 })
+    }
 
-  const { name, slug, subdomain } = body
+    const subdomain = generateSubdomain(name)
+    const slug = subdomain
 
-  // Input validation
-  if (!name || typeof name !== 'string' || name.trim().length === 0) {
-    return NextResponse.json({ data: null, error: 'name is required' }, { status: 400 })
-  }
-  if (!slug || typeof slug !== 'string' || !/^[a-z0-9-]+$/.test(slug)) {
-    return NextResponse.json({ data: null, error: 'slug must be a non-empty lowercase alphanumeric string with dashes' }, { status: 400 })
-  }
-  if (!subdomain || typeof subdomain !== 'string' || !/^[a-z0-9-]+$/.test(subdomain)) {
-    return NextResponse.json({ data: null, error: 'subdomain must be a non-empty lowercase alphanumeric string with dashes' }, { status: 400 })
-  }
+    const { portfolios } = await getCollections()
 
-  const supabase = createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY!)
-
-  const { data, error } = await supabase
-    .from('portfolios')
-    .insert({
-      user_id: user.id,
+    const doc = {
+      user_id: userId,
       name: name.trim(),
-      slug: slug.trim(),
-      subdomain: subdomain.trim(),
-      tagline: typeof body.tagline === 'string' ? body.tagline.trim().slice(0, 120) : '',
-      about: typeof body.about === 'string' ? body.about.slice(0, 2000) : '',
-      skills: Array.isArray(body.skills) ? body.skills.slice(0, 50) : [],
-      projects: Array.isArray(body.projects) ? body.projects.slice(0, 50) : [],
-      social_links: Array.isArray(body.social_links) ? body.social_links.slice(0, 20) : [],
-      theme: typeof body.theme === 'string' ? body.theme : 'minimal-dark',
-      theme_config: body.theme_config && typeof body.theme_config === 'object' ? body.theme_config : {},
+      slug,
+      subdomain,
+      tagline: typeof tagline === 'string' ? tagline.trim().slice(0, 120) : '',
+      about: typeof about === 'string' ? about.slice(0, 2000) : '',
+      avatar_url: typeof avatar_url === 'string' ? avatar_url : '',
+      skills: Array.isArray(skills) ? skills.slice(0, 50) : [],
+      projects: Array.isArray(projects) ? projects.slice(0, 50) : [],
+      social_links: Array.isArray(social_links) ? social_links.slice(0, 20) : [],
+      theme: typeof theme === 'string' ? theme : 'minimal-dark',
+      theme_config: theme_config && typeof theme_config === 'object' ? theme_config : {},
+      custom_sections: Array.isArray(custom_sections) ? custom_sections.slice(0, 20) : [],
       is_published: false,
       is_deleted: false,
       view_count: 0,
-    })
-    .select()
-    .single()
+      created_at: new Date(),
+      updated_at: new Date(),
+    }
 
-  if (error) {
+    const result = await portfolios.insertOne(doc)
+
+    return NextResponse.json({
+      data: { id: result.insertedId.toString(), ...doc },
+      error: null,
+    }, { status: 201 })
+  } catch (error: any) {
     return NextResponse.json({ data: null, error: error.message }, { status: 500 })
   }
-
-  return NextResponse.json({ data, error: null }, { status: 201 })
 }

@@ -22,84 +22,20 @@ interface Product {
 const columnHelper = createColumnHelper<Product>()
 
 const mockProducts: Product[] = [
-  {
-    id: 'PRD-001',
-    name: 'Premium Portfolio Template',
-    category: 'Templates',
-    price: 49,
-    stock: 156,
-    status: 'active',
-    createdAt: '2026-04-15',
-  },
-  {
-    id: 'PRD-002',
-    name: 'Developer Resume Kit',
-    category: 'Templates',
-    price: 29,
-    stock: 89,
-    status: 'active',
-    createdAt: '2026-04-10',
-  },
-  {
-    id: 'PRD-003',
-    name: 'Minimal CV Theme',
-    category: 'Themes',
-    price: 19,
-    stock: 234,
-    status: 'active',
-    createdAt: '2026-04-08',
-  },
-  {
-    id: 'PRD-004',
-    name: 'Cyberpunk Portfolio',
-    category: 'Themes',
-    price: 69,
-    stock: 0,
-    status: 'out_of_stock',
-    createdAt: '2026-04-01',
-  },
-  {
-    id: 'PRD-005',
-    name: 'Startup Landing Page',
-    category: 'Templates',
-    price: 39,
-    stock: 45,
-    status: 'draft',
-    createdAt: '2026-03-28',
-  },
-  {
-    id: 'PRD-006',
-    name: 'Creative Agency Template',
-    category: 'Templates',
-    price: 59,
-    stock: 67,
-    status: 'active',
-    createdAt: '2026-03-20',
-  },
-  {
-    id: 'PRD-007',
-    name: 'E-commerce Dashboard',
-    category: 'Dashboard',
-    price: 79,
-    stock: 23,
-    status: 'active',
-    createdAt: '2026-03-15',
-  },
-  {
-    id: 'PRD-008',
-    name: 'Blog Theme Collection',
-    category: 'Themes',
-    price: 35,
-    stock: 112,
-    status: 'active',
-    createdAt: '2026-03-10',
-  },
+  { id: 'PRD-001', name: 'Premium Portfolio Template', category: 'Templates', price: 49, stock: 156, status: 'active', createdAt: '2026-04-15' },
+  { id: 'PRD-002', name: 'Developer Resume Kit', category: 'Templates', price: 29, stock: 89, status: 'active', createdAt: '2026-04-10' },
+  { id: 'PRD-003', name: 'Minimal CV Theme', category: 'Themes', price: 19, stock: 234, status: 'active', createdAt: '2026-04-08' },
+  { id: 'PRD-004', name: 'Cyberpunk Portfolio', category: 'Themes', price: 69, stock: 0, status: 'out_of_stock', createdAt: '2026-04-01' },
+  { id: 'PRD-005', name: 'Startup Landing Page', category: 'Templates', price: 39, stock: 45, status: 'draft', createdAt: '2026-03-28' },
+  { id: 'PRD-006', name: 'Creative Agency Template', category: 'Templates', price: 59, stock: 67, status: 'active', createdAt: '2026-03-20' },
+  { id: 'PRD-007', name: 'E-commerce Dashboard', category: 'Dashboard', price: 79, stock: 23, status: 'active', createdAt: '2026-03-15' },
+  { id: 'PRD-008', name: 'Blog Theme Collection', category: 'Themes', price: 35, stock: 112, status: 'active', createdAt: '2026-03-10' },
 ]
 
 const statusConfig = {
-  active: { label: 'Active', className: 'badge-success' },
-  draft: { label: 'Draft', className: 'badge-neutral' },
-  out_of_stock: { label: 'Out of Stock', className: 'badge-danger' },
+  active: { label: 'เปิดใช้งาน', className: 'badge-success' },
+  draft: { label: 'ฉบับร่าง', className: 'badge-neutral' },
+  out_of_stock: { label: 'สินค้าหมด', className: 'badge-danger' },
 }
 
 function ProductActions() {
@@ -128,7 +64,7 @@ export default function SellerProductsPage() {
 
   const columns = [
     columnHelper.accessor('name', {
-      header: 'Product',
+      header: 'สินค้า',
       cell: (info) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-stone-100 dark:bg-stone-800 flex items-center justify-center flex-shrink-0">
@@ -144,19 +80,15 @@ export default function SellerProductsPage() {
       ),
     }),
     columnHelper.accessor('category', {
-      header: 'Category',
-      cell: (info) => (
-        <span className="text-sm text-stone-600 dark:text-stone-400">{info.getValue()}</span>
-      ),
+      header: 'หมวดหมู่',
+      cell: (info) => <span className="text-sm text-stone-600 dark:text-stone-400">{info.getValue()}</span>,
     }),
     columnHelper.accessor('price', {
-      header: 'Price',
-      cell: (info) => (
-        <span className="font-medium text-stone-900 dark:text-white">${info.getValue()}</span>
-      ),
+      header: 'ราคา',
+      cell: (info) => <span className="font-medium text-stone-900 dark:text-white">${info.getValue()}</span>,
     }),
     columnHelper.accessor('stock', {
-      header: 'Stock',
+      header: 'สต็อก',
       cell: (info) => {
         const stock = info.getValue()
         const isLow = stock > 0 && stock < 30
@@ -165,23 +97,21 @@ export default function SellerProductsPage() {
             'text-sm font-medium',
             stock === 0 ? 'text-red-500 dark:text-red-400' : isLow ? 'text-amber-500 dark:text-amber-400' : 'text-stone-600 dark:text-stone-400'
           )}>
-            {stock === 0 ? 'Out of stock' : stock}
+            {stock === 0 ? 'สินค้าหมด' : stock}
           </span>
         )
       },
     }),
     columnHelper.accessor('status', {
-      header: 'Status',
+      header: 'สถานะ',
       cell: (info) => {
         const config = statusConfig[info.getValue()]
         return <span className={cn('badge', config.className)}>{config.label}</span>
       },
     }),
     columnHelper.accessor('createdAt', {
-      header: 'Created',
-      cell: (info) => (
-        <span className="text-sm text-stone-500 dark:text-stone-400">{info.getValue()}</span>
-      ),
+      header: 'สร้างเมื่อ',
+      cell: (info) => <span className="text-sm text-stone-500 dark:text-stone-400">{info.getValue()}</span>,
     }),
     columnHelper.display({
       id: 'actions',
@@ -195,14 +125,14 @@ export default function SellerProductsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Products</h1>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">สินค้า</h1>
           <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
-            Manage your product inventory and listings
+            จัดการสินค้าและรายการในร้านของคุณ
           </p>
         </div>
         <button className="btn-primary">
           <Plus className="w-4 h-4" />
-          Add Product
+          เพิ่มสินค้า
         </button>
       </div>
 
@@ -211,10 +141,10 @@ export default function SellerProductsPage() {
         columns={columns}
         data={mockProducts}
         searchKey="name"
-        searchPlaceholder="Search products..."
+        searchPlaceholder="ค้นหาสินค้า..."
         pagination={pagination}
         onPaginationChange={(p) => setPagination((prev) => ({ ...prev, ...p }))}
-        emptyMessage="No products found"
+        emptyMessage="ไม่พบสินค้า"
       />
     </div>
   )

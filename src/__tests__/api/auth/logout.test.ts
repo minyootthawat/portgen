@@ -1,8 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Mock createClient from @supabase/supabase-js — the routes use it directly
-vi.mock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(),
+// Mock getCollections from @/lib/mongodb (route doesn't call it, but keep for safety)
+vi.mock('@/lib/mongodb', () => ({
+  default: async () => ({
+    users: { findOne: vi.fn() },
+    profiles: { findOne: vi.fn(), updateOne: vi.fn() },
+    portfolios: { find: vi.fn(), insertOne: vi.fn() },
+    products: { find: vi.fn() },
+    orders: { insertOne: vi.fn() },
+    game_accounts: { find: vi.fn() },
+    seller_ledger_entries: { find: vi.fn() },
+    subscriptions: { findOne: vi.fn() },
+  }),
 }))
 
 describe('/api/auth/logout', () => {
@@ -11,20 +20,6 @@ describe('/api/auth/logout', () => {
   })
 
   it('logout returns 200', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'user-1' } },
-          error: null,
-        }),
-        signOut: vi.fn().mockResolvedValue({
-          error: null,
-        }),
-      },
-    } as ReturnType<typeof createClient>)
-
     const { POST } = await import('@/app/api/auth/logout/route')
 
     const request = new Request('http://localhost/api/auth/logout', {

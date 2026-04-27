@@ -1,13 +1,10 @@
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { createClient } from '@supabase/supabase-js'
+import getCollections from '@/lib/mongodb'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
 })
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
 interface CheckoutBody {
   userId: string
@@ -38,16 +35,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Missing or invalid email' }, { status: 400 })
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey)
+  const { profiles } = await getCollections()
 
-  // Verify profile exists
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('id, stripe_customer_id')
-    .eq('id', userId)
-    .single()
+  // Verify profile exists (userId is a UUID string used as MongoDB _id)
+  const profile = await (profiles as any).findOne({ _id: userId }, { projection: { _id: 1, stripe_customer_id: 1 } })
 
-  if (profileError || !profile) {
+  if (!profile) {
     return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
   }
 
@@ -56,17 +49,17 @@ export async function POST(request: Request) {
   if (!customerId) {
     const customer = await stripe.customers.create({
       email,
-      metadata: { supabase_user_id: userId },
+      metadata: { userId },
     })
     customerId = customer.id
 
-    const { error: updateError } = await supabase
-      .from('profiles')
-      .update({ stripe_customer_id: customerId })
-      .eq('id', userId)
+    const { modifiedCount } = await (profiles as any).updateOne(
+      { _id: userId },
+      { $set: { stripe_customer_id: customerId } }
+    )
 
-    if (updateError) {
-      console.error('Failed to persist Stripe customer ID:', updateError)
+    if (!modifiedCount) {
+      console.error('Failed to persist Stripe customer ID')
       return NextResponse.json(
         { error: 'Failed to link Stripe customer' },
         { status: 500 }

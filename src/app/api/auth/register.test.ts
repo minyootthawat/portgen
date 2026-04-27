@@ -1,8 +1,38 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Mock createClient from @supabase/supabase-js — the routes use it directly
-vi.mock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(),
+// Mock bcryptjs
+const { mockBcryptHash } = vi.hoisted(() => ({
+  mockBcryptHash: vi.fn().mockResolvedValue('hashed_password'),
+}))
+
+vi.mock('bcryptjs', () => ({
+  default: {
+    hash: (...args: unknown[]) => mockBcryptHash(...args),
+    compare: vi.fn().mockResolvedValue(true),
+  },
+}))
+
+// Mock getCollections from @/lib/mongodb
+const mockUsersFindOne = vi.fn()
+const mockUsersInsertOne = vi.fn()
+const mockProfilesInsertOne = vi.fn()
+
+vi.mock('@/lib/mongodb', () => ({
+  default: async () => ({
+    users: {
+      findOne: mockUsersFindOne,
+      insertOne: mockUsersInsertOne,
+    },
+    profiles: {
+      insertOne: mockProfilesInsertOne,
+    },
+    portfolios: { find: vi.fn(), insertOne: vi.fn() },
+    products: { find: vi.fn() },
+    orders: { insertOne: vi.fn() },
+    game_accounts: { find: vi.fn() },
+    seller_ledger_entries: { find: vi.fn() },
+    subscriptions: { findOne: vi.fn() },
+  }),
 }))
 
 describe('/api/auth/register', () => {
@@ -11,26 +41,9 @@ describe('/api/auth/register', () => {
   })
 
   it('valid registration returns 200 + user data', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-    const mockUser = {
-      id: 'user-456',
-      email: 'newuser@example.com',
-      user_metadata: { name: 'New User' },
-    }
-    const mockSession = {
-      access_token: 'mock-access-token',
-      refresh_token: 'mock-refresh-token',
-      user: mockUser,
-    }
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      auth: {
-        signUp: vi.fn().mockResolvedValue({
-          data: { session: mockSession, user: mockUser },
-          error: null,
-        }),
-      },
-    } as ReturnType<typeof createClient>)
+    mockUsersFindOne.mockResolvedValue(null)
+    mockUsersInsertOne.mockResolvedValue({ insertedId: { toString: () => 'user-456' } })
+    mockProfilesInsertOne.mockResolvedValue({ insertedId: { toString: () => 'profile-456' } })
 
     const { POST } = await import('@/app/api/auth/register/route')
 
@@ -45,21 +58,12 @@ describe('/api/auth/register', () => {
 
     const json = await response.json()
     expect(json.data).not.toBeNull()
-    expect(json.data.user).toEqual(mockUser)
+    expect(json.data.id).toBe('user-456')
     expect(json.error).toBeNull()
   })
 
   it('duplicate email returns 400', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      auth: {
-        signUp: vi.fn().mockResolvedValue({
-          data: { session: null, user: null },
-          error: { message: 'User already registered', code: 'user_already_exists' },
-        }),
-      },
-    } as ReturnType<typeof createClient>)
+    mockUsersFindOne.mockResolvedValue({ _id: 'existing-id', email: 'existing@example.com' })
 
     const { POST } = await import('@/app/api/auth/register/route')
 
@@ -74,27 +78,18 @@ describe('/api/auth/register', () => {
 
     const json = await response.json()
     expect(json.data).toBeNull()
-    expect(json.error).toBe('User already registered')
+    expect(json.error).toBe('Email already registered')
   })
 
   it('missing email/password returns 400', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      auth: {
-        signUp: vi.fn(),
-      },
-    } as ReturnType<typeof createClient>)
-
     const { POST } = await import('@/app/api/auth/register/route')
 
-    // Missing both email and password
+    // Missing both
     const request1 = new Request('http://localhost/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({}),
     })
-
     const response1 = await POST(request1)
     expect(response1.status).toBe(400)
 
@@ -104,7 +99,6 @@ describe('/api/auth/register', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: 'test@example.com' }),
     })
-
     const response2 = await POST(request2)
     expect(response2.status).toBe(400)
 
@@ -114,23 +108,13 @@ describe('/api/auth/register', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password: 'password123' }),
     })
-
     const response3 = await POST(request3)
     expect(response3.status).toBe(400)
   })
 
   it('password too short (<6 chars) returns 400', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      auth: {
-        signUp: vi.fn(),
-      },
-    } as ReturnType<typeof createClient>)
-
     const { POST } = await import('@/app/api/auth/register/route')
 
-    // Password with 5 characters
     const request = new Request('http://localhost/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

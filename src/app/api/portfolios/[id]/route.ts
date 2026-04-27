@@ -1,56 +1,76 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-
-async function getAuthUser(request: Request) {
-  const authHeader = request.headers.get('authorization')
-  if (!authHeader?.startsWith('Bearer ')) return null
-  const token = authHeader.slice(7)
-  const supabaseAdmin = createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY!)
-  const { data: { user } } = await supabaseAdmin.auth.getUser(token)
-  return user
-}
+import getCollections from '@/lib/mongodb'
+import { ObjectId } from 'mongodb'
 
 // GET /api/portfolios/[id] — get a single portfolio
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // TODO (security): Add rate limiting per IP: 120 req/min
   const { id } = await params
 
   if (!id || typeof id !== 'string') {
     return NextResponse.json({ data: null, error: 'Invalid portfolio ID' }, { status: 400 })
   }
 
-  const supabase = createClient(supabaseUrl, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+  try {
+    const { portfolios } = await getCollections()
 
-  const { data, error } = await supabase
-    .from('portfolios')
-    .select('id, user_id, name, slug, subdomain, tagline, avatar_url, about, skills, projects, social_links, theme, theme_config, is_published, published_at, view_count, created_at, updated_at')
-    .eq('id', id)
-    .eq('is_deleted', false)
-    .single()
+    let portfolio: any
+    try {
+      portfolio = await portfolios.findOne({ _id: new ObjectId(id), is_deleted: false })
+    } catch {
+      // Not a valid ObjectId, try as string id
+      portfolio = await portfolios.findOne({ id, is_deleted: false })
+    }
 
-  if (error || !data) {
-    return NextResponse.json({ data: null, error: 'Portfolio not found' }, { status: 404 })
+    if (!portfolio) {
+      return NextResponse.json({ data: null, error: 'Portfolio not found' }, { status: 404 })
+    }
+
+    // Only expose full details for published portfolios or their owners
+    const authHeader = _request.headers.get('authorization')
+    let ownerId: string | null = null
+    if (authHeader?.startsWith('Bearer ')) {
+      ownerId = authHeader.slice(7)
+    }
+
+    if (!portfolio.is_published && ownerId !== portfolio.user_id) {
+      return NextResponse.json({ data: null, error: 'Portfolio not found' }, { status: 404 })
+    }
+
+    // Increment view count for published portfolios
+    if (portfolio.is_published && !ownerId) {
+      await portfolios.updateOne({ _id: portfolio._id }, { $inc: { view_count: 1 } })
+      portfolio.view_count = (portfolio.view_count || 0) + 1
+    }
+
+    const result = {
+      id: portfolio._id?.toString() || portfolio.id,
+      user_id: portfolio.user_id,
+      name: portfolio.name,
+      slug: portfolio.slug,
+      subdomain: portfolio.subdomain,
+      tagline: portfolio.tagline,
+      avatar_url: portfolio.avatar_url,
+      about: portfolio.about,
+      skills: portfolio.skills,
+      projects: portfolio.projects,
+      social_links: portfolio.social_links,
+      theme: portfolio.theme,
+      theme_config: portfolio.theme_config,
+      custom_sections: portfolio.custom_sections,
+      is_published: portfolio.is_published,
+      published_at: portfolio.published_at,
+      view_count: portfolio.view_count,
+      created_at: portfolio.created_at,
+      updated_at: portfolio.updated_at,
+    }
+
+    return NextResponse.json({ data: result, error: null })
+  } catch (error: any) {
+    return NextResponse.json({ data: null, error: error.message }, { status: 500 })
   }
-
-  // Only expose full details for published portfolios or their owners
-  const authHeader = _request.headers.get('authorization')
-  let ownerId: string | null = null
-  if (authHeader?.startsWith('Bearer ')) {
-    const supabaseAdmin = createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY!)
-    const { data: { user } } = await supabaseAdmin.auth.getUser(authHeader.slice(7))
-    ownerId = user?.id ?? null
-  }
-
-  if (!data.is_published && ownerId !== data.user_id) {
-    return NextResponse.json({ data: null, error: 'Portfolio not found' }, { status: 404 })
-  }
-
-  return NextResponse.json({ data, error: null })
 }
 
 // PUT /api/portfolios/[id] — update a portfolio (owner only)
@@ -58,86 +78,68 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // TODO (security): Add rate limiting per user: 30 req/min
   const { id } = await params
 
   if (!id || typeof id !== 'string') {
     return NextResponse.json({ data: null, error: 'Invalid portfolio ID' }, { status: 400 })
   }
 
-  const user = await getAuthUser(request)
-  if (!user) {
+  const authHeader = request.headers.get('authorization')
+  if (!authHeader?.startsWith('Bearer ')) {
     return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
   }
+  const userId = authHeader.slice(7)
 
-  let body: Record<string, unknown>
   try {
-    body = await request.json()
-  } catch {
-    return NextResponse.json({ data: null, error: 'Invalid JSON body' }, { status: 400 })
-  }
+    const { portfolios } = await getCollections()
 
-  const allowedFields = [
-    'name', 'tagline', 'about', 'avatar_url', 'slug', 'subdomain', 'custom_domain',
-    'skills', 'projects', 'social_links', 'theme', 'theme_config',
-    'is_published',
-  ]
-
-  const updateData: Record<string, unknown> = {}
-  for (const field of allowedFields) {
-    if (field in body) {
-      updateData[field] = body[field]
+    // Find the portfolio
+    let existing: any
+    try {
+      existing = await portfolios.findOne({ _id: new ObjectId(id), is_deleted: false })
+    } catch {
+      existing = await portfolios.findOne({ id, is_deleted: false })
     }
-  }
 
-  if (Object.keys(updateData).length === 0) {
-    return NextResponse.json({ data: null, error: 'No valid fields to update' }, { status: 400 })
-  }
+    if (!existing) {
+      return NextResponse.json({ data: null, error: 'Portfolio not found' }, { status: 404 })
+    }
 
-  // Validate field types
-  if (updateData.name !== undefined && (typeof updateData.name !== 'string' || updateData.name.trim().length === 0)) {
-    return NextResponse.json({ data: null, error: 'name must be a non-empty string' }, { status: 400 })
-  }
-  if (updateData.slug !== undefined && typeof updateData.slug !== 'string') {
-    return NextResponse.json({ data: null, error: 'slug must be a string' }, { status: 400 })
-  }
-  if (updateData.subdomain !== undefined && typeof updateData.subdomain !== 'string') {
-    return NextResponse.json({ data: null, error: 'subdomain must be a string' }, { status: 400 })
-  }
-  if (updateData.is_published !== undefined && typeof updateData.is_published !== 'boolean') {
-    return NextResponse.json({ data: null, error: 'is_published must be a boolean' }, { status: 400 })
-  }
+    if (existing.user_id !== userId) {
+      return NextResponse.json({ data: null, error: 'Forbidden' }, { status: 403 })
+    }
 
-  const supabase = createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+    const body = await request.json()
 
-  // Ownership check
-  const { data: existing } = await supabase
-    .from('portfolios')
-    .select('user_id')
-    .eq('id', id)
-    .eq('is_deleted', false)
-    .single()
+    const allowedFields = [
+      'name', 'tagline', 'about', 'avatar_url', 'slug', 'subdomain',
+      'skills', 'projects', 'social_links', 'theme', 'theme_config',
+      'custom_sections', 'is_published',
+    ]
 
-  if (!existing) {
-    return NextResponse.json({ data: null, error: 'Portfolio not found' }, { status: 404 })
-  }
-  if (existing.user_id !== user.id) {
-    return NextResponse.json({ data: null, error: 'Forbidden' }, { status: 403 })
-  }
+    const updateData: Record<string, unknown> = { updated_at: new Date() }
+    for (const field of allowedFields) {
+      if (field in body) {
+        updateData[field] = body[field]
+      }
+    }
 
-  const { data, error } = await supabase
-    .from('portfolios')
-    .update({ ...updateData, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .eq('is_deleted', false)
-    .select()
-    .single()
+    if (updateData.is_published && !existing.is_published) {
+      updateData.published_at = new Date()
+    }
 
-  if (error) {
+    await portfolios.updateOne({ _id: existing._id }, { $set: updateData })
+
+    const updated: any = { ...existing, ...updateData }
+    const result = {
+      id: updated._id?.toString() || updated.id,
+      ...updateData,
+    }
+
+    return NextResponse.json({ data: result, error: null })
+  } catch (error: any) {
     return NextResponse.json({ data: null, error: error.message }, { status: 500 })
   }
-
-  return NextResponse.json({ data, error: null })
 }
 
 // DELETE /api/portfolios/[id] — soft-delete a portfolio (owner only)
@@ -145,46 +147,44 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // TODO (security): Add rate limiting per user: 20 req/min
   const { id } = await params
 
   if (!id || typeof id !== 'string') {
     return NextResponse.json({ data: null, error: 'Invalid portfolio ID' }, { status: 400 })
   }
 
-  const user = await getAuthUser(request)
-  if (!user) {
+  const authHeader = request.headers.get('authorization')
+  if (!authHeader?.startsWith('Bearer ')) {
     return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
   }
+  const userId = authHeader.slice(7)
 
-  const supabase = createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+  try {
+    const { portfolios } = await getCollections()
 
-  // Ownership check
-  const { data: existing } = await supabase
-    .from('portfolios')
-    .select('user_id')
-    .eq('id', id)
-    .eq('is_deleted', false)
-    .single()
+    // Find the portfolio
+    let existing: any
+    try {
+      existing = await portfolios.findOne({ _id: new ObjectId(id), is_deleted: false })
+    } catch {
+      existing = await portfolios.findOne({ id, is_deleted: false })
+    }
 
-  if (!existing) {
-    return NextResponse.json({ data: null, error: 'Portfolio not found' }, { status: 404 })
-  }
-  if (existing.user_id !== user.id) {
-    return NextResponse.json({ data: null, error: 'Forbidden' }, { status: 403 })
-  }
+    if (!existing) {
+      return NextResponse.json({ data: null, error: 'Portfolio not found' }, { status: 404 })
+    }
 
-  const { data, error } = await supabase
-    .from('portfolios')
-    .update({ is_deleted: true, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .eq('is_deleted', false)
-    .select()
-    .single()
+    if (existing.user_id !== userId) {
+      return NextResponse.json({ data: null, error: 'Forbidden' }, { status: 403 })
+    }
 
-  if (error) {
+    await portfolios.updateOne(
+      { _id: existing._id },
+      { $set: { is_deleted: true, updated_at: new Date() } }
+    )
+
+    return NextResponse.json({ data: { deleted: true }, error: null })
+  } catch (error: any) {
     return NextResponse.json({ data: null, error: error.message }, { status: 500 })
   }
-
-  return NextResponse.json({ data: { deleted: true }, error: null })
 }

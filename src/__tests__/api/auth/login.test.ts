@@ -1,36 +1,49 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Mock createClient from @supabase/supabase-js — the routes use it directly
-vi.mock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(),
+// Use vi.hoisted so mockBcryptCompare is available when vi.mock runs (hoisted together)
+const { mockBcryptCompare } = vi.hoisted(() => ({
+  mockBcryptCompare: vi.fn().mockResolvedValue(true),
+}))
+
+vi.mock('bcryptjs', () => ({
+  default: {
+    hash: vi.fn().mockResolvedValue('hashed_password'),
+    compare: (...args: unknown[]) => mockBcryptCompare(...args),
+  },
+}))
+
+// Mock getCollections from @/lib/mongodb
+const mockUsersFindOne = vi.fn()
+
+vi.mock('@/lib/mongodb', () => ({
+  default: async () => ({
+    users: {
+      findOne: mockUsersFindOne,
+      insertOne: vi.fn(),
+    },
+    profiles: { insertOne: vi.fn() },
+    portfolios: { find: vi.fn(), insertOne: vi.fn() },
+    products: { find: vi.fn() },
+    orders: { insertOne: vi.fn() },
+    game_accounts: { find: vi.fn() },
+    seller_ledger_entries: { find: vi.fn() },
+    subscriptions: { findOne: vi.fn() },
+  }),
 }))
 
 describe('/api/auth/login', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockBcryptCompare.mockResolvedValue(true)
   })
 
   it('valid login returns 200', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-    const mockUser = {
-      id: 'user-123',
+    mockUsersFindOne.mockResolvedValue({
+      _id: { toString: () => 'user-123' },
       email: 'test@example.com',
-      user_metadata: { name: 'Test User' },
-    }
-    const mockSession = {
-      access_token: 'mock-access-token',
-      refresh_token: 'mock-refresh-token',
-      user: mockUser,
-    }
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      auth: {
-        signInWithPassword: vi.fn().mockResolvedValue({
-          data: { session: mockSession, user: mockUser },
-          error: null,
-        }),
-      },
-    } as ReturnType<typeof createClient>)
+      name: 'Test User',
+      password_hash: 'hashed_password',
+    })
 
     const { POST } = await import('@/app/api/auth/login/route')
 
@@ -45,16 +58,13 @@ describe('/api/auth/login', () => {
   })
 
   it('invalid credentials returns 401', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
+    mockBcryptCompare.mockResolvedValue(false)
 
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      auth: {
-        signInWithPassword: vi.fn().mockResolvedValue({
-          data: { session: null, user: null },
-          error: { message: 'Invalid login credentials', code: 'invalid_credentials' },
-        }),
-      },
-    } as ReturnType<typeof createClient>)
+    mockUsersFindOne.mockResolvedValue({
+      _id: { toString: () => 'user-123' },
+      email: 'wrong@example.com',
+      password_hash: 'hashed_password',
+    })
 
     const { POST } = await import('@/app/api/auth/login/route')
 

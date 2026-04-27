@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+import getCollections from '@/lib/mongodb'
+import bcrypt from 'bcryptjs'
+import { signIn } from 'next-auth/react'
 
 interface LoginBody {
   email: string
@@ -14,7 +13,6 @@ function isValidEmail(email: string): boolean {
 }
 
 export async function POST(request: Request) {
-  // TODO (security): Add rate limiting per IP: 10 req/min, per email: 5 req/min
   let body: LoginBody
 
   try {
@@ -46,16 +44,26 @@ export async function POST(request: Request) {
     )
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey)
+  const { users } = await getCollections()
+  const user = await users.findOne({ email })
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
-
-  if (error) {
-    return NextResponse.json({ data: null, error: error.message }, { status: 401 })
+  if (!user) {
+    return NextResponse.json({ data: null, error: 'Invalid credentials' }, { status: 401 })
   }
 
-  return NextResponse.json({ data, error: null })
+  const isValid = await bcrypt.compare(password, user.password_hash)
+  if (!isValid) {
+    return NextResponse.json({ data: null, error: 'Invalid credentials' }, { status: 401 })
+  }
+
+  // Use signIn from next-auth/react client-side instead
+  // This route returns success and the client calls signIn to set the session cookie
+  return NextResponse.json({
+    data: {
+      id: user._id.toString(),
+      email: user.email,
+      name: user.name,
+    },
+    error: null,
+  })
 }

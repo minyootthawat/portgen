@@ -15,8 +15,25 @@ vi.mock('stripe', () => ({
   },
 }))
 
-vi.mock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(),
+// Mock getCollections from @/lib/mongodb
+const mockProfilesFindOne = vi.fn()
+const mockProfilesUpdateOne = vi.fn()
+
+vi.mock('@/lib/mongodb', () => ({
+  default: async () => ({
+    users: { findOne: vi.fn() },
+    profiles: {
+      findOne: mockProfilesFindOne,
+      updateOne: mockProfilesUpdateOne,
+      insertOne: vi.fn(),
+    },
+    portfolios: { find: vi.fn(), insertOne: vi.fn() },
+    products: { find: vi.fn() },
+    orders: { insertOne: vi.fn() },
+    game_accounts: { find: vi.fn() },
+    seller_ledger_entries: { find: vi.fn() },
+    subscriptions: { findOne: vi.fn() },
+  }),
 }))
 
 describe('POST /api/stripe/checkout', () => {
@@ -25,36 +42,18 @@ describe('POST /api/stripe/checkout', () => {
     mockCreate.mockReset()
     mockCustomersCreate.mockReset()
     process.env.STRIPE_SECRET_KEY = 'sk_test_mock'
-    process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://mock.supabase.co'
-    process.env.SUPABASE_SERVICE_ROLE_KEY = 'mock-service-key'
     process.env.STRIPE_PRICE_ID = 'price_mock'
     process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000'
   })
 
   it('returns 200 with url on valid request', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-
     mockCreate.mockResolvedValue({
       id: 'cs_test',
       url: 'https://checkout.stripe.com/cs_test',
     })
     mockCustomersCreate.mockResolvedValue({ id: 'cus_mock' })
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      from: vi.fn().mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({
-              data: { id: 'user123', stripe_customer_id: null },
-              error: null,
-            }),
-          }),
-        }),
-        update: vi.fn().mockReturnValue({
-          eq: vi.fn().mockResolvedValue({ error: null }),
-        }),
-      }),
-    })
+    mockProfilesFindOne.mockResolvedValue({ _id: 'user123', stripe_customer_id: null })
+    mockProfilesUpdateOne.mockResolvedValue({ modifiedCount: 1 })
 
     const { POST } = await import('@/app/api/stripe/checkout/route')
 
@@ -101,22 +100,9 @@ describe('POST /api/stripe/checkout', () => {
   })
 
   it('returns 500 when Stripe API throws an error', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-
     mockCreate.mockRejectedValue(new Error('Stripe API error'))
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      from: vi.fn().mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({
-              data: { id: 'user123', stripe_customer_id: 'cus_existing' },
-              error: null,
-            }),
-          }),
-        }),
-      }),
-    })
+    mockCustomersCreate.mockResolvedValue({ id: 'cus_mock' })
+    mockProfilesFindOne.mockResolvedValue({ _id: 'user123', stripe_customer_id: 'cus_existing' })
 
     const { POST } = await import('@/app/api/stripe/checkout/route')
 
@@ -133,17 +119,7 @@ describe('POST /api/stripe/checkout', () => {
   })
 
   it('returns 404 when profile not found', async () => {
-    const { createClient } = await import('@supabase/supabase-js')
-
-    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue({
-      from: vi.fn().mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({ data: null, error: 'Not found' }),
-          }),
-        }),
-      }),
-    })
+    mockProfilesFindOne.mockResolvedValue(null)
 
     const { POST } = await import('@/app/api/stripe/checkout/route')
 

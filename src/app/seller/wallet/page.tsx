@@ -32,20 +32,20 @@ const mockTransactions: Transaction[] = [
 ]
 
 const revenueData = [
-  { label: 'Mon', value: 120 },
-  { label: 'Tue', value: 85 },
-  { label: 'Wed', value: 150 },
-  { label: 'Thu', value: 200 },
-  { label: 'Fri', value: 175 },
-  { label: 'Sat', value: 220 },
-  { label: 'Sun', value: 190 },
+  { label: 'จ.', value: 120 },
+  { label: 'อ.', value: 85 },
+  { label: 'พ.', value: 150 },
+  { label: 'พฤ.', value: 200 },
+  { label: 'ศ.', value: 175 },
+  { label: 'ส.', value: 220 },
+  { label: 'อา.', value: 190 },
 ]
 
 const stats = [
-  { label: 'Available Balance', value: '$1,245.80', icon: Wallet },
-  { label: 'Pending', value: '$89.50', icon: ArrowUpRight },
-  { label: 'This Week', value: '$1,340.00', change: '+18%', trend: 'up' as const, icon: TrendingUp },
-  { label: 'Total Earned', value: '$12,450.00', change: '+23%', trend: 'up' as const, icon: ArrowUpRight },
+  { label: 'ยอดเงินที่ใช้ได้', value: '$1,245.80', icon: Wallet },
+  { label: 'รอดำเนินการ', value: '$89.50', icon: ArrowUpRight },
+  { label: 'สัปดาห์นี้', value: '$1,340.00', change: '+18%', trend: 'up' as const, icon: TrendingUp },
+  { label: 'รวมทั้งหมด', value: '$12,450.00', change: '+23%', trend: 'up' as const, icon: ArrowUpRight },
 ]
 
 export default function SellerWalletPage() {
@@ -58,19 +58,15 @@ export default function SellerWalletPage() {
 
   const columns = [
     columnHelper.accessor('id', {
-      header: 'Transaction ID',
-      cell: (info) => (
-        <span className="font-medium text-stone-900 dark:text-white">{info.getValue()}</span>
-      ),
+      header: 'รหัสรายการ',
+      cell: (info) => <span className="font-medium text-stone-900 dark:text-white">{info.getValue()}</span>,
     }),
     columnHelper.accessor('description', {
-      header: 'Description',
-      cell: (info) => (
-        <span className="text-stone-600 dark:text-stone-400">{info.getValue()}</span>
-      ),
+      header: 'รายละเอียด',
+      cell: (info) => <span className="text-stone-600 dark:text-stone-400">{info.getValue()}</span>,
     }),
     columnHelper.accessor('amount', {
-      header: 'Amount',
+      header: 'จำนวน',
       cell: (info) => {
         const amount = info.getValue()
         const isCredit = amount > 0
@@ -86,22 +82,20 @@ export default function SellerWalletPage() {
       },
     }),
     columnHelper.accessor('status', {
-      header: 'Status',
+      header: 'สถานะ',
       cell: (info) => {
         const status = info.getValue()
         const config = {
-          completed: { label: 'Completed', className: 'badge-success' },
-          pending: { label: 'Pending', className: 'badge-accent' },
-          failed: { label: 'Failed', className: 'badge-danger' },
+          completed: { label: 'เสร็จสิ้น', className: 'badge-success' },
+          pending: { label: 'รอดำเนินการ', className: 'badge-accent' },
+          failed: { label: 'ล้มเหลว', className: 'badge-danger' },
         }[status]
         return <Badge className={config.className}>{config.label}</Badge>
       },
     }),
     columnHelper.accessor('date', {
-      header: 'Date',
-      cell: (info) => (
-        <span className="text-sm text-stone-500 dark:text-stone-400">{info.getValue()}</span>
-      ),
+      header: 'วันที่',
+      cell: (info) => <span className="text-sm text-stone-500 dark:text-stone-400">{info.getValue()}</span>,
     }),
   ]
 
@@ -109,9 +103,9 @@ export default function SellerWalletPage() {
     <div className="p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Wallet</h1>
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">กระเป๋าเงิน</h1>
         <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
-          Manage your earnings and withdrawals
+          จัดการรายได้และการถอนเงินของคุณ
         </p>
       </div>
 
@@ -125,13 +119,13 @@ export default function SellerWalletPage() {
       {/* Revenue Chart */}
       <div className="card p-6 mb-8">
         <SectionHeader
-          title="Revenue Overview"
-          subtitle="Your earnings for the past 7 days"
+          title="ภาพรวมรายได้"
+          subtitle="รายได้ของคุณใน 7 วันที่ผ่านมา"
           action={
             <select className="px-3 py-1.5 text-sm rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white">
-              <option>Last 7 days</option>
-              <option>Last 30 days</option>
-              <option>This year</option>
+              <option>7 วันล่าสุด</option>
+              <option>30 วันล่าสุด</option>
+              <option>ปีนี้</option>
             </select>
           }
         />
@@ -141,24 +135,24 @@ export default function SellerWalletPage() {
       {/* Transactions Table */}
       <div className="card overflow-hidden">
         <div className="px-6 py-4 border-b border-stone-200 dark:border-stone-700">
-          <SectionHeader title="Recent Transactions" subtitle="Your latest earnings and withdrawals" />
+          <SectionHeader title="รายการล่าสุด" subtitle="รายได้และการถอนเงินล่าสุดของคุณ" />
         </div>
         <DataTable
           columns={columns}
           data={mockTransactions}
           searchKey="description"
-          searchPlaceholder="Search transactions..."
+          searchPlaceholder="ค้นหารายการ..."
           pagination={pagination}
           onPaginationChange={(p) => setPagination((prev) => ({ ...prev, ...p }))}
-          emptyMessage="No transactions found"
+          emptyMessage="ไม่พบรายการ"
         />
       </div>
 
       {/* Withdrawal Methods */}
       <div className="card p-6 mt-8">
         <SectionHeader
-          title="Withdrawal Methods"
-          subtitle="Choose how you want to receive your funds"
+          title="วิธีการถอนเงิน"
+          subtitle="เลือกวิธีที่คุณต้องการรับเงิน"
         />
         <div className="grid md:grid-cols-3 gap-4 mt-4">
           <button className="flex items-center gap-4 p-4 rounded-lg border-2 border-stone-200 dark:border-stone-700 hover:border-teal-500 dark:hover:border-teal-500 transition-colors">
@@ -166,8 +160,8 @@ export default function SellerWalletPage() {
               <Building2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
             <div className="text-left">
-              <p className="font-medium text-stone-900 dark:text-white">Bank Transfer</p>
-              <p className="text-sm text-stone-500 dark:text-stone-400">1-3 business days</p>
+              <p className="font-medium text-stone-900 dark:text-white">โอนเงินผ่านธนาคาร</p>
+              <p className="text-sm text-stone-500 dark:text-stone-400">1-3 วันทำการ</p>
             </div>
           </button>
           <button className="flex items-center gap-4 p-4 rounded-lg border-2 border-stone-200 dark:border-stone-700 hover:border-teal-500 dark:hover:border-teal-500 transition-colors">
@@ -176,7 +170,7 @@ export default function SellerWalletPage() {
             </div>
             <div className="text-left">
               <p className="font-medium text-stone-900 dark:text-white">PayPal</p>
-              <p className="text-sm text-stone-500 dark:text-stone-400">Instant transfer</p>
+              <p className="text-sm text-stone-500 dark:text-stone-400">โอนทันที</p>
             </div>
           </button>
           <button className="flex items-center gap-4 p-4 rounded-lg border-2 border-stone-200 dark:border-stone-700 hover:border-teal-500 dark:hover:border-teal-500 transition-colors">
@@ -185,7 +179,7 @@ export default function SellerWalletPage() {
             </div>
             <div className="text-left">
               <p className="font-medium text-stone-900 dark:text-white">Crypto</p>
-              <p className="text-sm text-stone-500 dark:text-stone-400">Within 24 hours</p>
+              <p className="text-sm text-stone-500 dark:text-stone-400">ภายใน 24 ชั่วโมง</p>
             </div>
           </button>
         </div>

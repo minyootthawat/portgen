@@ -44,16 +44,16 @@ const gameLogos: Record<string, string> = {
 }
 
 const statusConfig = {
-  available: { label: 'Available', className: 'badge-success' },
-  sold: { label: 'Sold', className: 'badge-neutral' },
-  reserved: { label: 'Reserved', className: 'badge-accent' },
+  available: { label: 'พร้อมขาย', className: 'badge-success' },
+  sold: { label: 'ขายแล้ว', className: 'badge-neutral' },
+  reserved: { label: 'จองแล้ว', className: 'badge-accent' },
 }
 
 const stats = [
-  { label: 'Total Accounts', value: '48', change: '+5', trend: 'up' as const, icon: Gamepad2 },
-  { label: 'Available', value: '32', icon: Server },
-  { label: 'Total Sales', value: '$4,850', change: '+12%', trend: 'up' as const, icon: TrendingUp },
-  { label: 'Active Sellers', value: '8', icon: Users },
+  { label: 'บัญชีทั้งหมด', value: '48', change: '+5', trend: 'up' as const, icon: Gamepad2 },
+  { label: 'พร้อมขาย', value: '32', icon: Server },
+  { label: 'ยอดขายรวม', value: '$4,850', change: '+12%', trend: 'up' as const, icon: TrendingUp },
+  { label: 'ผู้ขายที่ใช้งาน', value: '8', icon: Users },
 ]
 
 function AccountActions() {
@@ -82,7 +82,7 @@ export default function SellerGameAccountsPage() {
 
   const columns = [
     columnHelper.accessor('game', {
-      header: 'Game',
+      header: 'เกม',
       cell: (info) => {
         const game = info.getValue()
         const abbr = gameLogos[game] || game.substring(0, 2).toUpperCase()
@@ -97,13 +97,11 @@ export default function SellerGameAccountsPage() {
       },
     }),
     columnHelper.accessor('accountName', {
-      header: 'Account Name',
-      cell: (info) => (
-        <span className="text-stone-600 dark:text-stone-400">{info.getValue()}</span>
-      ),
+      header: 'ชื่อบัญชี',
+      cell: (info) => <span className="text-stone-600 dark:text-stone-400">{info.getValue()}</span>,
     }),
     columnHelper.accessor('level', {
-      header: 'Level',
+      header: 'เลเวล',
       cell: (info) => (
         <div className="flex items-center gap-1">
           <span className="w-8 h-8 rounded-full bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-sm font-semibold text-stone-600 dark:text-stone-400">
@@ -113,23 +111,19 @@ export default function SellerGameAccountsPage() {
       ),
     }),
     columnHelper.accessor('price', {
-      header: 'Price',
-      cell: (info) => (
-        <span className="font-medium text-teal-600 dark:text-teal-400">${info.getValue()}</span>
-      ),
+      header: 'ราคา',
+      cell: (info) => <span className="font-medium text-teal-600 dark:text-teal-400">${info.getValue()}</span>,
     }),
     columnHelper.accessor('status', {
-      header: 'Status',
+      header: 'สถานะ',
       cell: (info) => {
         const config = statusConfig[info.getValue() as keyof typeof statusConfig]
         return <Badge className={config.className}>{config.label}</Badge>
       },
     }),
     columnHelper.accessor('createdAt', {
-      header: 'Listed',
-      cell: (info) => (
-        <span className="text-sm text-stone-500 dark:text-stone-400">{info.getValue()}</span>
-      ),
+      header: 'ลงขายเมื่อ',
+      cell: (info) => <span className="text-sm text-stone-500 dark:text-stone-400">{info.getValue()}</span>,
     }),
     columnHelper.display({
       id: 'actions',
@@ -143,14 +137,14 @@ export default function SellerGameAccountsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Game Accounts</h1>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">บัญชีเกม</h1>
           <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
-            Manage your game accounts for sale
+            จัดการบัญชีเกมของคุณที่ลงขาย
           </p>
         </div>
         <button className="btn-primary">
           <Plus className="w-4 h-4" />
-          Add Account
+          เพิ่มบัญชี
         </button>
       </div>
 
@@ -164,16 +158,16 @@ export default function SellerGameAccountsPage() {
       {/* Accounts Table */}
       <div className="card overflow-hidden">
         <div className="px-6 py-4 border-b border-stone-200 dark:border-stone-700">
-          <SectionHeader title="Game Accounts" subtitle="Browse all game accounts" />
+          <SectionHeader title="บัญชีเกม" subtitle="ดูบัญชีเกมทั้งหมด" />
         </div>
         <DataTable
           columns={columns}
           data={mockAccounts}
           searchKey="accountName"
-          searchPlaceholder="Search accounts..."
+          searchPlaceholder="ค้นหาบัญชี..."
           pagination={pagination}
           onPaginationChange={(p) => setPagination((prev) => ({ ...prev, ...p }))}
-          emptyMessage="No game accounts found"
+          emptyMessage="ไม่พบบัญชีเกม"
         />
       </div>
     </div>

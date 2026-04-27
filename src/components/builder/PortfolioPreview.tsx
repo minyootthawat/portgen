@@ -133,6 +133,25 @@ export function PortfolioPreview({ portfolio }: Props) {
                   ))}
                 </div>
               )}
+
+              {/* Custom Sections */}
+              {(portfolio as any).custom_sections?.length > 0 && (
+                <div className="mt-6 space-y-4">
+                  {(portfolio as any).custom_sections?.map((section: any) => (
+                    <div key={section.id}>
+                      <div className="text-center text-xs text-slate-500 uppercase tracking-wider mb-3">{section.title || section.type}</div>
+                      <div className="space-y-2">
+                        {section.items?.map((item: any) => (
+                          <div key={item.id} className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
+                            {item.title && <h4 className="text-sm font-medium text-white">{item.title}</h4>}
+                            {item.description && <p className="text-xs text-slate-400 mt-1">{item.description}</p>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Footer */}

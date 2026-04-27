@@ -3,76 +3,103 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useI18n } from '@/i18n/context'
-import { supabase, getSession, getPortfolios, deletePortfolio } from '@/lib/supabase'
-import { Plus, ExternalLink, Trash2, Loader2, Crown, Zap, ArrowRight, Sparkles } from 'lucide-react'
+import { signOut, useSession } from 'next-auth/react'
+import { Plus, ExternalLink, Trash2, Loader2, Crown, ArrowRight, Sparkles } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import type { Portfolio } from '@/types'
 
 export default function DashboardPage() {
   const router = useRouter()
-  const { t } = useI18n()
+  const { data: session, status } = useSession()
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<any>(null)
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
   const [isPro, setIsPro] = useState(false)
   const [isDemo, setIsDemo] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
-    const checkUser = async () => {
-      const { data: { session } } = await getSession()
-      if (!session) {
-        router.push('/login')
-        return
-      }
-      setUser(session.user)
-
-      const { data } = await getPortfolios(session.user.id)
-      setPortfolios(data || [])
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('plan')
-        .eq('id', session.user.id)
-        .single()
-      setIsPro(profile?.plan === 'pro')
-      setIsDemo(false)
-
-      setLoading(false)
-    }
-
-    // Check demo mode
-    const demoSession = typeof window !== 'undefined' ? localStorage.getItem('demo_session') : null
-    if (demoSession) {
-      setIsDemo(true)
-      setLoading(false)
+    if (status === 'unauthenticated') {
+      router.push('/login')
       return
     }
 
+    if (status === 'loading') return
+
+    const checkUser = async () => {
+      // Check demo mode
+      const demoSession = typeof window !== 'undefined' ? localStorage.getItem('demo_session') : null
+      if (demoSession) {
+        setIsDemo(true)
+        setLoading(false)
+        return
+      }
+
+      if (!session?.user) {
+        router.push('/login')
+        return
+      }
+
+      // Fetch portfolios from API
+      try {
+        const userId = (session.user as any)?.id
+        const res = await fetch(`/api/portfolios?user_id=${userId}`, {
+          headers: {
+            Authorization: `Bearer ${userId || ''}`,
+          },
+        })
+        const json = await res.json()
+        setPortfolios(json.data || [])
+      } catch (err) {
+        console.error('Failed to fetch portfolios:', err)
+      }
+
+      // Check profile for plan
+      try {
+        const profileRes = await fetch(`/api/profiles/${(session.user as any)?.id}`, {
+          headers: {
+            Authorization: `Bearer ${(session.user as any)?.id || ''}`,
+          },
+        })
+        if (profileRes.ok) {
+          const profileJson = await profileRes.json()
+          setIsPro(profileJson.data?.plan === 'pro')
+        }
+      } catch {
+        // ignore
+      }
+
+      setLoading(false)
+    }
+
     checkUser()
-  }, [router])
+  }, [status, session, router])
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/')
+    await signOut({ callbackUrl: '/' })
   }
 
   const handleDeletePortfolio = async (id: string) => {
-    if (!confirm(t.dashboard.confirmDelete || 'Are you sure you want to delete this portfolio? This cannot be undone.')) {
+    if (!confirm('ลบพอร์ตโฟลิโอนี้หรือไม่? การดำเนินการนี้ไม่สามารถเลิกทำได้')) {
       return
     }
     setDeletingId(id)
     try {
-      await deletePortfolio(id)
-      setPortfolios(portfolios.filter((p) => p.id !== id))
+      const res = await fetch(`/api/portfolios/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${(session?.user as any)?.id || ''}`,
+        },
+      })
+      if (res.ok) {
+        setPortfolios(portfolios.filter((p) => p.id !== id))
+      }
     } catch (err: any) {
       alert(err.message)
     }
     setDeletingId(null)
   }
 
-  if (loading) {
+  if (loading || status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950">
         <div className="text-center">
@@ -94,27 +121,27 @@ export default function DashboardPage() {
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center shadow-sm">
-                <Zap className="w-4 h-4 text-white" />
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
               <span className="font-semibold text-lg tracking-tight text-stone-900 dark:text-white">PortGen</span>
             </Link>
             {isDemo && (
               <span className="px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-semibold">
-                Demo Mode
+                โหมด Demo
               </span>
             )}
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-stone-500 dark:text-stone-400 hidden sm:block">{user?.email || user?.name}</span>
+            <span className="text-sm text-stone-500 dark:text-stone-400 hidden sm:block">{session?.user?.email || session?.user?.name}</span>
             <ThemeToggle />
             {!isPro && (
               <Link href="/upgrade" className="btn-secondary text-sm">
                 <Crown className="w-3.5 h-3.5" />
-                {t.dashboard.upgradeToPro}
+                อัพเกรดเป็น Pro
               </Link>
             )}
             <button onClick={handleSignOut} className="btn-ghost text-sm">
-              {t.dashboard.signOut}
+              ออกจากระบบ
             </button>
           </div>
         </div>
@@ -126,10 +153,10 @@ export default function DashboardPage() {
           <div className="container-lg mx-auto flex items-center justify-between gap-4">
             <p className="text-sm text-amber-800 dark:text-amber-300">
               <Sparkles className="w-4 h-4 inline mr-1.5" />
-              {t.dashboard.demoBanner}
+              นี่คือ demo — การเปลี่ยนแปลงจะไม่ถูกบันทึก สมัครเพื่อสร้างพอร์ตโฟลิโอจริงของคุณ!
             </p>
             <Link href="/" className="text-sm font-medium text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-200 flex items-center gap-1 shrink-0">
-              Sign up for real <ArrowRight className="w-3.5 h-3.5" />
+              สมัครบัญชีจริง <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
@@ -139,16 +166,16 @@ export default function DashboardPage() {
       <div className="container-lg mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-stone-900 dark:text-white">{t.dashboard.title}</h1>
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Portfolio ของคุณ</h1>
             <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
               {portfolios.length === 0
-                ? t.dashboard.createFirst
-                : `${portfolios.length} portfolio${portfolios.length > 1 ? 's' : ''} · ${portfolios.filter(p => p.is_published).length} live`}
+                ? 'สร้างพอร์ตโฟลิโอแรกของคุณ'
+                : `${portfolios.length} portfolio${portfolios.length > 1 ? 's' : ''} · ${portfolios.filter(p => p.is_published).length} เผยแพร่แล้ว`}
             </p>
           </div>
           <Link href='/builder/new' className="btn-primary card-hover">
             <Plus className="w-4 h-4" />
-            {t.dashboard.newPortfolio}
+            พอร์ตโฟลิโอใหม่
           </Link>
         </div>
 
@@ -166,13 +193,13 @@ export default function DashboardPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M0 16H52M44 8l8 8-8 8" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-stone-900 dark:text-white mb-2">Your first portfolio starts here</h2>
+            <h2 className="text-xl font-bold text-stone-900 dark:text-white mb-2">พอร์ตโฟลิโอแรกของคุณเริ่มต้นที่นี่</h2>
             <p className="text-stone-500 dark:text-stone-400 text-sm mb-8 max-w-xs mx-auto">
-              It takes less than 5 minutes. Pick a template, add your info, and share your link.
+              ใช้เวลาไม่ถึง 5 นาที เลือกเทมเพลต เพิ่มข้อมูล แชร์ลิงก์
             </p>
             <Link href="/builder/new" className="btn-primary text-base px-8 py-3 card-hover">
               <Sparkles className="w-4 h-4" />
-              Build your first portfolio
+              สร้างพอร์ตโฟลิโอแรก
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -243,7 +270,7 @@ export default function DashboardPage() {
                       href={`/builder/${portfolio.id}`}
                       className="px-5 py-2.5 rounded-xl bg-white text-stone-900 font-semibold text-sm hover:bg-teal-50 transition-colors shadow-lg"
                     >
-                      Edit Portfolio
+                      แก้ไข Portfolio
                     </Link>
                   </div>
 
@@ -273,11 +300,11 @@ export default function DashboardPage() {
                     </div>
                     {portfolio.is_published ? (
                       <span className="px-2 py-1 rounded text-xs bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 font-medium shrink-0 ml-2">
-                        {t.dashboard.live}
+                        เผยแพร่แล้ว
                       </span>
                     ) : (
                       <span className="px-2 py-1 rounded text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 font-medium shrink-0 ml-2">
-                        {t.dashboard.draft}
+                        ฉบับร่าง
                       </span>
                     )}
                   </div>
@@ -301,7 +328,7 @@ export default function DashboardPage() {
                       href={`/builder/${portfolio.id}`}
                       className="flex-1 py-2 px-3 rounded-lg text-sm text-center bg-teal-50 dark:bg-teal-900/20 hover:bg-teal-100 dark:hover:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium transition"
                     >
-                      {t.dashboard.edit}
+                      แก้ไข
                     </Link>
                     {portfolio.is_published && (
                       <a

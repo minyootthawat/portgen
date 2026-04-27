@@ -1,7 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { I18nProvider } from '@/i18n/context'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { AuthProvider } from '@/components/AuthProvider'
 
 const BASE_URL = 'https://portgen.com'
 
@@ -118,7 +118,9 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <ThemeProvider>
-          <I18nProvider>{children}</I18nProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

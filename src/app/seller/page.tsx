@@ -1,37 +1,12 @@
 'use client'
 
-import { useI18n } from '@/i18n/context'
 import { Package, ShoppingCart, DollarSign, TrendingUp, TrendingDown } from 'lucide-react'
 
 const stats = [
-  {
-    label: 'Total Products',
-    value: '124',
-    change: '+12%',
-    trend: 'up',
-    icon: Package,
-  },
-  {
-    label: 'Total Orders',
-    value: '1,284',
-    change: '+8%',
-    trend: 'up',
-    icon: ShoppingCart,
-  },
-  {
-    label: 'Revenue',
-    value: '$12,450',
-    change: '+23%',
-    trend: 'up',
-    icon: DollarSign,
-  },
-  {
-    label: 'Conversion Rate',
-    value: '3.2%',
-    change: '-2%',
-    trend: 'down',
-    icon: TrendingUp,
-  },
+  { label: 'สินค้าทั้งหมด', value: '124', change: '+12%', trend: 'up', icon: Package },
+  { label: 'คำสั่งซื้อทั้งหมด', value: '1,284', change: '+8%', trend: 'up', icon: ShoppingCart },
+  { label: 'รายได้', value: '$12,450', change: '+23%', trend: 'up', icon: DollarSign },
+  { label: 'อัตราการแปลง', value: '3.2%', change: '-2%', trend: 'down', icon: TrendingUp },
 ]
 
 const recentOrders = [
@@ -49,15 +24,13 @@ const statusStyles = {
 }
 
 export default function SellerDashboardPage() {
-  const { t } = useI18n()
-
   return (
     <div className="p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">แดชบอร์ด</h1>
         <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
-          Welcome back! Here&apos;s what&apos;s happening with your store.
+          ยินดีต้อนรับกลับ! นี่คือสิ่งที่เกิดขึ้นกับร้านของคุณ
         </p>
       </div>
 
@@ -94,29 +67,29 @@ export default function SellerDashboardPage() {
       {/* Recent Orders */}
       <div className="card overflow-hidden">
         <div className="px-6 py-4 border-b border-stone-200 dark:border-stone-700">
-          <h2 className="font-semibold text-stone-900 dark:text-white">Recent Orders</h2>
+          <h2 className="font-semibold text-stone-900 dark:text-white">คำสั่งซื้อล่าสุด</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="bg-stone-50 dark:bg-stone-800/50">
                 <th className="px-6 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
-                  Order ID
+                  รหัสคำสั่งซื้อ
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
-                  Customer
+                  ลูกค้า
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
-                  Product
+                  สินค้า
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
-                  Amount
+                  จำนวน
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
-                  Status
+                  สถานะ
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
-                  Date
+                  วันที่
                 </th>
               </tr>
             </thead>
@@ -129,7 +102,7 @@ export default function SellerDashboardPage() {
                   <td className="px-6 py-4 text-sm font-medium text-stone-900 dark:text-white">{order.amount}</td>
                   <td className="px-6 py-4">
                     <span className={`badge ${statusStyles[order.status as keyof typeof statusStyles]}`}>
-                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                      {order.status === 'completed' ? 'เสร็จสิ้น' : order.status === 'pending' ? 'รอดำเนินการ' : 'คืนเงิน'}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-stone-500 dark:text-stone-400">{order.date}</td>

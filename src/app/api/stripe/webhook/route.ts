@@ -1,13 +1,10 @@
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { createClient } from '@supabase/supabase-js'
+import getCollections from '@/lib/mongodb'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
 })
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
 // In-memory set to track processed event IDs (for replay attack prevention)
 // In production, use Redis with TTL. TODO (security): Replace with Redis.
@@ -16,7 +13,6 @@ const processedEvents = new Set<string>()
 type SubscriptionStatus = 'active' | 'canceled' | 'past_due' | 'trialing'
 
 interface SubscriptionRecord {
-  id?: number
   user_id: string
   stripe_subscription_id: string
   stripe_price_id: string
@@ -79,7 +75,7 @@ export async function POST(request: Request) {
     processedEvents.clear()
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey)
+  const { subscriptions, profiles } = await getCollections()
 
   try {
     switch (event.type) {
@@ -100,7 +96,7 @@ export async function POST(request: Request) {
           session.subscription as string
         )
 
-        const subscriptionRecord: Omit<SubscriptionRecord, 'id'> = {
+        const subscriptionRecord: SubscriptionRecord = {
           user_id: userId,
           stripe_subscription_id: subscription.id,
           stripe_price_id: subscription.items.data[0].price.id,
@@ -110,24 +106,22 @@ export async function POST(request: Request) {
           cancel_at_period_end: subscription.cancel_at_period_end,
         }
 
-        const { error: subError } = await supabase
-          .from('subscriptions')
-          .insert(subscriptionRecord)
+        const subResult = await subscriptions.insertOne(subscriptionRecord)
 
-        if (subError) {
-          console.error('Failed to insert subscription record:', subError)
-          throw subError
+        if (!subResult.insertedId) {
+          console.error('Failed to insert subscription record')
+          throw new Error('Failed to insert subscription record')
         }
 
         // Update profile plan to pro
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({ plan: 'pro' })
-          .eq('id', userId)
+        const profileResult = await profiles.updateOne(
+          { user_id: userId },
+          { $set: { plan: 'pro' } }
+        )
 
-        if (profileError) {
-          console.error('Failed to update profile plan:', profileError)
-          throw profileError
+        if (profileResult.matchedCount === 0) {
+          console.error('Failed to update profile plan: profile not found for userId', userId)
+          throw new Error('Failed to update profile plan')
         }
 
         break
@@ -144,35 +138,32 @@ export async function POST(request: Request) {
 
         const newPlan = ['active', 'trialing'].includes(subscription.status) ? 'pro' : 'free'
 
-        const { error: subError } = await supabase
-          .from('subscriptions')
-          .upsert(
-            {
-              stripe_subscription_id: subscription.id,
+        const subResult = await subscriptions.updateOne(
+          { stripe_subscription_id: subscription.id },
+          {
+            $set: {
               status: mapSubscriptionStatus(subscription.status),
               current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
               current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
               cancel_at_period_end: subscription.cancel_at_period_end,
             },
-            {
-              onConflict: 'stripe_subscription_id',
-              ignoreDuplicates: false,
-            }
-          )
+          },
+          { upsert: true }
+        )
 
-        if (subError) {
-          console.error('Failed to upsert subscription:', subError)
-          throw subError
+        if (!subResult.acknowledged) {
+          console.error('Failed to upsert subscription')
+          throw new Error('Failed to upsert subscription')
         }
 
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({ plan: newPlan })
-          .eq('id', userId)
+        const profileResult = await profiles.updateOne(
+          { user_id: userId },
+          { $set: { plan: newPlan } }
+        )
 
-        if (profileError) {
-          console.error('Failed to update profile plan on subscription update:', profileError)
-          throw profileError
+        if (profileResult.matchedCount === 0) {
+          console.error('Failed to update profile plan on subscription update: profile not found for userId', userId)
+          throw new Error('Failed to update profile plan on subscription update')
         }
 
         break
@@ -187,24 +178,24 @@ export async function POST(request: Request) {
           break
         }
 
-        const { error: subError } = await supabase
-          .from('subscriptions')
-          .update({ status: 'canceled' })
-          .eq('stripe_subscription_id', subscription.id)
+        const subResult = await subscriptions.updateOne(
+          { stripe_subscription_id: subscription.id },
+          { $set: { status: 'canceled' } }
+        )
 
-        if (subError) {
-          console.error('Failed to cancel subscription:', subError)
-          throw subError
+        if (!subResult.acknowledged) {
+          console.error('Failed to cancel subscription')
+          throw new Error('Failed to cancel subscription')
         }
 
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({ plan: 'free' })
-          .eq('id', userId)
+        const profileResult = await profiles.updateOne(
+          { user_id: userId },
+          { $set: { plan: 'free' } }
+        )
 
-        if (profileError) {
-          console.error('Failed to update profile plan on subscription deletion:', profileError)
-          throw profileError
+        if (profileResult.matchedCount === 0) {
+          console.error('Failed to update profile plan on subscription deletion: profile not found for userId', userId)
+          throw new Error('Failed to update profile plan on subscription deletion')
         }
 
         break
@@ -218,14 +209,14 @@ export async function POST(request: Request) {
           break
         }
 
-        const { error } = await supabase
-          .from('subscriptions')
-          .update({ status: 'past_due' })
-          .eq('stripe_subscription_id', subscriptionId)
+        const result = await subscriptions.updateOne(
+          { stripe_subscription_id: subscriptionId },
+          { $set: { status: 'past_due' } }
+        )
 
-        if (error) {
-          console.error('Failed to mark subscription as past_due:', error)
-          throw error
+        if (!result.acknowledged) {
+          console.error('Failed to mark subscription as past_due')
+          throw new Error('Failed to mark subscription as past_due')
         }
 
         break
@@ -240,14 +231,13 @@ export async function POST(request: Request) {
         }
 
         // Ensure subscription is active after successful payment
-        const { error } = await supabase
-          .from('subscriptions')
-          .update({ status: 'active' })
-          .eq('stripe_subscription_id', subscriptionId)
-          .eq('status', 'past_due')
+        const result = await subscriptions.updateOne(
+          { stripe_subscription_id: subscriptionId, status: 'past_due' },
+          { $set: { status: 'active' } }
+        )
 
-        if (error) {
-          console.error('Failed to restore subscription status:', error)
+        if (!result.acknowledged) {
+          console.error('Failed to restore subscription status')
           // Don't throw — this is a best-effort recovery
         }
 

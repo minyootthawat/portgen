@@ -2,14 +2,11 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { useI18n } from '@/i18n/context'
-import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { AuthDialog } from '@/components/AuthDialog'
-import { Check, ArrowRight, Zap, Play, Star, Users, TrendingUp } from 'lucide-react'
+import { Check, ArrowRight, Zap, Play, Star, Users } from 'lucide-react'
 
 export default function LandingPage() {
-  const { t } = useI18n()
   const [authOpen, setAuthOpen] = useState(false)
   const [demoOpen, setDemoOpen] = useState(false)
   const sectionsRef = useRef<HTMLDivElement>(null)
@@ -123,95 +120,73 @@ export default function LandingPage() {
           {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors">
-              {t.nav.features}
+              ฟีเจอร์
             </a>
             <a href="#pricing" className="text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors">
-              {t.nav.pricing}
+              ราคา
             </a>
           </div>
 
           {/* Desktop actions */}
           <div className="hidden md:flex items-center gap-3">
-            <LanguageSwitcher />
             <ThemeToggle />
             <button onClick={() => setDemoOpen(true)} className="btn-ghost text-sm dark:text-stone-300">
-              {t.nav.login}
+              เข้าสู่ระบบ
             </button>
             <button onClick={() => setAuthOpen(true)} className="btn-primary text-sm bg-teal-600 hover:bg-teal-700 text-white shadow-sm">
-              {t.nav.getStarted}
+              เริ่มใช้ฟรี
             </button>
           </div>
         </div>
 
         {/* Mobile menu */}
         <div id="mobile-menu" className="hidden md:hidden border-t border-stone-200 dark:border-stone-700 px-6 py-4 space-y-3">
-          <a href="#features" className="block text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white"> {t.nav.features}</a>
-          <a href="#pricing" className="block text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white"> {t.nav.pricing}</a>
+          <a href="#features" className="block text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white"> ฟีเจอร์</a>
+          <a href="#pricing" className="block text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white"> ราคา</a>
           <div className="flex items-center gap-3 pt-2">
-            <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <button onClick={() => setDemoOpen(true)} className="btn-ghost text-sm w-full justify-center">{t.nav.login}</button>
-          <button onClick={() => setAuthOpen(true)} className="btn-primary text-sm bg-teal-600 hover:bg-teal-700 text-white w-full justify-center">{t.nav.getStarted}</button>
+          <button onClick={() => setDemoOpen(true)} className="btn-ghost text-sm w-full justify-center">เข้าสู่ระบบ</button>
+          <button onClick={() => setAuthOpen(true)} className="btn-primary text-sm bg-teal-600 hover:bg-teal-700 text-white w-full justify-center">เริ่มใช้ฟรี</button>
         </div>
       </nav>
 
       {/* Hero */}
       <section className="section bg-gradient-to-b from-white dark:from-stone-900 to-teal-50 dark:to-teal-950 relative overflow-hidden">
-        {/* Floating social proof badge */}
-        <div className="absolute top-24 right-6 lg:right-12 animate-fade-in z-10 hidden md:block" style={{ animationDelay: '0.8s', opacity: 0 }}>
-          <div className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-2xl px-4 py-3 shadow-lg flex items-center gap-3">
-            <div className="flex -space-x-2">
-              {['👩‍💻', '👨‍💻', '👩‍🎨'].map((e, i) => (
-                <div key={i} className="w-8 h-8 rounded-full bg-stone-100 dark:bg-stone-700 border-2 border-white dark:border-stone-800 flex items-center justify-center text-sm">
-                  {e}
-                </div>
-              ))}
-            </div>
-            <div>
-              <div className="flex items-center gap-1 text-sm font-semibold text-stone-900 dark:text-white">
-                <TrendingUp className="w-3.5 h-3.5 text-teal-600" />
-                3 portfolios created today
-              </div>
-              <div className="text-xs text-stone-400">Join them — it takes 5 min</div>
-            </div>
-          </div>
-        </div>
-
         <div className="container mx-auto text-center max-w-3xl relative">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-100 dark:bg-teal-900/30 text-sm text-teal-700 dark:text-teal-300 mb-8 border border-teal-200 dark:border-teal-800 animate-fade-in-up">
             <Check className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-            <span>{t.hero.badge}</span>
+            <span>🚀 ฟรีเริ่มต้น — ไม่ต้องใช้บัตรเครดิต</span>
           </div>
 
           {/* Headline */}
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-stone-900 dark:text-white mb-6 leading-[1.1] animate-fade-in-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
-            {t.hero.title}
+            พอร์ตโฟลิโอสวย ๆ ใน 5 นาที
             <br />
-            <span className="text-teal-600 dark:text-teal-400">{t.hero.titleHighlight}</span>
+            <span className="text-teal-600 dark:text-teal-400">— ไม่ต้องรู้เรื่องโค้ดเลยสักบรรทัด</span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-lg text-stone-500 dark:text-stone-400 max-w-xl mx-auto mb-10 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s', opacity: 0 }}>
-            {t.hero.subtitle}
+            สร้างพอร์ตโฟลิโอที่ดูโปรได้ด้วยตัวเอง ไม่ต้องจ้างใคร ไม่ต้องเรียนเทคนิค กด 2-3 ครั้ง ออนไลน์ได้ทันที
           </p>
 
           {/* CTA */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10 animate-fade-in-up" style={{ animationDelay: '0.3s', opacity: 0 }}>
             <button onClick={() => setAuthOpen(true)} className="btn-primary text-base px-8 py-3.5 shadow-lg shadow-teal-600/25 hover:shadow-xl hover:shadow-teal-600/30">
-              {t.hero.createFree}
+              สร้างพอร์ตฟรี — ไม่ต้องใส่บัตรเครดิต
               <ArrowRight className="w-4 h-4" />
             </button>
             <button onClick={() => setDemoOpen(true)} className="btn-secondary text-base px-8 py-3.5">
               <Play className="w-4 h-4" />
-              Watch Demo
+              ลองดูตัวอย่าง
             </button>
           </div>
 
           {/* Mini portfolio preview */}
           <div className="animate-fade-in-up" style={{ animationDelay: '0.5s', opacity: 0 }}>
-            <p className="text-xs text-stone-400 dark:text-stone-500 mb-3 uppercase tracking-widest">What your portfolio looks like →</p>
+            <p className="text-xs text-stone-400 dark:text-stone-500 mb-3 uppercase tracking-widest">Portfolio ของคุณจะเป็นแบบนี้ →</p>
             <div className="max-w-lg mx-auto rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-700 shadow-2xl shadow-stone-900/10">
               {/* Browser chrome */}
               <div className="px-4 py-2.5 bg-stone-100 dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700 flex items-center gap-2">
@@ -227,7 +202,7 @@ export default function LandingPage() {
                 </div>
               </div>
               {/* Portfolio preview content */}
-              <div className="bg-gradient-to-br from-indigo-900 via-slate-900 to-purple-900 p-6">
+              <div className="bg-gradient-to-br from-teal-900 to-stone-900 p-6">
                 <div className="text-center">
                   <div className="w-16 h-16 rounded-full mx-auto mb-3 bg-gradient-to-br from-sky-400 to-indigo-500 shadow-lg" />
                   <h3 className="text-lg font-bold text-white mb-1">Demo User</h3>
@@ -257,7 +232,7 @@ export default function LandingPage() {
                 <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
               ))}
             </div>
-            <p className="text-sm text-stone-400 dark:text-stone-500">{t.hero.socialProof}</p>
+            <p className="text-sm text-stone-400 dark:text-stone-500">สำหรับนักพัฒนาที่ต้องการให้ผลงานโดดเด่น</p>
           </div>
         </div>
       </section>
@@ -266,8 +241,8 @@ export default function LandingPage() {
       <section className="section-sm bg-stone-50 dark:bg-stone-800/50 reveal">
         <div className="container-lg mx-auto">
           <div className="text-center reveal">
-            <h2 className="text-2xl font-bold text-stone-900 dark:text-white mb-2">See it in action</h2>
-            <p className="text-stone-500 dark:text-stone-400 text-sm mb-8">Watch how easy it is to build your portfolio in under 5 minutes</p>
+            <h2 className="text-2xl font-bold text-stone-900 dark:text-white mb-2">ดูวิธีใช้งาน</h2>
+            <p className="text-stone-500 dark:text-stone-400 text-sm mb-8">ดูว่าการสร้าง portfolio ใช้เวลาไม่ถึง 5 นาทีได้อย่างไร</p>
           </div>
           <div className="max-w-3xl mx-auto">
             {/* Video placeholder */}
@@ -282,7 +257,7 @@ export default function LandingPage() {
               </div>
               {/* Overlay text */}
               <div className="absolute bottom-4 left-4 right-4">
-                <p className="text-white/90 text-sm font-medium">Watch the full demo — 3 minutes</p>
+                <p className="text-white/90 text-sm font-medium">ลอง Demo — ไม่ต้องสมัครสมาชิก</p>
               </div>
             </div>
           </div>
@@ -293,37 +268,37 @@ export default function LandingPage() {
       <section id="features" className="section bg-white dark:bg-stone-900">
         <div className="container-lg mx-auto">
           <div className="text-center mb-14 reveal">
-            <h2 className="text-3xl font-bold tracking-tight text-stone-900 dark:text-white mb-3">{t.features.title}</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-stone-900 dark:text-white mb-3">ทำไมต้อง PortGen?</h2>
             <p className="text-stone-500 dark:text-stone-400 text-base max-w-lg mx-auto">
-              {t.features.subtitle}
+              ทุกอย่างที่ต้องการเพื่อดูโปร — ไม่ต้องยุ่งยาก
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5 reveal-stagger">
             {[
               {
-                title: t.features.items.themes.title,
-                desc: t.features.items.themes.desc,
+                title: 'เทมเพลตสวย ดูแพง ไม่ต้องจ้างใคร',
+                desc: 'เลือกจากเทมเพลตสวย ๆ ที่ออกแบบมาแล้ว พอร์ตโฟลิโอคุณจะดูเหมือนจ้างมาด้วยราคาแพง',
               },
               {
-                title: t.features.items.semiCode.title,
-                desc: t.features.items.semiCode.desc,
+                title: 'ออนไลน์ได้ทันทีที่พร้อม',
+                desc: 'ไม่ต้องรอ ไม่ต้องรับอนุมัติ พอร์ตโฟลิโอของคุณออนไลน์ทันทีที่กดเผยแพร่',
               },
               {
-                title: t.features.items.fast.title,
-                desc: t.features.items.fast.desc,
+                title: 'ใช้เวลาสร้างไม่ถึง 5 นาที',
+                desc: 'กรอกข้อมูล เลือกเทมเพลต กดเผยแพร่ เสร็จ เร็วจริง ๆ',
               },
               {
-                title: t.features.items.hosting.title,
-                desc: t.features.items.hosting.desc,
+                title: 'แก้ไขได้เรื่อย ๆ ตามใจ',
+                desc: 'เพิ่มโปรเจกต์ใหม่ เปลี่ยนรูป แก้ไขประวัติ — อยากแก้เมื่อไหร่ก็ได้',
               },
               {
-                title: t.features.items.github.title,
-                desc: t.features.items.github.desc,
+                title: 'ถ้าใช้ Facebook ได้ = ใช้ได้',
+                desc: 'ไม่ต้องรู้โค้ด ไม่ต้องจำเมนูเยอะ ชี้ คลิก พิมพ์ เรียบร้อย',
               },
               {
-                title: t.features.items.export.title,
-                desc: t.features.items.export.desc,
+                title: 'แชร์ลิงก์เดียวจบ ไม่ต้องส่ง PDF',
+                desc: 'ลิงก์พอร์ตโฟลิโออันเดียว ส่งในอีเมล ข้อความ หรือใบสมัครงานก็ได้',
               },
             ].map((feature, i) => (
               <div key={i} className="card card-hover p-6">
@@ -343,11 +318,15 @@ export default function LandingPage() {
         <div className="container-lg mx-auto">
           <div className="text-center mb-14 reveal">
             <h2 className="text-3xl font-bold tracking-tight text-stone-900 dark:text-white mb-3">
-              {t.testimonials.title}
+              เรื่องราวจริงจากผู้ใช้จริง
             </h2>
           </div>
           <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto reveal-stagger">
-            {t.testimonials.items.map((item, i) => (
+            {[
+              { quote: 'ตอนแรกกลัวว่าจะยาก สรุปทำเสร็จใน 10 นาที', author: 'สมศักดิ์ ที., ผู้สมัครงาน' },
+              { quote: 'หางานมาเป็นปีไม่มีใครเรียก พอทำพอร์ตเสร็จ สัปดาห์ต่อมาโดนเรียก 3 ที่', author: 'นิรันดร์ ค., นักออกแบบกราฟิก' },
+              { quote: 'ไม่ต้องส่ง PDF ทุกครั้ง แชร์ลิงก์เดียวจบ', author: 'ปรียา เอส., ผู้จัดการฝ่ายการตลาด' },
+            ].map((item, i) => (
               <div key={i} className="card card-hover p-6 border border-stone-200 dark:border-stone-700">
                 <div className="flex gap-1 mb-3">
                   {[1,2,3,4,5].map((s) => (
@@ -371,10 +350,10 @@ export default function LandingPage() {
         <div className="container-lg mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { value: '2,000+', label: 'Portfolios created' },
-              { value: '4.9/5', label: 'Average rating' },
-              { value: '< 5 min', label: 'Average build time' },
-              { value: 'Free', label: 'To get started' },
+              { value: '100%', label: 'ฟรีเริ่มต้น' },
+              { value: '< 5 นาที', label: 'ใช้เวลาสร้างโดยเฉลี่ย' },
+              { value: '3', label: 'ธีมสวยๆ' },
+              { value: 'Export', label: 'HTML ได้ทุกเมื่อ' },
             ].map((stat, i) => (
               <div key={i} className="reveal">
                 <div className="text-2xl md:text-3xl font-bold text-white mb-1">{stat.value}</div>
@@ -389,29 +368,29 @@ export default function LandingPage() {
       <section id="pricing" className="section bg-white dark:bg-stone-900">
         <div className="container-lg mx-auto">
           <div className="text-center mb-14 reveal">
-            <h2 className="text-3xl font-bold tracking-tight text-stone-900 dark:text-white mb-3">{t.pricing.title}</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-stone-900 dark:text-white mb-3">ราคาที่เข้าใจได้</h2>
             <p className="text-stone-500 dark:text-stone-400 text-base max-w-lg mx-auto">
-              {t.pricing.subtitle}
+              เริ่มฟรี อัพเกรดเมื่อพร้อม
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-5 max-w-2xl mx-auto reveal-stagger">
             {/* Free */}
             <div className="card card-hover p-8">
-              <div className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-1">{t.pricing.free}</div>
+              <div className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-1">ฟรี</div>
               <div className="text-4xl font-bold tracking-tight text-stone-900 dark:text-white mb-1">
-                $0<span className="text-lg font-normal text-stone-400 dark:text-stone-500">/{t.pricing.perMonth}</span>
+                $0<span className="text-lg font-normal text-stone-400 dark:text-stone-500">/เดือน</span>
               </div>
-              <div className="text-stone-400 dark:text-stone-500 text-sm mb-7">{t.pricing.foreverFree}</div>
+              <div className="text-stone-400 dark:text-stone-500 text-sm mb-7">เริ่มใช้ฟรี</div>
 
               <ul className="space-y-3 mb-8">
                 {[
-                  t.pricing.features.portfolio,
-                  t.pricing.features.themes3,
-                  t.pricing.features.subdomain,
-                  t.pricing.features.basicCustom,
-                  t.pricing.features.exportHtml,
-                  t.pricing.features.community,
+                  '1 พอร์ตโฟลิโอ',
+                  '3 ธีมสวยๆ',
+                  'subdomain บน portgen.com',
+                  'ปรับแต่งพื้นฐาน',
+                  'Export HTML',
+                  'ช่วยเหลือจากชุมชน',
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-stone-600 dark:text-stone-300">
                     <Check className="w-4 h-4 text-teal-600 dark:text-teal-400 flex-shrink-0" />
@@ -421,31 +400,32 @@ export default function LandingPage() {
               </ul>
 
               <button onClick={() => setAuthOpen(true)} className="btn-secondary w-full justify-center">
-                {t.pricing.getStarted}
+                เริ่มฟรี
               </button>
             </div>
 
             {/* Pro */}
             <div className="card card-hover p-8 border-teal-200 dark:border-teal-800 relative shadow-lg shadow-teal-600/10">
               <div className="absolute -top-3 left-6 px-3 py-1 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 text-xs font-semibold text-white shadow-sm">
-                {t.pricing.popular}
+                ได้รับความนิยมสูงสุด
               </div>
 
-              <div className="text-sm font-semibold text-teal-700 dark:text-teal-300 mb-1">{t.pricing.pro}</div>
+              <div className="text-sm font-semibold text-teal-700 dark:text-teal-300 mb-1">Pro</div>
               <div className="text-4xl font-bold tracking-tight text-stone-900 dark:text-white mb-1">
-                $5<span className="text-lg font-normal text-stone-400 dark:text-stone-500">/{t.pricing.perMonth}</span>
+                $5<span className="text-lg font-normal text-stone-400 dark:text-stone-500">/เดือน</span>
               </div>
-              <div className="text-stone-400 dark:text-stone-500 text-sm mb-7">{t.pricing.billedMonthly}</div>
+              <p className="text-teal-700 dark:text-teal-300 text-sm mb-3">เหมาะสำหรับคนที่เขาจริงจังกับอาชีพ</p>
+              <div className="text-stone-400 dark:text-stone-500 text-sm mb-7">เก็บเงินรายเดือน</div>
 
               <ul className="space-y-3 mb-8">
                 {[
-                  t.pricing.features.unlimited,
-                  t.pricing.features.themes15,
-                  t.pricing.features.customDomain,
-                  t.pricing.features.removeBranding,
-                  t.pricing.features.analytics,
-                  t.pricing.features.priority,
-                  t.pricing.features.earlyAccess,
+                  'พอร์ตโฟลิโอไม่จำกัด',
+                  '15+ ธีมสวยๆ',
+                  'รองรับ Custom Domain',
+                  'ลบแบรนด์ PortGen',
+                  'แดชบอร์ดวิเคราะห์',
+                  'สนับสนุนลำดับความสำคัญสูง',
+                  'เข้าถึงธีมใหม่ก่อน',
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-stone-600 dark:text-stone-300">
                     <Check className="w-4 h-4 text-teal-600 dark:text-teal-400 flex-shrink-0" />
@@ -455,10 +435,10 @@ export default function LandingPage() {
               </ul>
 
               <button onClick={() => setAuthOpen(true)} className="btn-primary w-full justify-center shadow-md">
-                {t.pricing.startProTrial}
+                ทดลองใช้ Pro ฟรี
               </button>
               <p className="text-center text-xs text-stone-400 dark:text-stone-500 mt-3">
-                {t.pricing.cancelAnytime}
+                ทดลองฟรี 7 วัน • ยกเลิกได้ทุกเมื่อ
               </p>
             </div>
           </div>
@@ -468,17 +448,17 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="section bg-gradient-to-br from-teal-600 dark:from-teal-700 to-teal-700 dark:to-teal-800 text-white dark:text-teal-50 reveal">
         <div className="container mx-auto text-center max-w-2xl">
-          <h2 className="text-3xl font-bold tracking-tight mb-4">{t.cta.title}</h2>
+          <h2 className="text-3xl font-bold tracking-tight mb-4">พร้อมแล้วใช่มั้ย? มาสร้างพอร์ตแรกของคุณกัน</h2>
           <p className="text-teal-100 dark:text-teal-200 text-base mb-9">
-            {t.cta.subtitle}
+            ร่วมกับนักพัฒนาที่เลิกส่ง PDF resume แล้ว
           </p>
           <button onClick={() => setAuthOpen(true)} className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg bg-white dark:bg-teal-100 text-teal-700 dark:text-teal-800 font-semibold text-base hover:bg-teal-50 dark:hover:bg-teal-200 transition-colors shadow-lg">
-            {t.cta.button}
+            สร้างพอร์ตฟรี →
             <ArrowRight className="w-4 h-4" />
           </button>
           <div className="mt-6 flex items-center justify-center gap-2 text-teal-200 text-sm">
             <Users className="w-4 h-4" />
-            <span>Join 2,000+ developers who already made theirs</span>
+            <span>สำหรับนักพัฒนาที่ต้องการให้ผลงานโดดเด่น</span>
           </div>
         </div>
       </section>
@@ -491,7 +471,7 @@ export default function LandingPage() {
             <span className="font-semibold text-sm text-stone-500 dark:text-stone-400">PortGen</span>
           </div>
           <p className="text-stone-400 dark:text-stone-500 text-sm">
-            {t.footer.copyright}
+            © 2026 PortGen. สร้างด้วย ❤️ สำหรับนักพัฒนาทุกคน
           </p>
         </div>
       </footer>
@@ -510,8 +490,6 @@ export default function LandingPage() {
 import { Dialog, DialogBody } from '@/components/ui/Dialog'
 
 function DemoDialog({ open, onClose, onEnter }: { open: boolean; onClose: () => void; onEnter: () => void }) {
-  const { t } = useI18n()
-
   return (
     <Dialog open={open} onClose={onClose}>
       <div className="text-center my-6 px-6">
@@ -521,16 +499,16 @@ function DemoDialog({ open, onClose, onEnter }: { open: boolean; onClose: () => 
           </div>
           <span className="font-semibold text-xl tracking-tight text-stone-900 dark:text-white">PortGen</span>
         </div>
-        <h2 className="text-2xl font-bold text-stone-900 dark:text-white">Try Demo Mode</h2>
-        <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">Explore with pre-created portfolios — no signup needed</p>
+        <h2 className="text-2xl font-bold text-stone-900 dark:text-white">ลองโหมด Demo</h2>
+        <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">สำรวจด้วยพอร์ตโฟลิโอตัวอย่าง — ไม่ต้องสมัครสมาชิก</p>
       </div>
 
       <DialogBody className="px-6 pb-6">
         <div className="space-y-3 mb-6">
           {[
-            { icon: '🎨', text: '3 portfolios pre-created with demo data' },
-            { icon: '🎭', text: 'All themes unlocked and editable' },
-            { icon: '⚡', text: 'Full builder experience available' },
+            { icon: '🎨', text: '3 พอร์ตโฟลิโอสร้างไว้แล้วพร้อมข้อมูลตัวอย่าง' },
+            { icon: '🎭', text: 'ธีมทั้งหมดปลดล็อกและแก้ไขได้' },
+            { icon: '⚡', text: 'ประสบการณ์การใช้งาน builder แบบเต็มรูปแบบ' },
           ].map((item, i) => (
             <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700">
               <span className="text-xl">{item.icon}</span>
@@ -540,14 +518,14 @@ function DemoDialog({ open, onClose, onEnter }: { open: boolean; onClose: () => 
         </div>
 
         <p className="text-xs text-stone-400 dark:text-stone-500 mb-4 text-center">
-          {t.login.noAccountNeeded}
+          ไม่ต้องมีบัญชี ใช้ข้อมูลตัวอย่างเท่านั้น
         </p>
 
         <button
           onClick={onEnter}
           className="btn-primary w-full justify-center text-base py-3"
         >
-          {t.login.enterDemo}
+          เข้า Demo Dashboard
           <ArrowRight className="w-4 h-4" />
         </button>
 
@@ -555,7 +533,7 @@ function DemoDialog({ open, onClose, onEnter }: { open: boolean; onClose: () => 
           onClick={onClose}
           className="w-full mt-3 text-sm text-stone-400 dark:text-stone-500 hover:text-stone-600 dark:hover:text-stone-300 transition-colors py-2"
         >
-          {t.common.cancel}
+          ยกเลิก
         </button>
       </DialogBody>
     </Dialog>

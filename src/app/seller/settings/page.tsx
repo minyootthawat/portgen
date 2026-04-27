@@ -46,24 +46,24 @@ function Toggle({ label, description, defaultChecked = false }: { label: string;
   )
 }
 
-const menuItems = [
-  { id: 'profile', label: 'Profile', icon: User },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'security', label: 'Security', icon: Shield },
-  { id: 'payment', label: 'Payment Methods', icon: CreditCard },
-  { id: 'language', label: 'Language & Region', icon: Globe },
-]
-
 export default function SellerSettingsPage() {
   const [activeTab, setActiveTab] = useState('profile')
+
+  const menuItems = [
+    { id: 'profile', label: 'โปรไฟล์', icon: User },
+    { id: 'notifications', label: 'การแจ้งเตือน', icon: Bell },
+    { id: 'security', label: 'ความปลอดภัย', icon: Shield },
+    { id: 'payment', label: 'วิธีการชำระเงิน', icon: CreditCard },
+    { id: 'language', label: 'ภาษาและภูมิภาค', icon: Globe },
+  ]
 
   return (
     <div className="p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Settings</h1>
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">การตั้งค่า</h1>
         <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
-          Manage your account settings and preferences
+          จัดการการตั้งค่าบัญชีและความชอบของคุณ
         </p>
       </div>
 
@@ -96,33 +96,33 @@ export default function SellerSettingsPage() {
           {activeTab === 'profile' && (
             <div className="space-y-6">
               <div className="card p-6">
-                <SectionHeader title="Profile Information" subtitle="Update your personal details" />
+                <SectionHeader title="ข้อมูลโปรไฟล์" subtitle="อัปเดตรายละเอียดส่วนตัวของคุณ" />
                 <div className="grid md:grid-cols-2 gap-6 mt-6">
-                  <FormField label="Full Name" placeholder="John Doe" defaultValue="John Doe" />
-                  <FormField label="Email" type="email" placeholder="john@example.com" defaultValue="john@example.com" />
-                  <FormField label="Phone" type="tel" placeholder="+1 234 567 8900" defaultValue="+1 234 567 8900" />
-                  <FormField label="Store Name" placeholder="My Store" defaultValue="John's Store" />
+                  <FormField label="ชื่อ-นามสกุล" placeholder="สมชาย ดีเจริญ" defaultValue="John Doe" />
+                  <FormField label="อีเมล" type="email" placeholder="somchai@email.com" defaultValue="john@example.com" />
+                  <FormField label="โทรศัพท์" type="tel" placeholder="+66 81 234 5678" defaultValue="+1 234 567 8900" />
+                  <FormField label="ชื่อร้านค้า" placeholder="ร้านค้าของฉัน" defaultValue="John's Store" />
                 </div>
                 <div className="mt-6">
-                  <FormField label="Bio" placeholder="Tell us about yourself..." defaultValue="Full-stack developer with 5 years of experience building web applications." />
+                  <FormField label="Bio" placeholder="บอกเล่าเกี่ยวกับตัวคุณ..." defaultValue="นักพัฒนา Full-stack มีประสบการณ์ 5 ปีในการสร้างเว็บแอปพลิเคชัน" />
                 </div>
                 <div className="mt-6 flex justify-end">
                   <button className="btn-primary">
                     <Save className="w-4 h-4" />
-                    Save Changes
+                    บันทึก
                   </button>
                 </div>
               </div>
 
               <div className="card p-6">
-                <SectionHeader title="Avatar" subtitle="Your profile picture" />
+                <SectionHeader title="รูปโปรไฟล์" subtitle="รูปโปรไฟล์ของคุณ" />
                 <div className="flex items-center gap-6 mt-4">
                   <div className="w-20 h-20 rounded-full bg-stone-100 dark:bg-stone-800 flex items-center justify-center">
                     <span className="text-2xl font-semibold text-stone-500 dark:text-stone-400">JD</span>
                   </div>
                   <div>
-                    <button className="btn-secondary mb-2">Upload New Image</button>
-                    <p className="text-xs text-stone-500 dark:text-stone-400">JPG, PNG or GIF. Max size 2MB.</p>
+                    <button className="btn-secondary mb-2">อัปโหลดรูปใหม่</button>
+                    <p className="text-xs text-stone-500 dark:text-stone-400">JPG, PNG หรือ GIF. ขนาดสูงสุด 2MB</p>
                   </div>
                 </div>
               </div>
@@ -131,12 +131,12 @@ export default function SellerSettingsPage() {
 
           {activeTab === 'notifications' && (
             <div className="card p-6">
-              <SectionHeader title="Notification Preferences" subtitle="Control how you receive notifications" />
+              <SectionHeader title="การแจ้งเตือน" subtitle="จัดการวิธีที่คุณรับการแจ้งเตือน" />
               <div className="divide-y divide-stone-200 dark:divide-stone-700">
-                <Toggle label="Email Notifications" description="Receive order updates via email" defaultChecked={true} />
-                <Toggle label="Browser Notifications" description="Get instant alerts in your browser" defaultChecked={true} />
-                <Toggle label="Marketing Emails" description="Receive promotional offers and updates" defaultChecked={false} />
-                <Toggle label="Weekly Summary" description="Get a weekly report of your store performance" defaultChecked={true} />
+                <Toggle label="การแจ้งเตือนทางอีเมล" description="รับการอัปเดตคำสั่งซื้อทางอีเมล" defaultChecked={true} />
+                <Toggle label="การแจ้งเตือนในเบราว์เซอร์" description="รับการแจ้งเตือนทันทีในเบราว์เซอร์ของคุณ" defaultChecked={true} />
+                <Toggle label="อีเมลการตลาด" description="รับข้อเสนอโปรโมชันและการอัปเดต" defaultChecked={false} />
+                <Toggle label="สรุปรายสัปดาห์" description="รับรายงานประจำสัปดาห์ของประสิทธิภาพร้านของคุณ" defaultChecked={true} />
               </div>
             </div>
           )}
@@ -144,28 +144,28 @@ export default function SellerSettingsPage() {
           {activeTab === 'security' && (
             <div className="space-y-6">
               <div className="card p-6">
-                <SectionHeader title="Change Password" subtitle="Update your password to keep your account secure" />
+                <SectionHeader title="ความปลอดภัย" subtitle="รักษาบัญชีของคุณให้ปลอดภัย" />
                 <div className="space-y-4 mt-6">
-                  <FormField label="Current Password" type="password" placeholder="Enter current password" />
-                  <FormField label="New Password" type="password" placeholder="Enter new password" />
-                  <FormField label="Confirm New Password" type="password" placeholder="Confirm new password" />
+                  <FormField label="รหัสผ่านปัจจุบัน" type="password" placeholder="ใส่รหัสผ่านปัจจุบัน" />
+                  <FormField label="รหัสผ่านใหม่" type="password" placeholder="ใส่รหัสผ่านใหม่" />
+                  <FormField label="ยืนยันรหัสผ่านใหม่" type="password" placeholder="ยืนยันรหัสผ่านใหม่" />
                 </div>
                 <div className="mt-6 flex justify-end">
                   <button className="btn-primary">
                     <Key className="w-4 h-4" />
-                    Update Password
+                    อัปเดตรหัสผ่าน
                   </button>
                 </div>
               </div>
 
               <div className="card p-6">
-                <SectionHeader title="Two-Factor Authentication" subtitle="Add an extra layer of security to your account" />
+                <SectionHeader title="การยืนยันสองขั้นตอน" subtitle="เพิ่มชั้นความปลอดภัยพิเศษให้บัญชีของคุณ" />
                 <div className="flex items-center justify-between py-4 mt-4">
                   <div>
-                    <p className="font-medium text-stone-900 dark:text-white">Authenticator App</p>
-                    <p className="text-sm text-stone-500 dark:text-stone-400">Use an authenticator app to get verification codes</p>
+                    <p className="font-medium text-stone-900 dark:text-white">แอปตรวจสอบสิทธิ์</p>
+                    <p className="text-sm text-stone-500 dark:text-stone-400">ใช้แอปตรวจสอบสิทธิ์เพื่อรับรหัสยืนยัน</p>
                   </div>
-                  <button className="btn-secondary">Enable</button>
+                  <button className="btn-secondary">เปิดใช้งาน</button>
                 </div>
               </div>
             </div>
@@ -173,7 +173,7 @@ export default function SellerSettingsPage() {
 
           {activeTab === 'payment' && (
             <div className="card p-6">
-              <SectionHeader title="Payment Methods" subtitle="Manage your payout methods" />
+              <SectionHeader title="วิธีการชำระเงิน" subtitle="จัดการวิธีการรับเงินของคุณ" />
               <div className="mt-6 space-y-4">
                 <div className="flex items-center justify-between p-4 rounded-lg border border-stone-200 dark:border-stone-700">
                   <div className="flex items-center gap-4">
@@ -182,10 +182,10 @@ export default function SellerSettingsPage() {
                     </div>
                     <div>
                       <p className="font-medium text-stone-900 dark:text-white">Visa ending in 4242</p>
-                      <p className="text-sm text-stone-500 dark:text-stone-400">Expires 12/2025</p>
+                      <p className="text-sm text-stone-500 dark:text-stone-400">หมดอายุ 12/2025</p>
                     </div>
                   </div>
-                  <span className="badge badge-success">Default</span>
+                  <span className="badge badge-success">ค่าเริ่มต้น</span>
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-lg border border-stone-200 dark:border-stone-700">
                   <div className="flex items-center gap-4">
@@ -194,34 +194,34 @@ export default function SellerSettingsPage() {
                     </div>
                     <div>
                       <p className="font-medium text-stone-900 dark:text-white">Mastercard ending in 8888</p>
-                      <p className="text-sm text-stone-500 dark:text-stone-400">Expires 03/2026</p>
+                      <p className="text-sm text-stone-500 dark:text-stone-400">หมดอายุ 03/2026</p>
                     </div>
                   </div>
-                  <button className="text-sm text-teal-600 dark:text-teal-400 hover:underline">Set as default</button>
+                  <button className="text-sm text-teal-600 dark:text-teal-400 hover:underline">ตั้งเป็นค่าเริ่มต้น</button>
                 </div>
               </div>
               <button className="btn-secondary mt-6">
                 <CreditCard className="w-4 h-4" />
-                Add Payment Method
+                เพิ่มวิธีการชำระเงิน
               </button>
             </div>
           )}
 
           {activeTab === 'language' && (
             <div className="card p-6">
-              <SectionHeader title="Language & Region" subtitle="Customize your experience" />
+              <SectionHeader title="ภาษาและภูมิภาค" subtitle="ปรับแต่งประสบการณ์ของคุณ" />
               <div className="space-y-6 mt-6">
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-stone-900 dark:text-white">Language</label>
+                  <label className="block text-sm font-medium text-stone-900 dark:text-white">ภาษา</label>
                   <select className="w-full px-4 py-2.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500">
                     <option>English</option>
-                    <option>Thai</option>
+                    <option>ไทย</option>
                     <option>Chinese (Simplified)</option>
                     <option>Japanese</option>
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-stone-900 dark:text-white">Timezone</label>
+                  <label className="block text-sm font-medium text-stone-900 dark:text-white">เวลา</label>
                   <select className="w-full px-4 py-2.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500">
                     <option>UTC+0 (London)</option>
                     <option>UTC+7 (Bangkok)</option>
@@ -231,7 +231,7 @@ export default function SellerSettingsPage() {
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-stone-900 dark:text-white">Currency</label>
+                  <label className="block text-sm font-medium text-stone-900 dark:text-white">สกุลเงิน</label>
                   <select className="w-full px-4 py-2.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500">
                     <option>USD ($)</option>
                     <option>EUR (€)</option>
@@ -243,7 +243,7 @@ export default function SellerSettingsPage() {
               <div className="mt-6 flex justify-end">
                 <button className="btn-primary">
                   <Save className="w-4 h-4" />
-                  Save Preferences
+                  บันทึก
                 </button>
               </div>
             </div>
