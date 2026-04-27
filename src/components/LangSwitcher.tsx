@@ -10,7 +10,7 @@ export function LangSwitcher() {
   const pathname = usePathname()
 
   const handleSwitch = (newLocale: string) => {
-    router.replace(pathname)
+    router.replace(pathname, { locale: newLocale })
   }
 
   return (
