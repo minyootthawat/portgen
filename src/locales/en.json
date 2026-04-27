@@ -259,6 +259,7 @@
     "yourPortfolioOn": "Your Portfolio on PortGen"
   },
   "public": {
+    "createPortfolio": "Create your Portfolio",
     "skills": "Skills",
     "projects": "Projects",
     "unnamed": "Unnamed",

@@ -55,6 +55,7 @@ export default async function PublicPortfolioPage({ params }: Props) {
 
 export async function generateMetadata({ params }: Props) {
   const { subdomain } = params
+  const t = await getTranslations('portfolio')
 
   try {
     const { portfolios } = await getCollections()
@@ -66,12 +67,12 @@ export async function generateMetadata({ params }: Props) {
 
     return {
       title: portfolio ? `${portfolio.name} — PortGen` : 'Portfolio — PortGen',
-      description: portfolio?.tagline || 'Portfolio ของฉันบน PortGen',
+      description: portfolio?.tagline || t('yourPortfolioOn'),
     }
   } catch {
     return {
       title: 'Portfolio — PortGen',
-      description: 'Portfolio ของฉันบน PortGen',
+      description: t('yourPortfolioOn'),
     }
   }
 }

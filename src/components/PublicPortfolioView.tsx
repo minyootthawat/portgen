@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import type { Portfolio } from '@/types'
 import Link from 'next/link'
 
@@ -32,6 +33,7 @@ const THEME_STYLES: Record<string, { wrapper: string; heading: string; subheadin
 }
 
 export function PublicPortfolioView({ portfolio }: Props) {
+  const t = useTranslations('public')
   const theme = portfolio.theme || 'gradient-dark'
   const styles = THEME_STYLES[theme] || THEME_STYLES['gradient-dark']
 
@@ -43,7 +45,7 @@ export function PublicPortfolioView({ portfolio }: Props) {
           <Link href="/" className="text-sm font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 transition">
             ← PortGen
           </Link>
-          <span className="text-xs text-stone-400">สร้าง Portfolio ของคุณ</span>
+          <span className="text-xs text-stone-400">{t('createPortfolio')}</span>
         </div>
       </header>
 
@@ -63,7 +65,7 @@ export function PublicPortfolioView({ portfolio }: Props) {
             </div>
           )}
           <h1 className={`text-3xl font-bold mb-2 ${styles.heading}`}>
-            {portfolio.name || 'ไม่ระบุชื่อ'}
+            {portfolio.name || t('unnamed')}
           </h1>
           <p className={`text-base ${styles.subheading}`}>
             {portfolio.tagline || ''}
@@ -81,7 +83,7 @@ export function PublicPortfolioView({ portfolio }: Props) {
         {(portfolio.skills?.length ?? 0) > 0 && (
           <div className="mb-10">
             <h2 className={`text-sm font-semibold uppercase tracking-wider mb-4 text-center ${styles.subheading}`}>
-              ทักษะ
+              {t('skills')}
             </h2>
             <div className="flex flex-wrap justify-center gap-2">
               {(portfolio.skills || []).map((skill) => (
@@ -100,7 +102,7 @@ export function PublicPortfolioView({ portfolio }: Props) {
         {(portfolio.projects?.length ?? 0) > 0 && (
           <div className="mb-10">
             <h2 className={`text-sm font-semibold uppercase tracking-wider mb-4 text-center ${styles.subheading}`}>
-              โปรเจกต์
+              {t('projects')}
             </h2>
             <div className="space-y-4">
               {(portfolio.projects || []).map((project) => (
@@ -109,7 +111,7 @@ export function PublicPortfolioView({ portfolio }: Props) {
                   className={`p-5 rounded-xl border ${styles.card}`}
                 >
                   <h3 className={`font-semibold mb-1 ${styles.heading}`}>
-                    {project.title || 'ไม่ระะบุชื่อ'}
+                    {project.title || t('unnamed')}
                   </h3>
                   <p className={`text-sm mb-3 ${styles.subheading}`}>
                     {project.description || ''}
@@ -132,7 +134,7 @@ export function PublicPortfolioView({ portfolio }: Props) {
                           rel="noopener noreferrer"
                           className="text-sm text-teal-600 hover:text-teal-700 font-medium"
                         >
-                          → ดูเว็บไซต์
+                          {t('viewWebsite')}
                         </a>
                       )}
                       {project.repo_url && (
@@ -157,7 +159,7 @@ export function PublicPortfolioView({ portfolio }: Props) {
         {(portfolio.social_links?.length ?? 0) > 0 && (
           <div className="mb-10">
             <h2 className={`text-sm font-semibold uppercase tracking-wider mb-4 text-center ${styles.subheading}`}>
-              ติดตาม
+              {t('follow')}
             </h2>
             <div className="flex justify-center gap-3 flex-wrap">
               {(portfolio.social_links || []).map((link) => (
@@ -204,7 +206,7 @@ export function PublicPortfolioView({ portfolio }: Props) {
       {/* Footer */}
       <footer className={`text-center py-8 border-t ${styles.card}`}>
         <p className={`text-sm ${styles.subheading}`}>
-          สร้างด้วย <Link href="/" className="text-teal-600 hover:text-teal-700 font-medium">PortGen</Link>
+          {t('builtWith')} <Link href="/" className="text-teal-600 hover:text-teal-700 font-medium">PortGen</Link>
         </p>
       </footer>
     </div>

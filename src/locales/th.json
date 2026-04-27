@@ -164,7 +164,8 @@
       "experience": "ประสบการณ์",
       "education": "การศึกษา",
       "testimonials": "รีวิว",
-      "certifications": "ใบรับรอง"
+      "certifications": "ใบรับรอง",
+      "sections": "เซคชัน"
     },
     "emptyMessages": {
       "skills": "ยังไม่มีทักษะ — พิมพ์ด้านบนเพื่อเพิ่ม",
@@ -258,6 +259,7 @@
     "yourPortfolioOn": "Portfolio ของคุณบน PortGen"
   },
   "public": {
+    "createPortfolio": "สร้าง Portfolio ของคุณ",
     "skills": "ทักษะ",
     "projects": "โปรเจกต์",
     "unnamed": "ไม่ระบุชื่อ",
