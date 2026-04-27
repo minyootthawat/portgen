@@ -253,6 +253,18 @@
     },
     "noName": "ไม่มีชื่อ"
   },
+  "portfolio": {
+    "createPortfolio": "สร้าง Portfolio ของคุณ",
+    "yourPortfolioOn": "Portfolio ของคุณบน PortGen"
+  },
+  "public": {
+    "skills": "ทักษะ",
+    "projects": "โปรเจกต์",
+    "unnamed": "ไม่ระบุชื่อ",
+    "viewWebsite": "→ ดูเว็บไซต์",
+    "follow": "ติดตาม",
+    "builtWith": "สร้างด้วย"
+  },
   "success": {
     "loading": "กำลังโหลด...",
     "errorTitle": "เกิดข้อผิดพลาด",

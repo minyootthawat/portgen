@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { signIn } from 'next-auth/react'
 import { Github, Mail, ArrowRight, Loader2, X, Zap, Check } from 'lucide-react'
 import { Dialog, DialogBody } from '@/components/ui/Dialog'
@@ -13,6 +14,7 @@ interface AuthDialogProps {
 }
 
 export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: AuthDialogProps) {
+  const t = useTranslations('auth')
   const [mode, setMode] = useState<'login' | 'register'>(defaultMode)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -28,11 +30,11 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
     setAuthError('')
 
     if (!email) {
-      setEmailError('ต้องระบุอีเมล')
+      setEmailError(t('errors.emailRequired'))
       return
     }
     if (!password) {
-      setAuthError('ต้องระบุรหัสผ่าน')
+      setAuthError(t('errors.passwordRequired'))
       return
     }
 
@@ -46,13 +48,13 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
       })
 
       if (result?.error) {
-        setAuthError('อีเมลหรือรหัสผ่านไม่ถูกต้อง')
+        setAuthError(t('errors.invalidCredentials'))
         setIsLoading(false)
       } else if (result?.url) {
         window.location.href = result.url
       }
     } catch {
-      setAuthError('เกิดข้อผิดพลาด กรุณาลองใหม่')
+      setAuthError(t('errors.genericError'))
       setIsLoading(false)
     }
   }
@@ -63,19 +65,19 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
     setAuthError('')
 
     if (!name.trim()) {
-      setAuthError('ต้องระบุชื่อ')
+      setAuthError(t('errors.nameRequired'))
       return
     }
     if (!email) {
-      setEmailError('ต้องระบุอีเมล')
+      setEmailError(t('errors.emailRequired'))
       return
     }
     if (!password || password.length < 6) {
-      setAuthError('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร')
+      setAuthError(t('errors.passwordMinLength'))
       return
     }
     if (password !== confirmPassword) {
-      setAuthError('รหัสผ่านไม่ตรงกัน')
+      setAuthError(t('errors.passwordMismatch'))
       return
     }
 
@@ -104,13 +106,13 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
       })
 
       if (result?.error) {
-        setAuthError('สมัครสำเร็จแล้ว แต่เข้าสู่ระบบไม่ได้ กรุณาเข้าสู่ระบบด้วยตนเอง')
+        setAuthError(t('errors.registeredButLoginFailed'))
         setIsLoading(false)
       } else if (result?.url) {
         window.location.href = result.url
       }
     } catch {
-      setAuthError('เกิดข้อผิดพลาด กรุณาลองใหม่')
+      setAuthError(t('errors.genericError'))
       setIsLoading(false)
     }
   }
@@ -159,10 +161,10 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
           <span className="font-semibold text-xl tracking-tight text-stone-900 dark:text-white">PortGen</span>
         </div>
         <h2 className="text-2xl font-bold text-stone-900 dark:text-white">
-          {isRegister ? 'สมัครบัญชีใหม่' : 'ยินดีต้อนรับกลับ'}
+          {isRegister ? t('registerTitle') : t('loginTitle')}
         </h2>
         <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
-          {isRegister ? 'สร้างพอร์ตโฟลิโอที่น่าประทับใจในไม่กี่นาที' : 'เข้าสู่ระบบเพื่อไปยังแดชบอร์ดของคุณ'}
+          {isRegister ? t('registerSubtitle') : t('loginSubtitle')}
         </p>
       </div>
 
@@ -176,7 +178,7 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="ชื่อของคุณ"
+                placeholder={t('namePlaceholder')}
                 className="input"
                 autoFocus
               />
@@ -199,7 +201,7 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
               type="password"
               value={password}
               onChange={(e) => { setPassword(e.target.value); setAuthError('') }}
-              placeholder="รหัสผ่าน"
+              placeholder={t('passwordPlaceholder')}
               className="input"
             />
           </div>
@@ -211,7 +213,7 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => { setConfirmPassword(e.target.value); setAuthError('') }}
-                placeholder="ยืนยันรหัสผ่าน"
+                placeholder={t('confirmPasswordPlaceholder')}
                 className="input"
               />
             </div>
@@ -230,7 +232,7 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <>
-                {isRegister ? 'สมัครบัญชี' : 'เข้าสู่ระบบ'}
+                {isRegister ? t('registerButton') : t('loginButton')}
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
@@ -244,7 +246,7 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
               <div className="w-full border-t border-stone-200 dark:border-stone-700" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-3 bg-white dark:bg-stone-900 text-stone-400 dark:text-stone-500">หรือสมัครบัญชีใหม่</span>
+              <span className="px-3 bg-white dark:bg-stone-900 text-stone-400 dark:text-stone-500">{t('orRegister')}</span>
             </div>
           </div>
         )}
@@ -253,24 +255,24 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
         <p className="text-center text-stone-500 dark:text-stone-400 text-sm">
           {isRegister ? (
             <>
-              มีบัญชีอยู่แล้ว?{' '}
+              {t('hasAccount')}{' '}
               <button
                 type="button"
                 onClick={() => handleSwitchMode('login')}
                 className="text-teal-600 dark:text-teal-400 font-medium hover:underline"
               >
-                เข้าสู่ระบบ
+                {t('loginLink')}
               </button>
             </>
           ) : (
             <>
-              ยังไม่มีบัญชี?{' '}
+              {t('noAccount')}{' '}
               <button
                 type="button"
                 onClick={() => handleSwitchMode('register')}
                 className="text-teal-600 dark:text-teal-400 font-medium hover:underline"
               >
-                สมัครบัญชีใหม่
+                {t('registerLink')}
               </button>
             </>
           )}
@@ -278,8 +280,8 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
 
         <p className="text-center text-stone-400 dark:text-stone-500 text-xs mt-5 leading-relaxed">
           {isRegister
-            ? 'เมื่อสมัคร คุณตกลงกับข้อกำหนดการใช้งานและนโยบายความเป็นส่วนตัว'
-            : 'เมื่อเข้าสู่ระบบ คุณตกลงกับข้อกำหนดการใช้งานและนโยบายความเป็นส่วนตัว'}
+            ? t('termsRegister')
+            : t('termsLogin')}
         </p>
 
         {/* Try Demo */}
@@ -289,7 +291,7 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
               onClick={onTryDemo}
               className="w-full py-2.5 px-4 rounded-lg border-2 border-dashed border-stone-300 dark:border-stone-600 text-stone-500 dark:text-stone-400 font-medium text-sm hover:border-teal-400 dark:hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
             >
-              ลองโหมด Demo
+              {t('tryDemo')}
             </button>
           </div>
         )}
@@ -306,7 +308,7 @@ export function AuthDialog({ open, onClose, onTryDemo, defaultMode = 'login' }: 
               </div>
             ))}
           </div>
-          <span>2,000+ นักพัฒนาใช้งานอยู่</span>
+          <span>{t('usersUsing')}</span>
         </div>
       </DialogBody>
     </Dialog>

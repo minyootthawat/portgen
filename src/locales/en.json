@@ -164,7 +164,8 @@
       "experience": "Experience",
       "education": "Education",
       "testimonials": "Reviews",
-      "certifications": "Certifications"
+      "certifications": "Certifications",
+      "sections": "Sections"
     },
     "emptyMessages": {
       "skills": "No skills yet — type above to add",
@@ -252,6 +253,18 @@
       "links": "{n} links"
     },
     "noName": "No name"
+  },
+  "portfolio": {
+    "createPortfolio": "Create your Portfolio",
+    "yourPortfolioOn": "Your Portfolio on PortGen"
+  },
+  "public": {
+    "skills": "Skills",
+    "projects": "Projects",
+    "unnamed": "Unnamed",
+    "viewWebsite": "→ View website",
+    "follow": "Follow",
+    "builtWith": "Built with"
   },
   "success": {
     "loading": "Loading...",

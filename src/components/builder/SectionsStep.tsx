@@ -33,17 +33,10 @@ export function SectionsStep({ sections, onAdd, onRemove, onReorder, onUpdate }:
   }
 
   const handleAddSection = (type: string) => {
-    const typeLabels: Record<string, string> = {
-      services: 'Services',
-      experience: 'Experience',
-      education: 'Education',
-      testimonials: 'Testimonials',
-      certifications: 'Certifications',
-    }
     onAdd({
       id: Date.now().toString(),
       type,
-      title: typeLabels[type] || type,
+      title: t(`sectionTypes.${type}` as any),
       items: [],
     })
     setShowSelector(false)
