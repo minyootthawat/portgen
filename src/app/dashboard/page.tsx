@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { signOut, useSession } from 'next-auth/react'
-import { Plus, ExternalLink, Trash2, Loader2, Crown, ArrowRight, Sparkles } from 'lucide-react'
+import { Plus, Trash2, Loader2, Crown, ArrowRight, Sparkles } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import type { Portfolio } from '@/types'
 
@@ -262,16 +262,9 @@ export default function DashboardPage() {
                       <p className="text-xs text-stone-400 dark:text-stone-500 truncate mt-0.5">{portfolio.subdomain}.portgen.com</p>
                     </div>
                     {portfolio.is_published ? (
-                      <a
-                        href={`https://${portfolio.subdomain}.portgen.com`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="shrink-0 px-2 py-1 rounded text-xs bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 font-medium flex items-center gap-1 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors"
-                        title="เปิดดูเว็บไซต์"
-                      >
-                        <ExternalLink className="w-3 h-3" />
+                      <span className="shrink-0 px-2 py-1 rounded text-xs bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 font-medium">
                         Live
-                      </a>
+                      </span>
                     ) : (
                       <span className="shrink-0 px-2 py-1 rounded text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 font-medium">
                         ฉบับร่าง
