@@ -2,13 +2,15 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { useSession, signOut } from 'next-auth/react'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { AuthDialog } from '@/components/AuthDialog'
-import { Check, ArrowRight, Zap, Play, Star, Users } from 'lucide-react'
+import { Check, ArrowRight, Zap, Play, Star, Users, LogOut } from 'lucide-react'
 
 export default function LandingPage() {
+  const { data: session, status } = useSession()
+  const isLoading = status === 'loading'
   const [authOpen, setAuthOpen] = useState(false)
-  const [demoOpen, setDemoOpen] = useState(false)
   const sectionsRef = useRef<HTMLDivElement>(null)
 
   // Scroll reveal observer
@@ -29,66 +31,6 @@ export default function LandingPage() {
     return () => observer.disconnect()
   }, [])
 
-  const handleTryDemo = () => {
-    // Set up demo session in localStorage
-    const demoUser = {
-      id: '00000000-0000-0000-0000-000000000001',
-      name: 'Demo User',
-      email: 'demo@portgen.dev',
-      tagline: 'Full-Stack Developer | React & Node.js',
-      about: 'Passionate developer with 5 years of experience building web applications. I love creating beautiful, user-friendly interfaces and scalable backends.',
-      skills: [
-        { id: '1', name: 'React' },
-        { id: '2', name: 'TypeScript' },
-        { id: '3', name: 'Node.js' },
-        { id: '4', name: 'PostgreSQL' },
-        { id: '5', name: 'Docker' },
-        { id: '6', name: 'GraphQL' },
-      ],
-      projects: [
-        {
-          id: '1',
-          title: 'E-Commerce Platform',
-          description: 'Full-stack marketplace with React, Node.js, Stripe payments, and real-time inventory management. Serves 2,000+ daily active users.',
-          tags: ['React', 'Node.js', 'Stripe', 'PostgreSQL'],
-          live_url: 'https://demo-shop.vercel.app',
-          repo_url: 'https://github.com/demo/ecommerce',
-        },
-        {
-          id: '2',
-          title: 'Task Management App',
-          description: 'Real-time collaboration tool with WebSocket sync, Kanban boards, and team analytics dashboard.',
-          tags: ['Next.js', 'WebSocket', 'Prisma'],
-          live_url: 'https://demo-taskapp.vercel.app',
-          repo_url: 'https://github.com/demo/taskapp',
-        },
-        {
-          id: '3',
-          title: 'AI Writing Assistant',
-          description: 'GPT-4 powered writing tool with SEO analysis, tone adjustment, and multi-language support.',
-          tags: ['OpenAI', 'Python', 'FastAPI'],
-          live_url: 'https://demo-aiwrite.vercel.app',
-          repo_url: 'https://github.com/demo/aiwrite',
-        },
-        {
-          id: '4',
-          title: 'Fitness Tracking Dashboard',
-          description: 'Health metrics visualization app with wearable device integration and personalized workout recommendations.',
-          tags: ['React', 'D3.js', 'Node.js'],
-          live_url: 'https://demo-fitness.vercel.app',
-          repo_url: 'https://github.com/demo/fitness',
-        },
-      ],
-      social_links: [
-        { id: '1', platform: 'github', url: 'https://github.com/demouser' },
-        { id: '2', platform: 'linkedin', url: 'https://linkedin.com/in/demouser' },
-        { id: '3', platform: 'twitter', url: 'https://twitter.com/demouser' },
-      ],
-      avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=demo',
-    }
-    localStorage.setItem('demo_session', JSON.stringify(demoUser))
-    window.location.href = '/dashboard'
-  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100" ref={sectionsRef}>
@@ -130,12 +72,30 @@ export default function LandingPage() {
           {/* Desktop actions */}
           <div className="hidden md:flex items-center gap-3">
             <ThemeToggle />
-            <button onClick={() => setDemoOpen(true)} className="btn-ghost text-sm dark:text-stone-300">
-              เข้าสู่ระบบ
-            </button>
-            <button onClick={() => setAuthOpen(true)} className="btn-primary text-sm bg-teal-600 hover:bg-teal-700 text-white shadow-sm">
-              เริ่มใช้ฟรี
-            </button>
+            {isLoading ? (
+              <div className="w-20 h-8 bg-stone-200 dark:bg-stone-700 rounded-lg animate-pulse" />
+            ) : session ? (
+              <>
+                <span className="text-sm text-stone-600 dark:text-stone-400">
+                  {session.user?.name || session.user?.email}
+                </span>
+                <Link href="/dashboard" className="btn-ghost text-sm dark:text-stone-300">
+                  Dashboard
+                </Link>
+                <button onClick={() => signOut()} className="btn-ghost text-sm dark:text-stone-300">
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </>
+            ) : (
+              <>
+                <button onClick={() => setAuthOpen(true)} className="btn-ghost text-sm dark:text-stone-300">
+                  เข้าสู่ระบบ
+                </button>
+                <button onClick={() => setAuthOpen(true)} className="btn-primary text-sm bg-teal-600 hover:bg-teal-700 text-white shadow-sm">
+                  เริ่มใช้ฟรี
+                </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -146,7 +106,6 @@ export default function LandingPage() {
           <div className="flex items-center gap-3 pt-2">
             <ThemeToggle />
           </div>
-          <button onClick={() => setDemoOpen(true)} className="btn-ghost text-sm w-full justify-center">เข้าสู่ระบบ</button>
           <button onClick={() => setAuthOpen(true)} className="btn-primary text-sm bg-teal-600 hover:bg-teal-700 text-white w-full justify-center">เริ่มใช้ฟรี</button>
         </div>
       </nav>
@@ -174,14 +133,23 @@ export default function LandingPage() {
 
           {/* CTA */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10 animate-fade-in-up" style={{ animationDelay: '0.3s', opacity: 0 }}>
-            <button onClick={() => setAuthOpen(true)} className="btn-primary text-base px-8 py-3.5 shadow-lg shadow-teal-600/25 hover:shadow-xl hover:shadow-teal-600/30">
-              สร้างพอร์ตฟรี — ไม่ต้องใส่บัตรเครดิต
-              <ArrowRight className="w-4 h-4" />
-            </button>
-            <button onClick={() => setDemoOpen(true)} className="btn-secondary text-base px-8 py-3.5">
+            {isLoading ? (
+              <div className="w-48 h-12 bg-stone-200 dark:bg-stone-700 rounded-xl animate-pulse" />
+            ) : session ? (
+              <Link href="/dashboard" className="btn-primary text-base px-8 py-3.5 shadow-lg shadow-teal-600/25 hover:shadow-xl hover:shadow-teal-600/30">
+                ไปยัง Dashboard
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            ) : (
+              <button onClick={() => setAuthOpen(true)} className="btn-primary text-base px-8 py-3.5 shadow-lg shadow-teal-600/25 hover:shadow-xl hover:shadow-teal-600/30">
+                สร้างพอร์ตฟรี — ไม่ต้องใส่บัตรเครดิต
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
+            <Link href="/p/demo" className="btn-secondary text-base px-8 py-3.5">
               <Play className="w-4 h-4" />
               ลองดูตัวอย่าง
-            </button>
+            </Link>
           </div>
 
           {/* Mini portfolio preview */}
@@ -246,7 +214,7 @@ export default function LandingPage() {
           </div>
           <div className="max-w-3xl mx-auto">
             {/* Video placeholder */}
-            <div className="relative rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-700 shadow-xl aspect-video bg-stone-200 dark:bg-stone-800 group cursor-pointer" onClick={() => setDemoOpen(true)}>
+            <div className="relative rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-700 shadow-xl aspect-video bg-stone-200 dark:bg-stone-800 group cursor-pointer">
               {/* Thumbnail background */}
               <div className="absolute inset-0 bg-gradient-to-br from-teal-600 to-indigo-700" />
               <div className="absolute inset-0 flex items-center justify-center">
@@ -477,65 +445,7 @@ export default function LandingPage() {
       </footer>
 
       {/* Auth Dialog */}
-      <AuthDialog open={authOpen} onClose={() => setAuthOpen(false)} onTryDemo={handleTryDemo} />
-
-      {/* Demo Dialog */}
-      <DemoDialog open={demoOpen} onClose={() => setDemoOpen(false)} onEnter={handleTryDemo} />
+      <AuthDialog open={authOpen} onClose={() => setAuthOpen(false)} />
     </div>
-  )
-}
-
-// ─── Demo Dialog ───────────────────────────────────────────────────────────────
-
-import { Dialog, DialogBody } from '@/components/ui/Dialog'
-
-function DemoDialog({ open, onClose, onEnter }: { open: boolean; onClose: () => void; onEnter: () => void }) {
-  return (
-    <Dialog open={open} onClose={onClose}>
-      <div className="text-center my-6 px-6">
-        <div className="inline-flex items-center gap-2 mb-4">
-          <div className="w-9 h-9 rounded-lg bg-teal-600 flex items-center justify-center shadow-sm">
-            <Zap className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-semibold text-xl tracking-tight text-stone-900 dark:text-white">PortGen</span>
-        </div>
-        <h2 className="text-2xl font-bold text-stone-900 dark:text-white">ลองโหมด Demo</h2>
-        <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">สำรวจด้วยพอร์ตโฟลิโอตัวอย่าง — ไม่ต้องสมัครสมาชิก</p>
-      </div>
-
-      <DialogBody className="px-6 pb-6">
-        <div className="space-y-3 mb-6">
-          {[
-            { icon: '🎨', text: '3 พอร์ตโฟลิโอสร้างไว้แล้วพร้อมข้อมูลตัวอย่าง' },
-            { icon: '🎭', text: 'ธีมทั้งหมดปลดล็อกและแก้ไขได้' },
-            { icon: '⚡', text: 'ประสบการณ์การใช้งาน builder แบบเต็มรูปแบบ' },
-          ].map((item, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700">
-              <span className="text-xl">{item.icon}</span>
-              <span className="text-sm text-stone-700 dark:text-stone-200">{item.text}</span>
-            </div>
-          ))}
-        </div>
-
-        <p className="text-xs text-stone-400 dark:text-stone-500 mb-4 text-center">
-          ไม่ต้องมีบัญชี ใช้ข้อมูลตัวอย่างเท่านั้น
-        </p>
-
-        <button
-          onClick={onEnter}
-          className="btn-primary w-full justify-center text-base py-3"
-        >
-          เข้า Demo Dashboard
-          <ArrowRight className="w-4 h-4" />
-        </button>
-
-        <button
-          onClick={onClose}
-          className="w-full mt-3 text-sm text-stone-400 dark:text-stone-500 hover:text-stone-600 dark:hover:text-stone-300 transition-colors py-2"
-        >
-          ยกเลิก
-        </button>
-      </DialogBody>
-    </Dialog>
   )
 }

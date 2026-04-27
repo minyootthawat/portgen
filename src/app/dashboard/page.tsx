@@ -14,7 +14,6 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
   const [isPro, setIsPro] = useState(false)
-  const [isDemo, setIsDemo] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -26,14 +25,6 @@ export default function DashboardPage() {
     if (status === 'loading') return
 
     const checkUser = async () => {
-      // Check demo mode
-      const demoSession = typeof window !== 'undefined' ? localStorage.getItem('demo_session') : null
-      if (demoSession) {
-        setIsDemo(true)
-        setLoading(false)
-        return
-      }
-
       if (!session?.user) {
         router.push('/login')
         return
@@ -125,11 +116,7 @@ export default function DashboardPage() {
               </div>
               <span className="font-semibold text-lg tracking-tight text-stone-900 dark:text-white">PortGen</span>
             </Link>
-            {isDemo && (
-              <span className="px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-semibold">
-                โหมด Demo
-              </span>
-            )}
+
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-stone-500 dark:text-stone-400 hidden sm:block">{session?.user?.email || session?.user?.name}</span>
@@ -147,20 +134,6 @@ export default function DashboardPage() {
         </div>
       </nav>
 
-      {/* Demo banner */}
-      {isDemo && (
-        <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800 px-6 py-2.5">
-          <div className="container-lg mx-auto flex items-center justify-between gap-4">
-            <p className="text-sm text-amber-800 dark:text-amber-300">
-              <Sparkles className="w-4 h-4 inline mr-1.5" />
-              นี่คือ demo — การเปลี่ยนแปลงจะไม่ถูกบันทึก สมัครเพื่อสร้างพอร์ตโฟลิโอจริงของคุณ!
-            </p>
-            <Link href="/" className="text-sm font-medium text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-200 flex items-center gap-1 shrink-0">
-              สมัครบัญชีจริง <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      )}
 
       {/* Content */}
       <div className="container-lg mx-auto px-6 py-12">

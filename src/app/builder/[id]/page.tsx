@@ -27,11 +27,9 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
 
       if (status === 'loading') return
 
-      // Demo session check
-      const demoSession = typeof window !== 'undefined' ? localStorage.getItem('demo_session') : null
-      const effectiveUserId = session?.user ? (session.user as any)?.id || session.user.email : demoSession ? JSON.parse(demoSession).id : null
+      const effectiveUserId = session?.user ? (session.user as any)?.id || session.user.email : null
 
-      if (!effectiveUserId && !demoSession) {
+      if (!effectiveUserId) {
         router.push('/login')
         return
       }
@@ -41,7 +39,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
         setTheme('gradient-dark')
         // Initialize with an Info section by default
         setSections([createDefaultSection('info')])
-        setUserId(effectiveUserId || demoSession ? JSON.parse(demoSession || '{}').id : '')
+        setUserId(effectiveUserId)
         setLoading(false)
         return
       }
@@ -125,7 +123,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
       initialProjects={[]}
       initialSocial={[]}
       userId={userId}
-      onPublishSuccess={() => router.push('/dashboard')}
+      onPublishSuccess={() => router.push(`/builder/${params.id}/success`)}
     />
   )
 }

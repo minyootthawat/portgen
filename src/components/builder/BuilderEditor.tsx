@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   ChevronLeft, ChevronDown, ChevronRight, ChevronUp,
   Plus, GripVertical, Trash2, Eye, EyeOff, Rocket,
@@ -522,6 +523,7 @@ export function BuilderEditor({
   const [showAddModal, setShowAddModal] = useState(false)
   const [draggedId, setDraggedId] = useState<string | null>(null)
   const autoSaveTimer = useRef<NodeJS.Timeout | null>(null)
+  const router = useRouter()
 
   const showToast = (type: 'success' | 'error', message: string) => {
     setToast({ type, message })
@@ -630,7 +632,7 @@ export function BuilderEditor({
           body: JSON.stringify({ is_published: true }),
         })
         showToast('success', 'พอร์ตโฟลิโอเผยแพร่แล้ว!')
-        setTimeout(() => onPublishSuccess(), 1500)
+        setTimeout(() => router.push(`/builder/${id}/success`), 1500)
       }
     } catch (err: any) {
       showToast('error', err.message)
