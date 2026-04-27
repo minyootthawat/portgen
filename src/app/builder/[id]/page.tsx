@@ -12,7 +12,7 @@ import dynamic from 'next/dynamic'
 
 // Lazy-load heavy components that are conditionally rendered
 const JSXEditor = dynamic(() => import('@/components/builder/JSXEditor').then((m) => m.JSXEditor), {
-  loading: () => <div className="flex items-center justify-center h-full text-stone-400 text-sm">Loading editor...</div>,
+  loading: () => <div className="flex items-center justify-center h-full text-stone-400 text-sm">Setting up your editor...</div>,
 })
 const PortfolioPreview = dynamic(() => import('@/components/builder/PortfolioPreview').then((m) => m.PortfolioPreview), {
   loading: () => <div className="flex items-center justify-center h-full text-stone-400 text-sm">Loading preview...</div>,

@@ -16,21 +16,21 @@ test.describe('Buyer Checkout Flow E2E', () => {
   
   test.beforeEach(async ({ page }) => {
     // Reset language to English for consistent testing
-    await page.goto('http://localhost:3000')
+    await page.goto('http://localhost:3002')
   })
 
   test('step 1: Landing page loads correctly', async ({ page }) => {
-    await page.goto('http://localhost:3000')
+    await page.goto('http://localhost:3002')
     
     // Check landing page has key elements
     await expect(page).toHaveTitle(/portgen/i)
     
-    // Check for main CTA - varies by language (Thai/English)
-    const getStartedBtn = page.getByRole('link', { name: /get started free|เริ่มใช้ฟรี/i })
+    // Check for main CTA button (now opens auth dialog instead of navigating)
+    const getStartedBtn = page.getByRole('button', { name: /get started free|เริ่มใช้ฟรี/i })
     await expect(getStartedBtn).toBeVisible()
     
     // Check for features section
-    const featuresHeading = page.locator('h2').filter({ hasText: /features|ทุกอย่างที่คุณต้องการ/i })
+    const featuresHeading = page.locator('h2').filter({ hasText: /everything you need|ทำไมต้อง portgen/i })
     await expect(featuresHeading).toBeVisible()
     
     // Check for pricing section
@@ -39,13 +39,12 @@ test.describe('Buyer Checkout Flow E2E', () => {
   })
 
   test('step 2: Login page loads with auth options', async ({ page }) => {
-    await page.goto('http://localhost:3000/login')
+    await page.goto('http://localhost:3002/login')
     
-    // Should show login heading
-    const loginHeading = page.locator('h1').filter({ hasText: /welcome back|ยินดีต้อนรับ/i })
-    await expect(loginHeading).toBeVisible()
+    // Wait for auth dialog to auto-open
+    await page.waitForSelector('[role="dialog"]', { timeout: 5000 })
     
-    // Should show OAuth buttons (Google and GitHub)
+    // Should show OAuth buttons inside dialog (Google and GitHub)
     const googleBtn = page.getByRole('button', { name: /google/i })
     const githubBtn = page.getByRole('button', { name: /github/i })
     await expect(googleBtn).toBeVisible()
@@ -60,7 +59,7 @@ test.describe('Buyer Checkout Flow E2E', () => {
   })
 
   test('step 3: Dashboard page loads (auth may be permissive in dev)', async ({ page }) => {
-    await page.goto('http://localhost:3000/dashboard')
+    await page.goto('http://localhost:3002/dashboard')
     
     // Dashboard may load or redirect - just verify no crash
     // In dev mode, auth checks might be permissive
@@ -73,7 +72,7 @@ test.describe('Buyer Checkout Flow E2E', () => {
 
   test('step 4: Seller products page is accessible (browse products)', async ({ page }) => {
     // Note: Seller section appears to be publicly accessible for browsing
-    await page.goto('http://localhost:3000/seller/products')
+    await page.goto('http://localhost:3002/seller/products')
     
     // Check products heading (use h1 specifically to avoid strict mode violation)
     const productsHeading = page.locator('h1').filter({ hasText: /Products/i })
@@ -89,7 +88,7 @@ test.describe('Buyer Checkout Flow E2E', () => {
   })
 
   test('step 5: Seller orders page shows order data', async ({ page }) => {
-    await page.goto('http://localhost:3000/seller/orders')
+    await page.goto('http://localhost:3002/seller/orders')
     
     // Check orders heading (use h1 to avoid strict mode violation with "Recent Orders" h2)
     const ordersHeading = page.locator('h1').filter({ hasText: /Orders/i })
@@ -112,7 +111,7 @@ test.describe('Buyer Checkout Flow E2E', () => {
     // Test the Stripe checkout API endpoint structure
     // Note: Full Stripe test requires authenticated user
     
-    const response = await request.post('http://localhost:3000/api/stripe/checkout', {
+    const response = await request.post('http://localhost:3002/api/stripe/checkout', {
       data: {
         userId: 'test-user-id',
         email: 'test@example.com'
@@ -127,7 +126,7 @@ test.describe('Buyer Checkout Flow E2E', () => {
   })
 
   test('step 7: Game accounts seller page works', async ({ page }) => {
-    await page.goto('http://localhost:3000/seller/game-accounts')
+    await page.goto('http://localhost:3002/seller/game-accounts')
     
     // Check game accounts heading (use h1 to avoid strict mode violation)
     const gameAccountsHeading = page.locator('h1').filter({ hasText: /Game Accounts/i })
@@ -139,7 +138,7 @@ test.describe('Buyer Checkout Flow E2E', () => {
   })
 
   test('step 8: Seller dashboard page loads', async ({ page }) => {
-    await page.goto('http://localhost:3000/seller')
+    await page.goto('http://localhost:3002/seller')
     
     // Verify page loads without crash
     const dashboardHeading = page.locator('h1').filter({ hasText: /Dashboard/i })
@@ -150,7 +149,7 @@ test.describe('Buyer Checkout Flow E2E', () => {
   })
 
   test('step 9: Builder new page behavior', async ({ page }) => {
-    await page.goto('http://localhost:3000/builder/new')
+    await page.goto('http://localhost:3002/builder/new')
     
     // Builder page may load or redirect - just verify no crash
     await page.waitForLoadState('domcontentloaded')
@@ -159,7 +158,7 @@ test.describe('Buyer Checkout Flow E2E', () => {
   })
 
   test('step 10: Language switcher works on landing page', async ({ page }) => {
-    await page.goto('http://localhost:3000')
+    await page.goto('http://localhost:3002')
     
     // Find and click language switcher
     const langSwitcher = page.locator('select[role="combobox"]').first()
@@ -183,7 +182,7 @@ test.describe('Buyer Checkout Flow E2E', () => {
 
   test('step 11: Portfolio public portfolio pages', async ({ page }) => {
     // Landing page should be visible
-    await page.goto('http://localhost:3000')
+    await page.goto('http://localhost:3002')
     
     // Landing page main heading should be visible
     const mainHeading = page.locator('h1').first()
@@ -201,7 +200,7 @@ test.describe('Buyer Checkout Flow E2E', () => {
     ]
     
     for (const p of pages) {
-      const response = await page.goto(`http://localhost:3000${p.url}`)
+      const response = await page.goto(`http://localhost:3002${p.url}`)
       expect(response?.status()).toBeLessThan(400)
       console.log(`✓ ${p.name} page accessible (${p.url})`)
     }

@@ -1,13 +1,16 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { useI18n } from '@/i18n/context'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { AuthDialog } from '@/components/AuthDialog'
 import { Check, ArrowRight, Zap } from 'lucide-react'
 
 export default function LandingPage() {
   const { t } = useI18n()
+  const [authOpen, setAuthOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100">
@@ -50,12 +53,12 @@ export default function LandingPage() {
           <div className="hidden md:flex items-center gap-3">
             <LanguageSwitcher />
             <ThemeToggle />
-            <Link href="/login" className="btn-ghost text-sm dark:text-stone-300">
+            <button onClick={() => setAuthOpen(true)} className="btn-ghost text-sm dark:text-stone-300">
               {t.nav.login}
-            </Link>
-            <Link href="/login" className="btn-primary text-sm bg-amber-500 hover:bg-amber-600 text-white">
+            </button>
+            <button onClick={() => setAuthOpen(true)} className="btn-primary text-sm bg-amber-500 hover:bg-amber-600 text-white">
               {t.nav.getStarted}
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -67,8 +70,8 @@ export default function LandingPage() {
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <Link href="/login" className="btn-ghost text-sm w-full justify-center">{t.nav.login}</Link>
-          <Link href="/login" className="btn-primary text-sm bg-amber-500 hover:bg-amber-600 text-white w-full justify-center">{t.nav.getStarted}</Link>
+          <button onClick={() => setAuthOpen(true)} className="btn-ghost text-sm w-full justify-center">{t.nav.login}</button>
+          <button onClick={() => setAuthOpen(true)} className="btn-primary text-sm bg-amber-500 hover:bg-amber-600 text-white w-full justify-center">{t.nav.getStarted}</button>
         </div>
       </nav>
 
@@ -95,10 +98,10 @@ export default function LandingPage() {
 
           {/* CTA */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href="/login" className="btn-primary text-base px-7 py-3">
+            <button onClick={() => setAuthOpen(true)} className="btn-primary text-base px-7 py-3">
               {t.hero.createFree}
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </button>
             <Link href="#features" className="btn-secondary text-base px-7 py-3">
               {t.hero.browseThemes}
             </Link>
@@ -158,6 +161,29 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Testimonials */}
+      <section className="section bg-white dark:bg-stone-900">
+        <div className="container-lg mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl font-bold tracking-tight text-stone-900 dark:text-white mb-3">
+              {t.testimonials.title}
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
+            {t.testimonials.items.map((item, i) => (
+              <div key={i} className="card p-6 border border-stone-200 dark:border-stone-700">
+                <p className="text-stone-700 dark:text-stone-200 text-sm leading-relaxed mb-4 italic">
+                  "{item.quote}"
+                </p>
+                <p className="text-xs text-stone-400 dark:text-stone-500 font-medium">
+                  — {item.author}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Pricing */}
       <section id="pricing" className="section">
         <div className="container-lg mx-auto">
@@ -193,9 +219,9 @@ export default function LandingPage() {
                 ))}
               </ul>
 
-              <Link href="/login" className="btn-secondary w-full justify-center">
+              <button onClick={() => setAuthOpen(true)} className="btn-secondary w-full justify-center">
                 {t.pricing.getStarted}
-              </Link>
+              </button>
             </div>
 
             {/* Pro */}
@@ -227,9 +253,9 @@ export default function LandingPage() {
                 ))}
               </ul>
 
-              <Link href="/login" className="btn-primary w-full justify-center">
+              <button onClick={() => setAuthOpen(true)} className="btn-primary w-full justify-center">
                 {t.pricing.startProTrial}
-              </Link>
+              </button>
               <p className="text-center text-xs text-stone-400 dark:text-stone-500 mt-3">
                 {t.pricing.cancelAnytime}
               </p>
@@ -245,10 +271,10 @@ export default function LandingPage() {
           <p className="text-teal-100 dark:text-teal-200 text-base mb-9">
             {t.cta.subtitle}
           </p>
-          <Link href="/login" className="inline-flex items-center gap-2 px-7 py-3 rounded-lg bg-white dark:bg-teal-100 text-teal-700 dark:text-teal-800 font-semibold text-base hover:bg-teal-50 dark:hover:bg-teal-200 transition-colors shadow-lg">
+          <button onClick={() => setAuthOpen(true)} className="inline-flex items-center gap-2 px-7 py-3 rounded-lg bg-white dark:bg-teal-100 text-teal-700 dark:text-teal-800 font-semibold text-base hover:bg-teal-50 dark:hover:bg-teal-200 transition-colors shadow-lg">
             {t.cta.button}
             <ArrowRight className="w-4 h-4" />
-          </Link>
+          </button>
         </div>
       </section>
 
@@ -264,6 +290,9 @@ export default function LandingPage() {
           </p>
         </div>
       </footer>
+
+      {/* Auth Dialog */}
+      <AuthDialog open={authOpen} onClose={() => setAuthOpen(false)} />
     </div>
   )
 }

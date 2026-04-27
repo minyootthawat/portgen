@@ -12,44 +12,63 @@ export const th: Translations = {
 
   // Hero
   hero: {
-    badge: 'ฟรี 100% ตั้งแต่เริ่มต้น — ไม่ต้องใช้บัตรเครดิต',
-    title: 'พอร์ตโฟลิโอสำหรับ Developer',
-    titleHighlight: 'ภายในไม่กี่นาที ไม่ใช่หลายวัน',
-    subtitle: 'สร้างพอร์ตโฟลิโอที่สวยงามเพื่อโชว์ผลงานของคุณ เลือกจากธีม 15+ แบบ ปรับแต่งด้วยโค้ดได้ และ deploy ได้ทันที',
-    createFree: 'สร้างพอร์ตโฟลิโอฟรี',
-    browseThemes: 'ดูธีม',
-    socialProof: 'นักพัฒนากว่า 2,000+ คนใช้แล้ว',
-    fromText: 'จากกรุงเทพถึงเบอร์ลิน — นักพัฒนาทั่วโลกใช้ PortGen',
+    badge: '🚀 ฟรีตลอดไป — ไม่ต้องใช้บัตรเครดิต',
+    title: 'พอร์ตโฟลิโอสวย ๆ ใน 5 นาที',
+    titleHighlight: '— ไม่ต้องรู้เรื่องโค้ดเลยสักบรรทัด',
+    subtitle: 'สร้างพอร์ตโฟลิโอที่ดูโปรได้ด้วยตัวเอง ไม่ต้องจ้างใคร ไม่ต้องเรียนเทคนิค กด 2-3 ครั้ง ออนไลน์ได้ทันที',
+    createFree: 'สร้างพอร์ตฟรี — ไม่ต้องใส่บัตรเครดิต',
+    browseThemes: 'ดูตัวอย่างสด →',
+    socialProof: 'ผู้ใช้กว่า 2,000+ คน ตั้งแต่นักเรียนจนถึงมืออาชีพ',
+    fromText: '',
+  },
+
+  // Testimonials
+  testimonials: {
+    title: 'เรื่องราวจริงจากผู้ใช้จริง',
+    items: [
+      {
+        quote: 'ตอนแรกกลัวว่าจะยาก สรุปทำเสร็จใน 10 นาที',
+        author: 'นักศึกษาจบใหม่ สาขาบริหาร',
+      },
+      {
+        quote: 'หางานมาเป็นปีไม่มีใครเรียก พอทำพอร์ตเสร็จ สัปดาห์ต่อมาโดนเรียก 3 ที่',
+        author: 'ฟรีแลนซ์ สายออกแบบ',
+      },
+      {
+        quote: 'ไม่ต้องส่ง PDF ทุกครั้ง แชร์ลิงก์เดียวจบ',
+        author: 'นักการตลาดมืออาชีพ',
+      },
+    ],
   },
 
   // Features
   features: {
-    title: 'ทุกอย่างที่คุณต้องการ',
-    subtitle: 'สร้างมาสำหรับ developer โดย developer ไม่มี drag-and-drop ให้ปวดหัว',
+    title: 'ทำไมต้อง PortGen?',
+    subtitle: 'ทุกอย่างที่ต้องการเพื่อดูโปร — ไม่ต้องยุ่งยาก',
     items: {
       themes: {
-        title: 'ธีมสวยๆ 15+ แบบ',
-        desc: 'ตั้งแต่ minimal ถึง bold มี dark mode เป็นค่าเริ่มต้น ทุกธีมออกแบบอย่างดี',
+        title: 'เทมเพลตสวย ดูแพง ไม่ต้องจ้างใคร',
+        desc: 'เลือกจากเทมเพลตสวย ๆ ที่ออกแบบมาแล้ว พอร์ตโฟลิโอคุณจะดูเหมือนจ้างมาด้วยราคาแพง',
       },
       semiCode: {
-        title: 'ปรับแต่งด้วย Semi-Code',
-        desc: 'ไม่พอใจ? แก้ JSX ได้เลย ควบคุมโค้ดพอร์ตโฟลิโอได้ทั้งหมด',
+        title: 'ออนไลน์ได้ทันทีที่พร้อม',
+        desc: 'ไม่ต้องรอ ไม่ต้องรับอนุมัติ พอร์ตโฟลิโอของคุณออนไลน์ทันทีที่กดเผยแพร่',
       },
       fast: {
-        title: 'โหลดเร็วสุดๆ',
-        desc: 'Static generation ทำให้พอร์ตโฟลิโอโหลดในไม่ถึง 100ms SEO ดีเยี่ยม',
+        title: 'ใช้เวลาสร้างไม่ถึง 5 นาที',
+        desc: 'กรอกข้อมูล เลือกเทมเพลต กดเผยแพร่ เสร็จ เร็วจริง ๆ',
       },
       hosting: {
-        title: 'โฮสต์ฟรี',
-        desc: 'พอร์ตโฟลิโอของคุณอยู่ที่ yourname.portgen.com ต่อ custom domain ได้ในแพลน Pro',
+        title: 'แก้ไขได้เรื่อย ๆ ตามใจ',
+        desc: 'เพิ่มโปรเจกต์ใหม่ เปลี่ยนรูป แก้ไขประวัติ — อยากแก้เมื่อไหร่ก็ได้',
       },
       github: {
-        title: 'เชื่อมต่อ GitHub',
-        desc: 'เข้าสู่ระบบด้วย GitHub ดึง repo มาแสดงอัตโนมัติ',
+        title: 'ถ้าใช้ Facebook ได้ = ใช้ได้',
+        desc: 'ไม่ต้องรู้โค้ด ไม่ต้องจำเมนูเยอะ ชี้ คลิก พิมพ์ เรียบร้อย',
       },
       export: {
-        title: 'Export ไปที่ไหนก็ได้',
-        desc: 'Export เป็น HTML/CSS โฮสต์บน Vercel, Netlify หรือที่ไหนก็ได้',
+        title: 'แชร์ลิงก์เดียวจบ ไม่ต้องส่ง PDF',
+        desc: 'ลิงก์พอร์ตโฟลิโออันเดียว ส่งในอีเมล ข้อความ หรือใบสมัครงานก็ได้',
       },
     },
   },
@@ -89,14 +108,14 @@ export const th: Translations = {
     cancelAnytime: 'ทดลองฟรี 7 วัน • ยกเลิกได้ทุกเมื่อ',
     features: {
       portfolio: '1 พอร์ตโฟลิโอ',
-      themes3: '3 ธีม',
+      themes3: '3 ธีมสวยๆ',
       subdomain: 'subdomain บน portgen.com',
       basicCustom: 'ปรับแต่งพื้นฐาน',
       exportHtml: 'Export HTML',
       community: 'ช่วยเหลือจากชุมชน',
       unlimited: 'พอร์ตโฟลิโอไม่จำกัด',
-      themes15: '15+ ธีม',
-      customDomain: 'Custom Domain',
+      themes15: '15+ ธีมสวยๆ',
+      customDomain: 'รองรับ Custom Domain',
       removeBranding: 'ลบแบรนด์ PortGen',
       analytics: 'แดชบอร์ดวิเคราะห์',
       priority: 'สนับสนุนลำดับความสำคัญสูง',
@@ -106,14 +125,14 @@ export const th: Translations = {
 
   // CTA
   cta: {
-    title: 'พร้อมที่จะโดดเด่นหรือยัง?',
-    subtitle: 'ร่วมกับนักพัฒนากว่า 2,000+ คนที่ใช้ PortGen ในการโชว์ผลงาน',
-    button: 'สร้างพอร์ตโฟลิโอตอนนี้',
+    title: 'พร้อมแล้วใช่มั้ย? มาสร้างพอร์ตแรกของคุณกัน',
+    subtitle: 'ร่วมกับคนกว่า 2,000+ คนที่เลิกส่ง PDF ประวัติแล้วหันมาแชร์สิ่งที่ภูมิใจ',
+    button: 'เริ่มสร้างฟรีตอนนี้ →',
   },
 
   // Footer
   footer: {
-    copyright: '© 2025 PortGen. สร้างสำหรับนักพัฒนาทั่วโลก',
+    copyright: '© 2025 PortGen. สร้างด้วย ❤️ สำหรับทุกคน',
   },
 
   // Login
@@ -150,10 +169,10 @@ export const th: Translations = {
     title: 'พอร์ตโฟลิโอของคุณ',
     createFirst: 'สร้างพอร์ตโฟลิโอแรกของคุณ',
     noPortfolios: 'ยังไม่มีพอร์ตโฟลิโอ',
-    createAndShare: 'สร้างพอร์ตโฟลิโอแรกและแชร์ให้โลกเห็น',
+    createAndShare: 'พอร์ตโฟลิโอของคุณห่างแค่คลิกเดียว มาสร้างด้วยกันเถอะ',
     newPortfolio: 'พอร์ตโฟลิโอใหม่',
     demoMode: 'โหมด Demo',
-    demoBanner: 'คุณกำลังสำรวจ PortGen กับข้อมูลตัวอย่าง',
+    demoBanner: 'นี่คือ demo — การเปลี่ยนแปลงจะไม่ถูกบันทึก สมัครเพื่อสร้างพอร์ตโฟลิโอจริงของคุณ!',
     signUpReal: 'สมัครบัญชีจริง →',
     exitDemo: 'ออกจาก Demo',
     signOut: 'ออกจากระบบ',
@@ -163,7 +182,7 @@ export const th: Translations = {
     draft: 'ฉบับร่าง',
     views: 'views',
     upgradeToPro: 'อัพเกรดเป็น Pro',
-    confirmDelete: 'คุณแน่ในหรือไม่ที่จะลบพอร์ตโฟลิโอนี้? การดำเนินการนี้ไม่สามารถเลิกทำได้',
+    confirmDelete: 'ลบพอร์ตโฟลิโอนี้หรือไม่? การดำเนินการนี้ไม่สามารถเลิกทำได้',
   },
 
   // Builder
@@ -189,19 +208,19 @@ export const th: Translations = {
       title: 'ข้อมูลพื้นฐาน',
       subtitle: 'เริ่มจากชื่อและแท็กไลน์ของคุณ',
       name: 'ชื่อ',
-      namePlaceholder: 'สมชาย ดีเจริญ',
+      namePlaceholder: 'เช่น สมชาย ดีเจริญ, Frontend Engineer',
       tagline: 'แท็กไลน์',
       taglinePlaceholder: 'Full-Stack Developer • React & Node.js',
       about: 'เกี่ยวกับคุณ',
       aboutPlaceholder: 'บอกผู้เยี่ยมชมเกี่ยวกับตัวคุณ ประสบการณ์ และสิ่งที่คุณทำ...',
       avatarUrl: 'URL รูปโปรไฟล์',
-      avatarUrlPlaceholder: 'https://example.com/your-photo.jpg',
+      avatarUrlPlaceholder: 'วาง URL รูปโปรไฟล์ของคุณ หรือเว้นว่างได้',
     },
     skills: {
       title: 'ทักษะ',
       subtitle: 'เพิ่มทักษะด้านเทคโนโลยีของคุณ',
       placeholder: 'พิมพ์ทักษะ (เช่น React, Node.js) แล้วกด Enter',
-      noSkills: 'ยังไม่มีทักษะ พิมพ์ด้านบนแล้วกด Enter',
+      noSkills: "พิมพ์ทักษะ เช่น 'React' หรือ 'Python' แล้วกด Enter เพื่อเพิ่ม",
     },
     projects: {
       title: 'โปรเจกต์',
@@ -213,13 +232,20 @@ export const th: Translations = {
       remove: 'ลบ',
       titlePlaceholder: 'ชื่อโปรเจกต์',
       descPlaceholder: 'คำอธิบายโดยย่อ...',
-      liveUrl: 'Live URL (ไม่บังคับ)',
-      repoUrl: 'Repo URL (ไม่บังคับ)',
+      liveUrl: 'URL เว็บไซต์',
+      repoUrl: 'URL GitHub repo',
     },
     social: {
       title: 'ลิงก์โซเชียล',
       subtitle: 'เชื่อมต่อโปรไฟล์ออนไลน์ของคุณ',
       placeholder: 'https://...',
+      placeholders: {
+        github: 'github.com/yourname',
+        linkedin: 'linkedin.com/in/yourname',
+        twitter: 'x.com/yourname',
+        website: 'yourwebsite.com',
+        email: 'you@example.com',
+      },
       add: 'เพิ่ม',
       platforms: {
         github: 'github',
@@ -238,7 +264,7 @@ export const th: Translations = {
     },
     previewStep: {
       title: 'ตัวอย่างและเผยแพร่',
-      subtitle: 'ตรวจสอบพอร์ตโฟลิโอของคุณและเผยแพร่',
+      subtitle: 'ทุกอย่างเรียบร้อยแล้ว? กดเผยแพร่แล้วแชร์ลิงก์ให้โลกเห็นเลย',
       willBeLive: 'พอร์ตโฟลิโอของคุณจะอยู่ที่:',
       whatsIncluded: 'สิ่งที่จะมี:',
       publishNow: 'เผยแพร่พอร์ตโฟลิโอ',

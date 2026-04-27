@@ -10,44 +10,63 @@ export const en = {
 
   // Hero
   hero: {
-    badge: '100% Free to start — No credit card required',
-    title: 'Developer Portfolio',
-    titleHighlight: 'in Minutes, Not Days',
-    subtitle: 'Create a stunning portfolio that showcases your work beautifully. Choose from 15+ themes, customize with code, and deploy instantly.',
-    createFree: 'Create Your Portfolio Free',
-    browseThemes: 'Browse Themes',
-    socialProof: 'Loved by 2,000+ developers',
-    fromText: 'From Bangkok to Berlin — developers worldwide use PortGen',
+    badge: '🚀 Free forever — No credit card needed',
+    title: 'Your portfolio, live in 5 minutes',
+    titleHighlight: '— no coding required',
+    subtitle: 'Build a professional portfolio yourself — no designers, no tech skills needed. Pick a template, fill in your info, go live.',
+    createFree: 'Create your portfolio free — no credit card needed',
+    browseThemes: 'See live examples →',
+    socialProof: '2,000+ users — from fresh grads to senior professionals',
+    fromText: '',
+  },
+
+  // Testimonials
+  testimonials: {
+    title: 'Real stories from real users',
+    items: [
+      {
+        quote: 'I thought it would be complicated. Finished in 10 minutes.',
+        author: 'Recent graduate, Business major',
+      },
+      {
+        quote: 'Been job hunting for months with no calls. Made my portfolio, got 3 interviews the following week.',
+        author: 'Freelance Designer',
+      },
+      {
+        quote: 'No more sending PDF resumes. Just share my link now.',
+        author: 'Marketing Professional',
+      },
+    ],
   },
 
   // Features
   features: {
-    title: 'Everything You Need',
-    subtitle: 'Built for developers, by developers. No drag-and-drop bloat.',
+    title: 'Why PortGen?',
+    subtitle: 'Everything you need to look professional — without the complexity.',
     items: {
       themes: {
-        title: '15+ Beautiful Themes',
-        desc: 'From minimal to bold. Dark mode by default. Each theme is carefully crafted.',
+        title: 'Templates that look expensive — no designer needed',
+        desc: 'Pick from beautiful, professionally designed templates. Your portfolio will look like you spent hundreds on it.',
       },
       semiCode: {
-        title: 'Semi-Code Customization',
-        desc: "Not satisfied? Edit the JSX directly. Full control over your portfolio code.",
+        title: 'Go live the moment you\'re ready',
+        desc: 'No waiting, no approval流程. Your portfolio is online the second you hit publish.',
       },
       fast: {
-        title: 'Lightning Fast',
-        desc: 'Static generation means your portfolio loads in under 100ms. SEO-friendly.',
+        title: 'Ready in under 5 minutes',
+        desc: 'Fill in your info, pick a template, click publish. That\'s it. Really.',
       },
       hosting: {
-        title: 'Free Hosting',
-        desc: 'Your portfolio lives at yourname.portgen.com. Custom domain on Pro.',
+        title: 'Update anytime, as your work grows',
+        desc: 'Add new projects, change your photo, rewrite your bio — whenever you need to.',
       },
       github: {
-        title: 'GitHub Integration',
-        desc: 'Sign in with GitHub. Import your repos automatically.',
+        title: 'If you can use Facebook, you can use this',
+        desc: 'No code, no confusing menus. Just point, click, and type.',
       },
       export: {
-        title: 'Export Anywhere',
-        desc: 'Export as static HTML/CSS. Host on Vercel, Netlify, or anywhere.',
+        title: 'Share your link, forget PDF resumes',
+        desc: 'One link to your portfolio. Send it in an email, a DM, or a job application.',
       },
     },
   },
@@ -87,14 +106,14 @@ export const en = {
     cancelAnytime: '7-day free trial • Cancel anytime',
     features: {
       portfolio: '1 Portfolio',
-      themes3: '3 Themes',
+      themes3: '3 beautiful themes',
       subdomain: 'portgen.com subdomain',
       basicCustom: 'Basic customization',
       exportHtml: 'Export HTML',
       community: 'Community support',
-      unlimited: 'Unlimited Portfolios',
-      themes15: '15+ Themes',
-      customDomain: 'Custom Domain',
+      unlimited: 'Unlimited portfolios',
+      themes15: '15+ stunning themes',
+      customDomain: 'Custom domain support',
       removeBranding: 'Remove PortGen branding',
       analytics: 'Analytics dashboard',
       priority: 'Priority support',
@@ -104,14 +123,14 @@ export const en = {
 
   // CTA
   cta: {
-    title: 'Ready to Stand Out?',
-    subtitle: 'Join 2,000+ developers who use PortGen to showcase their work.',
-    button: 'Create Your Portfolio Now',
+    title: 'Ready? Let\'s build your first portfolio',
+    subtitle: 'Join 2,000+ people who stopped sending PDF resumes and started sharing something they\'re proud of.',
+    button: 'Start building free →',
   },
 
   // Footer
   footer: {
-    copyright: '© 2025 PortGen. Built for developers worldwide.',
+    copyright: '© 2025 PortGen. Made with ❤️ for everyone.',
   },
 
   // Login
@@ -148,10 +167,10 @@ export const en = {
     title: 'Your Portfolios',
     createFirst: 'Create your first portfolio',
     noPortfolios: 'No portfolios yet',
-    createAndShare: 'Create your first portfolio and share it with the world',
+    createAndShare: 'Your portfolio is one click away. Let\'s build it together.',
     newPortfolio: 'New Portfolio',
     demoMode: 'Demo Mode',
-    demoBanner: "You're exploring PortGen with pre-loaded sample data.",
+    demoBanner: "This is a demo — your changes won't be saved. Sign up to build your real portfolio!",
     signUpReal: 'Sign up for real →',
     exitDemo: 'Exit Demo',
     signOut: 'Sign out',
@@ -161,7 +180,7 @@ export const en = {
     draft: 'Draft',
     views: 'views',
     upgradeToPro: 'Upgrade to Pro',
-    confirmDelete: 'Are you sure you want to delete this portfolio? This action cannot be undone.',
+    confirmDelete: "Delete this portfolio? This can't be undone.",
   },
 
   // Builder
@@ -187,19 +206,19 @@ export const en = {
       title: 'Basic Information',
       subtitle: "Let's start with your name and tagline",
       name: 'Name',
-      namePlaceholder: 'John Doe',
+      namePlaceholder: 'e.g. Sara Kim, Frontend Engineer',
       tagline: 'Tagline',
       taglinePlaceholder: 'Full-Stack Developer • React & Node.js',
       about: 'About',
       aboutPlaceholder: 'Tell visitors about yourself, your experience, and what you do...',
       avatarUrl: 'Avatar URL',
-      avatarUrlPlaceholder: 'https://example.com/your-photo.jpg',
+      avatarUrlPlaceholder: 'Paste your photo URL here, or leave blank',
     },
     skills: {
       title: 'Skills',
       subtitle: 'Add your tech skills and expertise',
       placeholder: 'Type a skill (e.g. React, Node.js) and press Enter',
-      noSkills: 'No skills added yet. Type above and press Enter.',
+      noSkills: "Type a skill like 'React' or 'Python' and press Enter to add it.",
     },
     projects: {
       title: 'Projects',
@@ -211,13 +230,20 @@ export const en = {
       remove: 'Remove',
       titlePlaceholder: 'Project title',
       descPlaceholder: 'Brief description...',
-      liveUrl: 'Live URL (optional)',
-      repoUrl: 'Repo URL (optional)',
+      liveUrl: 'Live site URL',
+      repoUrl: 'GitHub repo URL',
     },
     social: {
       title: 'Social Links',
       subtitle: "Connect your online presence",
       placeholder: 'https://...',
+      placeholders: {
+        github: 'github.com/yourname',
+        linkedin: 'linkedin.com/in/yourname',
+        twitter: 'x.com/yourname',
+        website: 'yourwebsite.com',
+        email: 'you@example.com',
+      },
       add: 'Add',
       platforms: {
         github: 'github',
@@ -236,7 +262,7 @@ export const en = {
     },
     previewStep: {
       title: 'Preview & Publish',
-      subtitle: 'Review your portfolio and make it live',
+      subtitle: "Everything looks great? Hit publish and share your link with the world.",
       willBeLive: 'Your portfolio will be live at:',
       whatsIncluded: "What's included:",
       publishNow: 'Publish Portfolio',
