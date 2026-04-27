@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { AuthDialog } from '@/components/AuthDialog'
-import { Check, ArrowRight, Zap, Play, Star, Users, LogOut } from 'lucide-react'
+import { Check, ArrowRight, Sparkles, Play, Star, Users, LogOut } from 'lucide-react'
 
 export default function LandingPage() {
   const { data: session, status } = useSession()
@@ -40,7 +40,7 @@ export default function LandingPage() {
           {/* Logo */}
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center shadow-sm">
-              <Zap className="w-4 h-4 text-white" />
+              <Sparkles className="w-4 h-4 text-white" />
             </div>
             <span className="font-semibold text-lg tracking-tight text-stone-900 dark:text-white">PortGen</span>
           </div>
@@ -87,14 +87,9 @@ export default function LandingPage() {
                 </button>
               </>
             ) : (
-              <>
-                <button onClick={() => setAuthOpen(true)} className="btn-ghost text-sm dark:text-stone-300">
-                  เข้าสู่ระบบ
-                </button>
-                <button onClick={() => setAuthOpen(true)} className="btn-primary text-sm bg-teal-600 hover:bg-teal-700 text-white shadow-sm">
-                  เริ่มใช้ฟรี
-                </button>
-              </>
+              <button onClick={() => setAuthOpen(true)} className="btn-primary text-sm bg-teal-600 hover:bg-teal-700 text-white shadow-sm">
+                เริ่มใช้ฟรี
+              </button>
             )}
           </div>
         </div>

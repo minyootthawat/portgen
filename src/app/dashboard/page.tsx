@@ -118,17 +118,16 @@ export default function DashboardPage() {
             </Link>
 
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-stone-500 dark:text-stone-400 hidden sm:block">{session?.user?.email || session?.user?.name}</span>
+          <div className="flex items-center gap-2">
             <ThemeToggle />
             {!isPro && (
-              <Link href="/upgrade" className="btn-secondary text-sm">
+              <Link href="/upgrade" className="btn-secondary text-sm hidden sm:inline-flex">
                 <Crown className="w-3.5 h-3.5" />
-                อัพเกรดเป็น Pro
+                อัพเกรด
               </Link>
             )}
             <button onClick={handleSignOut} className="btn-ghost text-sm">
-              ออกจากระบบ
+              ออก
             </button>
           </div>
         </div>
