@@ -28,12 +28,10 @@ function MiniPreview({ portfolio }: { portfolio: any }) {
 
   const t = themeBg[theme] || themeBg['gradient-dark']
   const bgClass = t.via ? `from-${t.from} via-${t.via} to-${t.to}` : `from-${t.from} to-${t.to}`
-
-  // Text colors for dark themes
   const isDark = theme !== 'minimal-light' && theme !== 'brutalist'
 
   return (
-    <div className={`w-full max-w-sm mx-auto rounded-2xl overflow-hidden bg-gradient-to-br ${bgClass} border border-slate-700 shadow-2xl`}>
+    <div className={`w-full max-w-sm mx-auto rounded-2xl overflow-hidden bg-gradient-to-br ${bgClass} border border-slate-700 shadow-2xl shadow-teal-500/10`}>
       {/* Browser chrome */}
       <div className="px-4 py-2.5 bg-slate-800/30 flex items-center gap-2">
         <div className="flex gap-1.5">
@@ -49,17 +47,17 @@ function MiniPreview({ portfolio }: { portfolio: any }) {
       </div>
 
       {/* Content */}
-      <div className="p-6 min-h-[260px] flex flex-col items-center">
+      <div className="p-6 min-h-[240px] flex flex-col items-center">
         {/* Avatar */}
         {avatarUrl ? (
-          <img src={avatarUrl} alt={name} className="w-16 h-16 rounded-full mb-3 object-cover border-2 border-white/20" />
+          <img src={avatarUrl} alt={name} className="w-14 h-14 rounded-full mb-3 object-cover border-2 border-white/20" />
         ) : (
-          <div className="w-16 h-16 rounded-full mb-3 bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-2xl font-bold text-white border-2 border-white/20">
+          <div className="w-14 h-14 rounded-full mb-3 bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-xl font-bold text-white border-2 border-white/20">
             {name.charAt(0) || 'A'}
           </div>
         )}
 
-        <h2 className={`text-lg font-bold mb-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+        <h2 className={`text-base font-bold mb-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
           {name}
         </h2>
         <p className={`text-xs mb-4 ${isDark ? 'text-white/70' : 'text-slate-500'}`}>
@@ -83,7 +81,7 @@ function MiniPreview({ portfolio }: { portfolio: any }) {
             {projects.slice(0, 2).map((proj: any) => (
               <div key={proj.id} className={`p-3 rounded-lg text-left ${isDark ? 'bg-white/5 border border-white/10' : 'bg-white border border-slate-200'}`}>
                 <div className={`text-xs font-medium ${isDark ? 'text-white' : 'text-slate-800'}`}>{proj.title || 'Project'}</div>
-                <div className={`text-xs mt-0.5 ${isDark ? 'text-white/60' : 'text-slate-500'}`}>{proj.description?.slice(0, 60) || ''}</div>
+                <div className={`text-xs mt-0.5 ${isDark ? 'text-white/60' : 'text-slate-500'}`}>{proj.description?.slice(0, 55) || ''}</div>
               </div>
             ))}
           </div>
@@ -95,19 +93,6 @@ function MiniPreview({ portfolio }: { portfolio: any }) {
         <span className={`text-xs ${isDark ? 'text-white/50' : 'text-slate-400'}`}>Built with PortGen ✨</span>
       </div>
     </div>
-  )
-}
-
-// ─── Share Button ───────────────────────────────────────────────────────────
-function ShareButton({ icon: Icon, label, onClick, hoverBg, hoverText }: { icon: any; label: string; onClick: () => void; hoverBg: string; hoverText: string }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 transition-all duration-200 hover:${hoverBg} hover:${hoverText} dark:hover:bg-stone-800`}
-    >
-      <Icon className="w-4 h-4" />
-      <span className="hidden sm:inline">{label}</span>
-    </button>
   )
 }
 
@@ -197,9 +182,9 @@ export default function SuccessPage() {
   if (loading || status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-3 text-teal-500" />
-          <p className="text-stone-500 dark:text-stone-400 text-sm">กำลังโหลด...</p>
+        <div className="text-center space-y-3">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-teal-500" />
+          <p className="text-sm text-stone-500 dark:text-stone-400">กำลังโหลด...</p>
         </div>
       </div>
     )
@@ -207,12 +192,12 @@ export default function SuccessPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950">
-        <div className="text-center max-w-sm mx-auto px-4">
-          <div className="text-5xl mb-4">😕</div>
-          <h1 className="text-xl font-bold text-stone-900 dark:text-white mb-2">เกิดข้อผิดพลาด</h1>
-          <p className="text-stone-500 dark:text-stone-400 mb-6">{error}</p>
-          <Link href="/dashboard" className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-stone-900 dark:bg-white text-white dark:text-stone-900 font-medium hover:bg-stone-700 dark:hover:bg-stone-100 transition-all">
+      <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950 px-4">
+        <div className="text-center max-w-sm mx-auto space-y-4">
+          <div className="text-5xl">😕</div>
+          <h1 className="text-xl font-bold text-stone-900 dark:text-white">เกิดข้อผิดพลาด</h1>
+          <p className="text-sm text-stone-500 dark:text-stone-400">{error}</p>
+          <Link href="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-stone-900 dark:bg-white text-white dark:text-stone-900 font-medium text-sm hover:bg-stone-700 dark:hover:bg-stone-100 transition-all">
             <Home className="w-4 h-4" />
             ไป Dashboard
           </Link>
@@ -222,7 +207,7 @@ export default function SuccessPage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 flex flex-col items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 flex items-center justify-center py-16 px-4">
 
       {/* Toast */}
       {toast && (
@@ -232,28 +217,25 @@ export default function SuccessPage() {
         </div>
       )}
 
-      <div className="w-full max-w-md mx-auto text-center space-y-6">
+      {/* ── Main content ── */}
+      <div className="w-full max-w-sm mx-auto space-y-8">
 
-        {/* ── Success Header ── */}
-        <div className="space-y-1">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-500 text-white mb-3 shadow-lg shadow-teal-500/30">
-            <CheckCircle2 className="w-8 h-8" />
+        {/* Success badge */}
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-teal-500 text-white shadow-lg shadow-teal-500/30">
+            <CheckCircle2 className="w-7 h-7" />
           </div>
           <h1 className="text-2xl font-bold text-stone-900 dark:text-white">สำเร็จ!</h1>
-          <p className="text-stone-500 dark:text-stone-400 text-sm">พอร์ตโฟลิโอของคุณพร้อมแล้ว</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400">พอร์ตโฟลิโอของคุณพร้อมแล้ว</p>
         </div>
 
-        {/* ── Preview Card ── */}
-        {portfolio && (
-          <div className="flex justify-center">
-            <MiniPreview portfolio={portfolio} />
-          </div>
-        )}
+        {/* Preview */}
+        {portfolio && <MiniPreview portfolio={portfolio} />}
 
-        {/* ── URL + Share (single card) ── */}
+        {/* Action card */}
         <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden">
-          {/* URL row */}
-          <div className="flex items-center gap-3 px-5 py-4 border-b border-stone-100 dark:border-stone-800">
+          {/* URL + copy */}
+          <div className="flex items-center gap-3 px-5 py-4">
             <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 shrink-0">
               <Link2 className="w-4 h-4" />
             </div>
@@ -263,97 +245,54 @@ export default function SuccessPage() {
             </div>
             <button
               onClick={handleCopy}
-              className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${copied ? 'bg-teal-500 text-white shadow-sm' : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:border-teal-400 dark:hover:border-teal-600'}`}
+              className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${copied ? 'bg-teal-500 text-white shadow-sm' : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:border-teal-400 dark:hover:border-teal-600'}`}
             >
               {copied ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
               {copied ? 'คัดลอกแล้ว' : 'คัดลอก'}
             </button>
           </div>
 
+          {/* Divider */}
+          <div className="h-px bg-stone-100 dark:bg-stone-800 mx-5" />
+
+          {/* Stats row */}
+          <div className="flex items-center gap-2 px-5 py-3 bg-stone-50/50 dark:bg-stone-900/50">
+            <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+            <span className="text-xs text-stone-500 dark:text-stone-400">วิวทั้งหมด:</span>
+            <span className="text-xs font-bold text-teal-600 dark:text-teal-400">{portfolio?.view_count ?? 0}</span>
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-stone-100 dark:bg-stone-800 mx-5" />
+
           {/* Share buttons */}
-          <div className="flex items-center justify-center gap-2 px-5 py-4 bg-stone-50 dark:bg-stone-900/50">
-            <button
-              onClick={shareTwitter}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:border-sky-400 dark:hover:border-sky-600 hover:shadow-sm transition-all duration-200"
-              title="แชร์ไป Twitter"
-            >
-              <Twitter className="w-4 h-4" />
+          <div className="flex items-center justify-center gap-1.5 px-4 py-4">
+            <button onClick={shareTwitter} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:border-sky-400 dark:hover:border-sky-600 hover:shadow-sm transition-all duration-200" title="Twitter">
+              <Twitter className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Twitter</span>
             </button>
-            <button
-              onClick={shareFacebook}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-sm transition-all duration-200"
-              title="แชร์ไป Facebook"
-            >
-              <Facebook className="w-4 h-4" />
+            <button onClick={shareFacebook} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-sm transition-all duration-200" title="Facebook">
+              <Facebook className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Facebook</span>
             </button>
-            <button
-              onClick={shareLinkedIn}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:border-blue-700 dark:hover:border-blue-500 hover:shadow-sm transition-all duration-200"
-              title="แชร์ไป LinkedIn"
-            >
-              <Linkedin className="w-4 h-4" />
+            <button onClick={shareLinkedIn} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:border-blue-700 dark:hover:border-blue-500 hover:shadow-sm transition-all duration-200" title="LinkedIn">
+              <Linkedin className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">LinkedIn</span>
             </button>
-            <a
-              href={portfolioUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:border-teal-400 dark:hover:border-teal-600 hover:shadow-sm transition-all duration-200"
-              title="เปิดดู"
-            >
-              <ExternalLink className="w-4 h-4" />
+            <a href={portfolioUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:border-teal-400 dark:hover:border-teal-600 hover:shadow-sm transition-all duration-200" title="เปิดดู">
+              <ExternalLink className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">เปิดดู</span>
             </a>
           </div>
         </div>
 
-        {/* ── Stats ── */}
-        <div className="flex items-center justify-center gap-2 text-sm text-stone-500 dark:text-stone-400">
-          <Sparkles className="w-4 h-4 text-teal-500" />
-          <span>วิวทั้งหมด:</span>
-          <span className="font-bold text-teal-600 dark:text-teal-400">{portfolio?.view_count ?? 0}</span>
-        </div>
-
-        {/* ── Next Steps ── */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-5 shadow-sm">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-stone-200 dark:to-stone-700" />
-            <span className="px-3 py-1 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 text-xs font-medium">
-              ขั้นตอนถัดไป
-            </span>
-            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-stone-200 dark:to-stone-700" />
-          </div>
-          <ul className="space-y-2.5">
-            <li className="flex items-center gap-3 text-sm text-stone-600 dark:text-stone-300">
-              <span className="w-5 h-5 rounded-full bg-teal-500 text-white text-xs flex items-center justify-center font-medium">1</span>
-              แชร์ให้เพื่อนดู
-            </li>
-            <li className="flex items-center gap-3 text-sm text-stone-600 dark:text-stone-300">
-              <span className="w-5 h-5 rounded-full bg-teal-500 text-white text-xs flex items-center justify-center font-medium">2</span>
-              เพิ่ม projects หรือ skills
-            </li>
-            <li className="flex items-center gap-3 text-sm text-stone-600 dark:text-stone-300">
-              <span className="w-5 h-5 rounded-full bg-teal-500 text-white text-xs flex items-center justify-center font-medium">3</span>
-              สร้างพอร์ตโฟลิโออีกอัน
-            </li>
-          </ul>
-        </div>
-
-        {/* ── CTA Buttons ── */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Link
-            href="/dashboard"
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-stone-900 dark:bg-white text-white dark:text-stone-900 text-sm font-medium hover:bg-stone-700 dark:hover:bg-stone-100 transition-all"
-          >
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Link href="/dashboard" className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-stone-900 dark:bg-white text-white dark:text-stone-900 text-sm font-medium hover:bg-stone-700 dark:hover:bg-stone-100 transition-all">
             <Home className="w-4 h-4" />
-            ไป Dashboard
+            Dashboard
           </Link>
-          <Link
-            href="/builder/new"
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium transition-all shadow-sm shadow-teal-500/20"
-          >
+          <Link href="/builder/new" className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium transition-all shadow-sm shadow-teal-500/20">
             <Plus className="w-4 h-4" />
             สร้างอีกอัน
           </Link>
