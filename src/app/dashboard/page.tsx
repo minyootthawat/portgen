@@ -188,7 +188,7 @@ export default function DashboardPage() {
                       : portfolio.theme === 'minimal-light'
                       ? 'bg-stone-100 dark:bg-stone-800'
                       : portfolio.theme === 'brutalist'
-                      ? 'bg-stone-900'
+                      ? 'bg-stone-950'
                       : 'bg-white dark:bg-stone-800'
                   }`}
                 >
@@ -237,25 +237,15 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  {/* Hover overlay with Edit button */}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Link
-                      href={`/builder/${portfolio.id}`}
-                      className="px-5 py-2.5 rounded-xl bg-white text-stone-900 font-semibold text-sm hover:bg-teal-50 transition-colors shadow-lg"
-                    >
-                      แก้ไข Portfolio
-                    </Link>
-                  </div>
-
                   {portfolio.is_published && (
                     <div className="absolute top-2 right-2 px-2 py-1 rounded-full bg-teal-500 text-white text-xs font-semibold flex items-center gap-1">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-white" />
                       Live
                     </div>
                   )}
 
                   {portfolio.view_count > 0 && (
-                    <div className="absolute bottom-2 right-2 px-2 py-1 rounded bg-black/40 text-white text-xs flex items-center gap-1">
+                    <div className="absolute bottom-2 right-2 px-2 py-1 rounded bg-stone-900/60 text-white text-xs flex items-center gap-1">
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -266,24 +256,32 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="min-w-0">
-                      <h3 className="font-semibold text-stone-900 dark:text-white truncate">{portfolio.name || 'Untitled'}</h3>
-                      <p className="text-xs text-stone-500 dark:text-stone-400 truncate">{portfolio.subdomain}.portgen.com</p>
+                  <div className="flex items-start justify-between mb-1">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold text-stone-900 dark:text-white truncate pr-2">{portfolio.name || 'Untitled'}</h3>
+                      <p className="text-xs text-stone-400 dark:text-stone-500 truncate mt-0.5">{portfolio.subdomain}.portgen.com</p>
                     </div>
                     {portfolio.is_published ? (
-                      <span className="px-2 py-1 rounded text-xs bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 font-medium shrink-0 ml-2">
-                        เผยแพร่แล้ว
-                      </span>
+                      <a
+                        href={`https://${portfolio.subdomain}.portgen.com`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="shrink-0 px-2 py-1 rounded text-xs bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 font-medium flex items-center gap-1 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors"
+                        title="เปิดดูเว็บไซต์"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        Live
+                      </a>
                     ) : (
-                      <span className="px-2 py-1 rounded text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 font-medium shrink-0 ml-2">
+                      <span className="shrink-0 px-2 py-1 rounded text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 font-medium">
                         ฉบับร่าง
                       </span>
                     )}
                   </div>
 
                   {/* Skills preview */}
-                  <div className="flex flex-wrap gap-1 mt-2 mb-3">
+                  {/* Skills preview */}
+                  <div className="flex flex-wrap gap-1 mb-4">
                     {(portfolio.skills || []).slice(0, 3).map((skill) => (
                       <span key={skill.id} className="px-2 py-0.5 rounded text-xs bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 font-medium">
                         {skill.name}
@@ -296,34 +294,24 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2 mt-4">
+                  {/* Footer actions */}
+                  <div className="flex items-center gap-2">
                     <Link
                       href={`/builder/${portfolio.id}`}
                       className="flex-1 py-2 px-3 rounded-lg text-sm text-center bg-teal-50 dark:bg-teal-900/20 hover:bg-teal-100 dark:hover:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium transition"
                     >
                       แก้ไข
                     </Link>
-                    {portfolio.is_published && (
-                      <a
-                        href={`https://${portfolio.subdomain}.portgen.com`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition"
-                        title="View live site"
-                      >
-                        <ExternalLink className="w-4 h-4 text-stone-600 dark:text-stone-400" />
-                      </a>
-                    )}
                     <button
                       onClick={() => handleDeletePortfolio(portfolio.id)}
                       disabled={deletingId === portfolio.id}
-                      className="p-2 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition"
-                      title="Delete portfolio"
+                      className="p-2 rounded-lg text-stone-400 dark:text-stone-600 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition"
+                      title="ลบพอร์ตโฟลิโอ"
                     >
                       {deletingId === portfolio.id ? (
-                        <Loader2 className="w-4 h-4 animate-spin text-stone-400" />
+                        <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
-                        <Trash2 className="w-4 h-4 text-stone-600 dark:text-stone-400" />
+                        <Trash2 className="w-4 h-4" />
                       )}
                     </button>
                   </div>
