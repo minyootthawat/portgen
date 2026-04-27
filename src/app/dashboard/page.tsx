@@ -7,6 +7,7 @@ import { signOut, useSession } from 'next-auth/react'
 import { Plus, ExternalLink, Trash2, Loader2, Crown, ArrowRight, Sparkles } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { LangSwitcher } from '@/components/LangSwitcher'
+import { useTranslations } from 'next-intl'
 import type { Portfolio } from '@/types'
 
 export default function DashboardPage() {
@@ -16,6 +17,7 @@ export default function DashboardPage() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
   const [isPro, setIsPro] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const t = useTranslations('dashboard')
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -71,7 +73,7 @@ export default function DashboardPage() {
   }
 
   const handleDeletePortfolio = async (id: string) => {
-    if (!confirm('ลบพอร์ตโฟลิโอนี้หรือไม่? การดำเนินการนี้ไม่สามารถเลิกทำได้')) {
+    if (!confirm(t('confirmDelete'))) {
       return
     }
     setDeletingId(id)
@@ -105,6 +107,12 @@ export default function DashboardPage() {
     )
   }
 
+  const publishedCount = portfolios.filter((p) => p.is_published).length
+  const subtitle =
+    portfolios.length === 0
+      ? t('emptyList')
+      : `${portfolios.length} portfolio${portfolios.length > 1 ? 's' : ''} · ${publishedCount} ${t('published').toLowerCase()}`
+
   return (
     <div className="min-h-screen bg-stone-50 dark:bg-stone-950">
       {/* Nav */}
@@ -125,11 +133,11 @@ export default function DashboardPage() {
             {!isPro && (
               <Link href="/upgrade" className="btn-secondary text-sm hidden sm:inline-flex">
                 <Crown className="w-3.5 h-3.5" />
-                อัพเกรด
+                {t('upgrade')}
               </Link>
             )}
             <button onClick={handleSignOut} className="btn-ghost text-sm">
-              ออก
+              {t('logout')}
             </button>
           </div>
         </div>
@@ -140,16 +148,12 @@ export default function DashboardPage() {
       <div className="container-lg mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Portfolio ของคุณ</h1>
-            <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
-              {portfolios.length === 0
-                ? 'สร้างพอร์ตโฟลิโอแรกของคุณ'
-                : `${portfolios.length} portfolio${portfolios.length > 1 ? 's' : ''} · ${portfolios.filter(p => p.is_published).length} เผยแพร่แล้ว`}
-            </p>
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-white">{t('title')}</h1>
+            <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">{subtitle}</p>
           </div>
-          <Link href='/builder/new' className="btn-primary card-hover">
+          <Link href="/builder/new" className="btn-primary card-hover">
             <Plus className="w-4 h-4" />
-            พอร์ตโฟลิโอใหม่
+            {t('newPortfolio')}
           </Link>
         </div>
 
@@ -167,13 +171,13 @@ export default function DashboardPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M0 16H52M44 8l8 8-8 8" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-stone-900 dark:text-white mb-2">พอร์ตโฟลิโอแรกของคุณเริ่มต้นที่นี่</h2>
+            <h2 className="text-xl font-bold text-stone-900 dark:text-white mb-2">{t('emptyTitle')}</h2>
             <p className="text-stone-500 dark:text-stone-400 text-sm mb-8 max-w-xs mx-auto">
-              ใช้เวลาไม่ถึง 5 นาที เลือกเทมเพลต เพิ่มข้อมูล แชร์ลิงก์
+              {t('emptySubtitle')}
             </p>
             <Link href="/builder/new" className="btn-primary text-base px-8 py-3 card-hover">
               <Sparkles className="w-4 h-4" />
-              สร้างพอร์ตโฟลิโอแรก
+              {t('createFirst')}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -241,7 +245,7 @@ export default function DashboardPage() {
                   {portfolio.is_published && (
                     <div className="absolute top-2 right-2 px-2 py-1 rounded-full bg-teal-500 text-white text-xs font-semibold flex items-center gap-1">
                       <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                      Live
+                      {t('published')}
                     </div>
                   )}
 
@@ -268,19 +272,18 @@ export default function DashboardPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="shrink-0 px-2 py-1 rounded text-xs bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 font-medium flex items-center gap-1 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors"
-                        title="เปิดดูเว็บไซต์"
+                        title={t('openWebsite')}
                       >
                         <ExternalLink className="w-3 h-3" />
-                        Live
+                        {t('published')}
                       </a>
                     ) : (
                       <span className="shrink-0 px-2 py-1 rounded text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 font-medium">
-                        ฉบับร่าง
+                        {t('draft')}
                       </span>
                     )}
                   </div>
 
-                  {/* Skills preview */}
                   {/* Skills preview */}
                   <div className="flex flex-wrap gap-1 mb-4">
                     {(portfolio.skills || []).slice(0, 3).map((skill) => (
@@ -301,13 +304,13 @@ export default function DashboardPage() {
                       href={`/builder/${portfolio.id}`}
                       className="flex-1 py-2 px-3 rounded-lg text-sm text-center bg-teal-50 dark:bg-teal-900/20 hover:bg-teal-100 dark:hover:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium transition"
                     >
-                      แก้ไข
+                      {t('edit')}
                     </Link>
                     <button
                       onClick={() => handleDeletePortfolio(portfolio.id)}
                       disabled={deletingId === portfolio.id}
                       className="p-2 rounded-lg text-stone-400 dark:text-stone-600 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition"
-                      title="ลบพอร์ตโฟลิโอ"
+                      title={t('delete')}
                     >
                       {deletingId === portfolio.id ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
