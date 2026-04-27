@@ -22,7 +22,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     const bootstrap = async () => {
       if (status === 'unauthenticated') {
-        router.push('/login')
+        router.push('/')
         return
       }
 
@@ -31,7 +31,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
       const effectiveUserId = session?.user ? (session.user as any)?.id || session.user.email : null
 
       if (!effectiveUserId) {
-        router.push('/login')
+        router.push('/')
         return
       }
 

@@ -132,14 +132,14 @@ export default function SuccessPage() {
   useEffect(() => {
     const bootstrap = async () => {
       if (status === 'unauthenticated') {
-        router.push('/login')
+        router.push('/')
         return
       }
       if (status === 'loading') return
 
       const userId = (session?.user as any)?.id || session?.user?.email
       if (!userId) {
-        router.push('/login')
+        router.push('/')
         return
       }
 

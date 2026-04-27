@@ -19,7 +19,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (status === 'unauthenticated') {
-      router.push('/login')
+      router.push('/')
       return
     }
 
@@ -27,7 +27,7 @@ export default function DashboardPage() {
 
     const checkUser = async () => {
       if (!session?.user) {
-        router.push('/login')
+        router.push('/')
         return
       }
 
