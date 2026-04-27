@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useI18n } from '@/i18n/context'
 import { useBuilderStore } from '@/lib/store'
 import { supabase, getSession, getPortfolio, createPortfolio, updatePortfolio, publishPortfolio } from '@/lib/supabase'
-import { Eye, Save, Rocket, ChevronLeft, ChevronRight, Code, Check, Loader2, X, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Eye, Save, Rocket, ChevronLeft, ChevronRight, Code, Check, Loader2, X, AlertCircle, CheckCircle2, Smartphone, Monitor, Sparkles } from 'lucide-react'
 import { BuilderSteps } from '@/components/builder/BuilderSteps'
 import { ThemeSelector } from '@/components/builder/ThemeSelector'
 import dynamic from 'next/dynamic'
@@ -22,6 +22,8 @@ import type { BuilderStep } from '@/types'
 
 const STEPS: BuilderStep[] = ['info', 'skills', 'projects', 'social', 'theme', 'preview']
 
+const SUGGESTED_SKILLS = ['React', 'TypeScript', 'Node.js', 'Python', 'Figma', 'AWS', 'Docker', 'GraphQL', 'PostgreSQL', 'Next.js', 'Vue.js', 'Go', 'Rust', 'MongoDB', 'Redis']
+
 export default function BuilderPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const { t } = useI18n()
@@ -32,8 +34,20 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
   const [showPreview, setShowPreview] = useState(false)
   const [showJSXEditor, setShowJSXEditor] = useState(false)
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
+  const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
+  const [autoSaveTime, setAutoSaveTime] = useState<Date | null>(null)
+  const [stepKey, setStepKey] = useState(0)
+  const [prevStep, setPrevStep] = useState<BuilderStep | null>(null)
+  const [celebratingStep, setCelebratingStep] = useState(false)
+  const [previewMode, setPreviewMode] = useState<'desktop' | 'phone'>('desktop')
 
   const { portfolio, setStep, step, updatePortfolio: updateStore, reset } = useBuilderStore()
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const prevStepRef = useRef<BuilderStep | null>(null)
+
+  useEffect(() => {
+    prevStepRef.current = step
+  })
 
   useEffect(() => {
     const load = async () => {
@@ -86,6 +100,33 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
     load()
   }, [params.id, isNew, router, updateStore, reset])
 
+  // Auto-save
+  const triggerAutoSave = useCallback(async () => {
+    if (isNew || !portfolio.name) return
+    setAutoSaveStatus('saving')
+    try {
+      const { error } = await updatePortfolio(params.id, portfolio)
+      if (error) throw error
+      setAutoSaveStatus('saved')
+      setAutoSaveTime(new Date())
+      setTimeout(() => setAutoSaveStatus('idle'), 3000)
+    } catch {
+      setAutoSaveStatus('idle')
+    }
+  }, [isNew, portfolio, params.id])
+
+  // Watch for changes and trigger auto-save
+  useEffect(() => {
+    if (isNew || !portfolio.name) return
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
+    autoSaveTimerRef.current = setTimeout(() => {
+      triggerAutoSave()
+    }, 3000)
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
+    }
+  }, [portfolio.name, portfolio.tagline, portfolio.about, portfolio.skills, portfolio.projects, portfolio.social_links])
+
   const stepIndex = STEPS.indexOf(step)
 
   const showToast = (type: 'success' | 'error', message: string) => {
@@ -104,6 +145,8 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
         const { error } = await updatePortfolio(params.id, portfolio)
         if (error) throw error
       }
+      setAutoSaveStatus('saved')
+      setAutoSaveTime(new Date())
       showToast('success', isNew ? t.builder.portfolioSaved : t.builder.changesSaved)
     } catch (err: any) {
       showToast('error', err.message)
@@ -134,18 +177,37 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
     setPublishing(false)
   }
 
-  const nextStep = () => {
-    if (stepIndex < STEPS.length - 1) setStep(STEPS[stepIndex + 1])
+  const navigateToStep = (newStep: BuilderStep) => {
+    const oldStep = step
+    setPrevStep(oldStep)
+    setStep(newStep)
+    setStepKey((k) => k + 1)
+
+    // Trigger celebration on step completion
+    if (STEPS.indexOf(newStep) > STEPS.indexOf(oldStep)) {
+      setCelebratingStep(true)
+      setTimeout(() => setCelebratingStep(false), 1500)
+    }
   }
 
-  const prevStep = () => {
-    if (stepIndex > 0) setStep(STEPS[stepIndex - 1])
+  const nextStep = () => {
+    if (stepIndex < STEPS.length - 1) navigateToStep(STEPS[stepIndex + 1])
+  }
+
+  const prevStepNav = () => {
+    if (stepIndex > 0) navigateToStep(STEPS[stepIndex - 1])
   }
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950">
-        <Loader2 className="w-8 h-8 animate-spin text-stone-400" />
+        <div className="text-center">
+          <div className="w-12 h-12 rounded-2xl skeleton mx-auto mb-4" />
+          <div className="space-y-2 w-32 mx-auto">
+            <div className="h-3 skeleton rounded" />
+            <div className="h-3 skeleton rounded w-3/4 mx-auto" />
+          </div>
+        </div>
       </div>
     )
   }
@@ -153,7 +215,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
   return (
     <div className="min-h-screen bg-stone-50 dark:bg-stone-950 flex flex-col">
       {/* Builder Nav */}
-      <nav className="bg-white dark:bg-stone-900 border-b border-stone-100 dark:border-stone-800 px-4 py-3 flex items-center justify-between">
+      <nav className="bg-white dark:bg-stone-900 border-b border-stone-100 dark:border-stone-800 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.push('/dashboard')}
@@ -163,12 +225,50 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
             {t.builder.dashboard}
           </button>
           <span className="text-stone-300 dark:text-stone-600">|</span>
-          <span className="font-medium text-stone-900 dark:text-white text-sm">
+          <span className="font-medium text-stone-900 dark:text-white text-sm max-w-[200px] truncate">
             {isNew ? t.builder.new : `${t.builder.editing} ${portfolio.name || t.builder.untitled}`}
           </span>
+
+          {/* Auto-save indicator */}
+          <div className="hidden sm:flex items-center gap-1.5 text-xs">
+            {autoSaveStatus === 'saving' && (
+              <>
+                <Loader2 className="w-3 h-3 animate-spin text-stone-400" />
+                <span className="text-stone-400">Saving...</span>
+              </>
+            )}
+            {autoSaveStatus === 'saved' && (
+              <>
+                <CheckCircle2 className="w-3 h-3 text-teal-500 animate-checkmark" />
+                <span className="text-teal-600 dark:text-teal-400">
+                  Saved {autoSaveTime ? `at ${autoSaveTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
+                </span>
+              </>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Preview mode toggle */}
+          {(showPreview || showJSXEditor) && (
+            <div className="flex items-center gap-1 p-1 rounded-lg bg-stone-100 dark:bg-stone-800 mr-1">
+              <button
+                onClick={() => setPreviewMode('desktop')}
+                className={`p-1.5 rounded-md transition ${previewMode === 'desktop' ? 'bg-white dark:bg-stone-700 shadow-sm text-stone-900 dark:text-white' : 'text-stone-400 hover:text-stone-600'}`}
+                title="Desktop preview"
+              >
+                <Monitor className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setPreviewMode('phone')}
+                className={`p-1.5 rounded-md transition ${previewMode === 'phone' ? 'bg-white dark:bg-stone-700 shadow-sm text-stone-900 dark:text-white' : 'text-stone-400 hover:text-stone-600'}`}
+                title="Phone preview"
+              >
+                <Smartphone className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
           <button
             onClick={() => setShowJSXEditor(!showJSXEditor)}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition ${
@@ -176,7 +276,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
             }`}
           >
             <Code className="w-4 h-4" />
-            {t.builder.jsxEditor}
+            <span className="hidden sm:inline">{t.builder.jsxEditor}</span>
           </button>
           <button
             onClick={() => setShowPreview(!showPreview)}
@@ -185,7 +285,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
             }`}
           >
             <Eye className="w-4 h-4" />
-            {showPreview ? t.builder.hidePreview : t.builder.previewStep.title}
+            <span className="hidden sm:inline">{showPreview ? t.builder.hidePreview : 'Preview'}</span>
           </button>
           <button
             onClick={handleSave}
@@ -193,18 +293,28 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
             className="btn-secondary text-sm"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            {t.builder.save}
+            <span className="hidden sm:inline">{t.builder.save}</span>
           </button>
           <button
             onClick={handlePublish}
             disabled={publishing}
-            className="btn-primary text-sm"
+            className="btn-primary text-sm shadow-sm"
           >
             {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
-            {t.builder.publish}
+            <span className="hidden sm:inline">{t.builder.publish}</span>
           </button>
         </div>
       </nav>
+
+      {/* Celebration banner */}
+      {celebratingStep && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-bounce-in">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500 text-white text-sm font-semibold shadow-lg">
+            <Sparkles className="w-4 h-4" />
+            Step complete! Keep going!
+          </div>
+        </div>
+      )}
 
       {/* Toast */}
       {toast && (
@@ -229,11 +339,11 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
         <div className={`${showPreview || showJSXEditor ? 'w-1/2' : 'w-full'} border-r border-stone-200 dark:border-stone-800 overflow-y-auto bg-white dark:bg-stone-900`}>
           {/* Step Indicator */}
           <div className="p-6 border-b border-stone-100 dark:border-stone-800">
-            <BuilderSteps currentStep={step} onStepClick={(s) => setStep(s)} />
+            <BuilderSteps currentStep={step} onStepClick={(s) => navigateToStep(s)} />
           </div>
 
-          {/* Step Content */}
-          <div className="p-6">
+          {/* Step Content with animation */}
+          <div key={stepKey} className="p-6 animate-fade-in">
             <BuilderStepContent
               step={step}
               portfolio={portfolio}
@@ -247,7 +357,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
           {/* Navigation */}
           <div className="p-6 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between bg-white dark:bg-stone-900">
             <button
-              onClick={prevStep}
+              onClick={prevStepNav}
               disabled={stepIndex === 0}
               className="flex items-center gap-1 px-4 py-2 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition text-sm disabled:opacity-30 disabled:cursor-not-allowed text-stone-700 dark:text-stone-200"
             >
@@ -287,7 +397,17 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
                 onClose={() => setShowJSXEditor(false)}
               />
             ) : (
-              <PortfolioPreview portfolio={portfolio} />
+              <div className={previewMode === 'phone' ? 'flex items-start justify-center pt-8' : ''}>
+                {previewMode === 'phone' ? (
+                  <div className="w-64 phone-frame flex-shrink-0">
+                    <div className="overflow-hidden rounded-[20px]">
+                      <PortfolioPreview portfolio={portfolio} />
+                    </div>
+                  </div>
+                ) : (
+                  <PortfolioPreview portfolio={portfolio} />
+                )}
+              </div>
             )}
           </div>
         )}
@@ -371,6 +491,7 @@ function BuilderStepContent({
               onChange={(e) => updatePortfolio({ name: e.target.value })}
               placeholder={t.builder.info.namePlaceholder}
               className="input"
+              autoFocus
             />
           </div>
 
@@ -410,6 +531,9 @@ function BuilderStepContent({
       )
 
     case 'skills':
+      const existingSkillNames = new Set((portfolio.skills || []).map((s: any) => s.name.toLowerCase()))
+      const suggestedSkills = SUGGESTED_SKILLS.filter((s) => !existingSkillNames.has(s.toLowerCase())).slice(0, 8)
+
       return (
         <div className="space-y-5 max-w-xl">
           <div>
@@ -417,16 +541,34 @@ function BuilderStepContent({
             <p className="text-sm text-stone-500 dark:text-stone-400">{t.builder.skills.subtitle}</p>
           </div>
 
+          {/* Suggested skills */}
+          {suggestedSkills.length > 0 && (
+            <div>
+              <p className="text-xs text-stone-400 dark:text-stone-500 mb-2 font-medium uppercase tracking-wider">Popular skills — click to add</p>
+              <div className="flex flex-wrap gap-2">
+                {suggestedSkills.map((skill) => (
+                  <button
+                    key={skill}
+                    onClick={() => addSkill(skill)}
+                    className="px-3 py-1.5 rounded-full border border-dashed border-stone-300 dark:border-stone-600 text-xs text-stone-500 dark:text-stone-400 hover:border-teal-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all font-medium"
+                  >
+                    + {skill}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <SkillInput onAdd={addSkill} placeholder={t.builder.skills.placeholder} />
 
           <div className="flex flex-wrap gap-2 mt-4">
             {(portfolio.skills || []).map((skill: any) => (
               <span
                 key={skill.id}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-sm font-medium"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-sm font-medium group-hover:opacity-80"
               >
                 {skill.name}
-                <button onClick={() => removeSkill(skill.id)} className="hover:text-teal-900 dark:hover:text-teal-200">
+                <button onClick={() => removeSkill(skill.id)} className="hover:text-teal-900 dark:hover:text-teal-200 ml-0.5">
                   <X className="w-3 h-3" />
                 </button>
               </span>
@@ -434,7 +576,14 @@ function BuilderStepContent({
           </div>
 
           {(portfolio.skills || []).length === 0 && (
-            <p className="text-stone-400 dark:text-stone-500 text-sm">{t.builder.skills.noSkills}</p>
+            <div className="card p-6 text-center border-dashed">
+              <div className="w-10 h-10 rounded-xl bg-stone-100 dark:bg-stone-800 flex items-center justify-center mx-auto mb-3">
+                <svg className="w-5 h-5 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <p className="text-stone-500 dark:text-stone-400 text-sm">Type a skill like &apos;React&apos; or &apos;Python&apos; and press Enter</p>
+            </div>
           )}
         </div>
       )
@@ -447,34 +596,37 @@ function BuilderStepContent({
               <h2 className="text-lg font-semibold text-stone-900 dark:text-white mb-1">{t.builder.projects.title}</h2>
               <p className="text-sm text-stone-500 dark:text-stone-400">{t.builder.projects.subtitle}</p>
             </div>
-            <button
-              onClick={addProject}
-              className="btn-primary text-sm"
-            >
+            <button onClick={addProject} className="btn-primary text-sm">
               <Check className="w-4 h-4" />
               {t.builder.projects.addProject}
             </button>
           </div>
 
           {(portfolio.projects || []).length === 0 ? (
-            <div className="card p-8 text-center">
-              <p className="text-stone-500 dark:text-stone-400 mb-4">{t.builder.projects.noProjects}</p>
+            <div className="card p-10 text-center">
+              <div className="w-14 h-14 rounded-2xl bg-stone-100 dark:bg-stone-800 flex items-center justify-center mx-auto mb-4">
+                <svg className="w-7 h-7 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+              <p className="text-stone-500 dark:text-stone-400 mb-5">{t.builder.projects.noProjects}</p>
               <button
                 onClick={addProject}
-                className="px-4 py-2 rounded-lg bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition text-sm font-medium"
+                className="btn-primary text-sm px-6 py-2.5"
               >
+                <Check className="w-4 h-4" />
                 {t.builder.projects.addFirst}
               </button>
             </div>
           ) : (
             <div className="space-y-4">
               {(portfolio.projects || []).map((project: any, i: number) => (
-                <div key={project.id} className="card p-4 space-y-3">
+                <div key={project.id} className="card card-hover p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-stone-500 dark:text-stone-400 font-medium">{t.builder.projects.projectN} {i + 1}</span>
                     <button
                       onClick={() => removeProject(project.id)}
-                      className="text-red-500 hover:text-red-700 text-sm"
+                      className="text-red-500 hover:text-red-700 dark:hover:text-red-400 text-sm transition-colors"
                     >
                       {t.builder.projects.remove}
                     </button>
@@ -489,25 +641,29 @@ function BuilderStepContent({
                   <textarea
                     value={project.description}
                     onChange={(e) => updateProject(project.id, { description: e.target.value })}
-                    placeholder={t.builder.projects.descPlaceholder}
+                    placeholder={t.builder.projects.descPlaceholder + ' — include what you built and the tech stack used'}
                     rows={2}
                     className="input resize-none"
                   />
                   <div className="flex gap-2">
-                    <input
-                      type="url"
-                      value={project.live_url || ''}
-                      onChange={(e) => updateProject(project.id, { live_url: e.target.value })}
-                      placeholder={t.builder.projects.liveUrl}
-                      className="input"
-                    />
-                    <input
-                      type="url"
-                      value={project.repo_url || ''}
-                      onChange={(e) => updateProject(project.id, { repo_url: e.target.value })}
-                      placeholder={t.builder.projects.repoUrl}
-                      className="input"
-                    />
+                    <div className="flex-1">
+                      <input
+                        type="url"
+                        value={project.live_url || ''}
+                        onChange={(e) => updateProject(project.id, { live_url: e.target.value })}
+                        placeholder={t.builder.projects.liveUrl}
+                        className="input"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <input
+                        type="url"
+                        value={project.repo_url || ''}
+                        onChange={(e) => updateProject(project.id, { repo_url: e.target.value })}
+                        placeholder={t.builder.projects.repoUrl}
+                        className="input"
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
@@ -530,11 +686,18 @@ function BuilderStepContent({
             {(portfolio.social_links || []).map((link: any) => (
               <div
                 key={link.id}
-                className="flex items-center justify-between px-4 py-3 rounded-lg bg-stone-50 dark:bg-stone-800/50"
+                className="flex items-center justify-between px-4 py-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 group"
               >
-                <span className="text-sm font-medium text-stone-700 dark:text-stone-200 capitalize">{link.platform}</span>
-                <span className="text-sm text-stone-500 dark:text-stone-400 truncate max-w-xs">{link.url}</span>
-                <button onClick={() => removeSocialLink(link.id)} className="text-red-500 hover:text-red-700">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-white dark:bg-stone-700 flex items-center justify-center text-sm font-bold text-stone-500 dark:text-stone-300 uppercase">
+                    {link.platform[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-sm font-medium text-stone-700 dark:text-stone-200 capitalize">{link.platform}</span>
+                    <span className="text-sm text-stone-400 dark:text-stone-500 block truncate max-w-xs">{link.url}</span>
+                  </div>
+                </div>
+                <button onClick={() => removeSocialLink(link.id)} className="text-stone-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -563,7 +726,7 @@ function BuilderStepContent({
             <p className="text-sm text-stone-500 dark:text-stone-400">{t.builder.previewStep.subtitle}</p>
           </div>
 
-          <div className="card p-5 space-y-4 max-w-xl">
+          <div className="card card-hover p-5 space-y-4 max-w-xl">
             <div className="flex items-center justify-between">
               <span className="text-sm text-stone-500 dark:text-stone-400">{t.builder.previewStep.willBeLive}</span>
             </div>
@@ -574,12 +737,30 @@ function BuilderStepContent({
             <div className="pt-4 border-t border-stone-200 dark:border-stone-700">
               <h3 className="font-medium text-stone-700 dark:text-stone-200 mb-2">{t.builder.previewStep.whatsIncluded}</h3>
               <ul className="space-y-1 text-sm text-stone-600 dark:text-stone-400">
-                <li>✅ {portfolio.name || 'Your name'}</li>
-                <li>✅ {portfolio.tagline || 'Your tagline'}</li>
-                <li>✅ {portfolio.skills?.length || 0} {t.builder.steps.skills.toLowerCase()}</li>
-                <li>✅ {portfolio.projects?.length || 0} {t.builder.steps.projects.toLowerCase()}</li>
-                <li>✅ {portfolio.social_links?.length || 0} {t.builder.steps.social.toLowerCase()}</li>
-                <li>✅ {t.builder.steps.theme}: {portfolio.theme}</li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-teal-500 flex-shrink-0" />
+                  {portfolio.name || 'Your name'}
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-teal-500 flex-shrink-0" />
+                  {portfolio.tagline || 'Your tagline'}
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-teal-500 flex-shrink-0" />
+                  {portfolio.skills?.length || 0} {t.builder.steps.skills.toLowerCase()}
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-teal-500 flex-shrink-0" />
+                  {portfolio.projects?.length || 0} {t.builder.steps.projects.toLowerCase()}
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-teal-500 flex-shrink-0" />
+                  {portfolio.social_links?.length || 0} {t.builder.steps.social.toLowerCase()}
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-teal-500 flex-shrink-0" />
+                  {t.builder.steps.theme}: {portfolio.theme}
+                </li>
               </ul>
             </div>
           </div>
@@ -587,7 +768,7 @@ function BuilderStepContent({
           <button
             onClick={onPublish}
             disabled={isPublishing}
-            className="btn-primary"
+            className="btn-primary text-base px-8 py-3 shadow-lg"
           >
             {isPublishing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
             {t.builder.previewStep.publishNow}
@@ -613,14 +794,25 @@ function SkillInput({ onAdd, placeholder }: { onAdd: (name: string) => void; pla
   }
 
   return (
-    <input
-      type="text"
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      onKeyDown={handleKeyDown}
-      placeholder={placeholder}
-      className="input"
-    />
+    <div className="relative">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        className="input pr-12"
+      />
+      {value.trim() && (
+        <button
+          type="button"
+          onClick={() => { onAdd(value.trim()); setValue('') }}
+          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 hover:bg-teal-100 transition"
+        >
+          <Check className="w-4 h-4" />
+        </button>
+      )}
+    </div>
   )
 }
 

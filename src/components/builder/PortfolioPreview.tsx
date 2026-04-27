@@ -12,14 +12,14 @@ export function PortfolioPreview({ portfolio }: Props) {
       {/* Header */}
       <div className="px-4 py-3 border-b border-stone-200 dark:border-slate-800 flex items-center justify-between">
         <span className="text-sm text-stone-500 dark:text-slate-400">Live Preview</span>
-        <span className="text-xs text-stone-400 dark:text-slate-500">{portfolio.subdomain || 'yourname'}.portgen.com</span>
+        <span className="text-xs text-stone-400 dark:text-slate-500 font-mono">{portfolio.subdomain || 'yourname'}.portgen.com</span>
       </div>
 
-      {/* Preview iframe */}
+      {/* Preview content */}
       <div className="flex-1 overflow-auto p-4">
         <div className="max-w-xl mx-auto">
-          {/* Simulated portfolio preview */}
-          <div className="rounded-xl overflow-hidden border border-slate-700 bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950">
+          {/* Simulated portfolio preview in browser */}
+          <div className="rounded-xl overflow-hidden border border-slate-700 bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 shadow-2xl">
             {/* Browser bar */}
             <div className="px-4 py-2 bg-slate-800/50 flex items-center gap-2">
               <div className="flex gap-1.5">
@@ -40,12 +40,14 @@ export function PortfolioPreview({ portfolio }: Props) {
               <div className="text-center mb-6">
                 {portfolio.avatar_url ? (
                   <img
-                    src={portfolio.avatar_url}
-                    alt={portfolio.name}
-                    className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                    src={portfolio.avatar_url || ''}
+                    alt={portfolio.name || 'portfolio'}
+                    className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-2 border-white/20"
                   />
                 ) : (
-                  <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-gradient-to-br from-sky-400 to-indigo-500" />
+                  <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center text-3xl font-bold text-white">
+                    {(portfolio.name || 'Your Name').charAt(0)}
+                  </div>
                 )}
                 <h1 className="text-2xl font-bold text-white mb-1">
                   {portfolio.name || 'Your Name'}
@@ -73,13 +75,13 @@ export function PortfolioPreview({ portfolio }: Props) {
                     {(portfolio.skills || []).slice(0, 6).map((skill) => (
                       <span
                         key={skill.id}
-                        className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 text-xs"
+                        className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 text-xs border border-sky-500/30"
                       >
                         {skill.name}
                       </span>
                     ))}
                     {(portfolio.skills?.length ?? 0) > 6 && (
-                      <span className="px-3 py-1 rounded-full bg-slate-700 text-slate-400 text-xs">
+                      <span className="px-3 py-1 rounded-full bg-slate-700 text-slate-400 text-xs border border-slate-600">
                         +{(portfolio.skills?.length ?? 0) - 6} more
                       </span>
                     )}
@@ -90,18 +92,29 @@ export function PortfolioPreview({ portfolio }: Props) {
               {/* Projects */}
               {(portfolio.projects?.length ?? 0) > 0 && (
                 <div className="space-y-3 mb-6">
+                  <div className="text-center text-xs text-slate-500 uppercase tracking-wider mb-3">Projects</div>
                   {(portfolio.projects || []).slice(0, 2).map((project) => (
                     <div
                       key={project.id}
-                      className="p-4 rounded-lg bg-slate-800/50 border border-slate-700/50"
+                      className="p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-slate-600/50 transition-colors"
                     >
                       <h3 className="text-sm font-medium text-white mb-1">
                         {project.title || 'Project Title'}
                       </h3>
                       <p className="text-xs text-slate-400">
-                        {project.description?.slice(0, 60) || 'Project description'}
-                        {(project.description?.length ?? 0) > 60 ? '...' : ''}
+                        {project.description?.slice(0, 80) || 'Project description'}
+                        {(project.description?.length ?? 0) > 80 ? '...' : ''}
                       </p>
+                      {(project.live_url || project.repo_url) && (
+                        <div className="flex gap-3 mt-2">
+                          {project.live_url && (
+                            <span className="text-xs text-sky-400">→ Live</span>
+                          )}
+                          {project.repo_url && (
+                            <span className="text-xs text-slate-500">⌘ Source</span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -113,7 +126,7 @@ export function PortfolioPreview({ portfolio }: Props) {
                   {(portfolio.social_links || []).slice(0, 4).map((link) => (
                     <span
                       key={link.id}
-                      className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 text-xs capitalize"
+                      className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 text-xs capitalize border border-slate-700 hover:border-slate-500 transition-colors"
                     >
                       {link.platform}
                     </span>

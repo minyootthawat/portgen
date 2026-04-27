@@ -8,9 +8,10 @@ import { Dialog, DialogBody } from '@/components/ui/Dialog'
 interface AuthDialogProps {
   open: boolean
   onClose: () => void
+  onTryDemo?: () => void
 }
 
-export function AuthDialog({ open, onClose }: AuthDialogProps) {
+export function AuthDialog({ open, onClose, onTryDemo }: AuthDialogProps) {
   const { t } = useI18n()
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -172,8 +173,20 @@ export function AuthDialog({ open, onClose }: AuthDialogProps) {
           {t.login.termsNote}
         </p>
 
+        {/* Try Demo */}
+        {onTryDemo && (
+          <div className="mt-5 pt-5 border-t border-stone-200 dark:border-stone-700">
+            <button
+              onClick={onTryDemo}
+              className="w-full py-2.5 px-4 rounded-lg border-2 border-dashed border-stone-300 dark:border-stone-600 text-stone-500 dark:text-stone-400 font-medium text-sm hover:border-teal-400 dark:hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+            >
+              {t.login.tryDemo}
+            </button>
+          </div>
+        )}
+
         {/* Social proof */}
-        <div className="mt-6 flex items-center justify-center gap-3 text-sm text-stone-400 dark:text-stone-500">
+        <div className="mt-5 flex items-center justify-center gap-3 text-sm text-stone-400 dark:text-stone-500">
           <div className="flex -space-x-2">
             {['A', 'B', 'C', 'D'].map((i) => (
               <div

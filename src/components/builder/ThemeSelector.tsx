@@ -66,10 +66,10 @@ export function ThemeSelector({ selected, onSelect }: Props) {
             onClick={() => onSelect(theme.id)}
             disabled={theme.isPro}
             className={`
-              relative rounded-xl overflow-hidden border-2 transition cursor-pointer
-              ${isSelected ? 'border-sky-500 dark:border-teal-500 ring-2 ring-sky-500/30 dark:ring-teal-500/30' : 'border-stone-300 dark:border-slate-600 hover:border-stone-400 dark:hover:border-slate-400'}
+              relative rounded-xl overflow-hidden border-2 transition-all duration-200 cursor-pointer
+              ${isSelected ? 'border-teal-500 dark:border-teal-400 ring-2 ring-teal-500/30 dark:ring-teal-400/30 shadow-lg shadow-teal-500/10' : 'border-stone-200 dark:border-slate-700 hover:border-teal-400 dark:hover:border-teal-500 hover:shadow-md'}
               ${theme.isPro ? 'opacity-50 dark:opacity-60' : ''}
-              disabled:cursor-not-allowed
+              disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]
             `}
           >
             {/* Preview */}
