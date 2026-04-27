@@ -40,20 +40,20 @@ export function AddSectionModal({ onClose, onAdd }: Props) {
         {/* Grid */}
         <div className="p-6 grid grid-cols-3 gap-3">
           {GRID_TYPES.map((type) => {
-            const meta = SECTION_TYPE_META[type]
+            const icon = SECTION_TYPE_META[type].icon
             return (
               <button
                 key={type}
                 onClick={() => onAdd(type)}
                 className="flex flex-col items-center gap-2 p-4 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-teal-400 dark:hover:border-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all group text-center"
               >
-                <span className="text-2xl">{meta.icon}</span>
+                <span className="text-2xl">{icon}</span>
                 <div>
                   <div className="text-sm font-medium text-stone-700 dark:text-stone-200 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors">
-                    {meta.label}
+                    {t(`sectionTypes.${type}`)}
                   </div>
                   <div className="text-xs text-stone-400 dark:text-stone-500 mt-0.5 leading-tight">
-                    {meta.description}
+                    {t(`sectionTypes.${type}Desc`)}
                   </div>
                 </div>
               </button>

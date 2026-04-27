@@ -796,7 +796,7 @@ export function BuilderEditor({
                         {section.type === 'skills' && t('countable.skills', { n: (section.data as SkillsData).items.length })}
                         {section.type === 'projects' && t('countable.projects', { n: (section.data as ProjectsData).items.length })}
                         {section.type === 'social' && t('countable.links', { n: (section.data as SocialData).items.length })}
-                        {!['info', 'skills', 'projects', 'social'].includes(section.type) && `${SECTION_TYPE_META[section.type].description}`}
+                        {!['info', 'skills', 'projects', 'social'].includes(section.type) && t(`sectionTypes.${section.type}Desc`)}
                       </span>
                     </div>
                     <div className="flex items-center gap-1">

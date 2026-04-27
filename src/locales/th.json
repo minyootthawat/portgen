@@ -165,7 +165,16 @@
       "education": "การศึกษา",
       "testimonials": "รีวิว",
       "certifications": "ใบรับรอง",
-      "sections": "เซคชัน"
+      "sections": "เซคชัน",
+      "infoDesc": "ชื่อ แท็กไลน์ และรูปโปรไฟล์",
+      "skillsDesc": "เทคโนโลยีและทักษะ",
+      "projectsDesc": "ผลงานและโปรเจกต์",
+      "socialDesc": "ลิงก์โซเชียลมีเดีย",
+      "servicesDesc": "บริการที่คุณเสนอ",
+      "experienceDesc": "ประสบการณ์ทำงาน",
+      "educationDesc": "การศึกษาและประกาศนียบัตร",
+      "testimonialsDesc": "รีวิวจากลูกค้า",
+      "certificationsDesc": "ใบรับรองและวุฒิบัตร"
     },
     "emptyMessages": {
       "skills": "ยังไม่มีทักษะ — พิมพ์ด้านบนเพื่อเพิ่ม",

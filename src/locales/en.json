@@ -165,7 +165,16 @@
       "education": "Education",
       "testimonials": "Reviews",
       "certifications": "Certifications",
-      "sections": "Sections"
+      "sections": "Sections",
+      "infoDesc": "Name, tagline, and profile picture",
+      "skillsDesc": "Technologies and skills",
+      "projectsDesc": "Work and projects",
+      "socialDesc": "Social media links",
+      "servicesDesc": "Services you offer",
+      "experienceDesc": "Work experience",
+      "educationDesc": "Education and certifications",
+      "testimonialsDesc": "Client reviews",
+      "certificationsDesc": "Certificates and licenses"
     },
     "emptyMessages": {
       "skills": "No skills yet — type above to add",
