@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Plus, GripVertical, Trash2, ChevronDown, ChevronUp, Edit2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { SectionSelector } from './SectionSelector'
 
 interface SectionsStepProps {
@@ -13,6 +14,7 @@ interface SectionsStepProps {
 }
 
 export function SectionsStep({ sections, onAdd, onRemove, onReorder, onUpdate }: SectionsStepProps) {
+  const t = useTranslations('builder')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [showSelector, setShowSelector] = useState(false)
 
@@ -51,28 +53,28 @@ export function SectionsStep({ sections, onAdd, onRemove, onReorder, onUpdate }:
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-stone-900 dark:text-white">เซคชันเพิ่มเติม</h2>
-          <p className="text-sm text-stone-500 dark:text-stone-400">เพิ่มเซคชันเพื่อโชว์ผลงานเพิ่มเติม</p>
+          <h2 className="text-lg font-semibold text-stone-900 dark:text-white">{t('sectionTypes.sections')}</h2>
+          <p className="text-sm text-stone-500 dark:text-stone-400">{t('noSectionsHint')}</p>
         </div>
         <button
           onClick={() => setShowSelector(!showSelector)}
           className="btn-primary text-sm"
         >
           <Plus className="w-4 h-4" />
-          เพิ่มเซคชัน
+          {t('buttons.addSection')}
         </button>
       </div>
 
       {showSelector && (
         <div className="card p-4">
-          <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">เลือกประเภทเซคชัน:</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">{t('noSectionsHint')}</p>
           <SectionSelector onSelect={handleAddSection} />
         </div>
       )}
 
       {sections.length === 0 && !showSelector ? (
         <div className="text-center py-12 text-stone-500 dark:text-stone-400">
-          <p>ยังไม่มีเซคชัน คลิก &quot;เพิ่มเซคชัน&quot; เพื่อเริ่มต้น</p>
+          <p>{t('noSections')}</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -82,7 +84,7 @@ export function SectionsStep({ sections, onAdd, onRemove, onReorder, onUpdate }:
                 <div className="flex items-center gap-3">
                   <GripVertical className="w-4 h-4 text-stone-400 cursor-grab" />
                   <span className="font-medium text-stone-900 dark:text-white capitalize">{section.type}</span>
-                  <span className="text-sm text-stone-500">{section.items?.length || 0} รายการ</span>
+                  <span className="text-sm text-stone-500">{section.items?.length || 0}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <button onClick={() => moveUp(index)} disabled={index === 0} className="p-1.5 rounded hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-400 disabled:opacity-30">
@@ -112,6 +114,7 @@ export function SectionsStep({ sections, onAdd, onRemove, onReorder, onUpdate }:
 }
 
 function SectionEditor({ section, onUpdate }: { section: any; onUpdate: (s: any) => void }) {
+  const t = useTranslations('builder')
   const addItem = () => {
     const newItem = { id: Date.now().toString(), title: '', description: '' }
     onUpdate({ ...section, items: [...(section.items || []), newItem] })
@@ -152,7 +155,7 @@ function SectionEditor({ section, onUpdate }: { section: any; onUpdate: (s: any)
         </div>
       ))}
       <button onClick={addItem} className="text-sm text-teal-600 dark:text-teal-400 hover:underline">
-        + เพิ่มรายการ
+        + {t('buttons.addItem')}
       </button>
     </div>
   )

@@ -1,18 +1,19 @@
 'use client'
 
 import { Check } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import type { BuilderStep } from '@/types'
 
 const STEP_ORDER: BuilderStep[] = ['info', 'skills', 'projects', 'social', 'theme', 'preview']
 
 const STEP_LABELS: Record<BuilderStep, string> = {
-  info: 'ข้อมูล',
-  skills: 'ทักษะ',
-  projects: 'โปรเจกต์',
-  social: 'โซเชียล',
-  sections: 'เซคชัน',
-  theme: 'ธีม',
-  preview: 'ตัวอย่าง',
+  info: 'Info',
+  skills: 'Skills',
+  projects: 'Projects',
+  social: 'Links',
+  sections: 'Sections',
+  theme: 'Theme',
+  preview: 'Preview',
 }
 
 interface Props {
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export function BuilderSteps({ currentStep, onStepClick }: Props) {
+  const t = useTranslations('builder')
   const currentIndex = STEP_ORDER.indexOf(currentStep)
 
   return (
@@ -53,7 +55,7 @@ export function BuilderSteps({ currentStep, onStepClick }: Props) {
                 ${isCompleted ? 'text-stone-500 dark:text-stone-400' : ''}
               `}
             >
-              {STEP_LABELS[step]}
+              {t(`sectionTypes.${step}`) || STEP_LABELS[step]}
             </span>
 
             {/* Arrow */}

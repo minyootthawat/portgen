@@ -1,6 +1,7 @@
 'use client'
 
 import { X } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { SECTION_TYPE_META, type SectionType } from '@/types/builder'
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 const GRID_TYPES: SectionType[] = ['info', 'skills', 'projects', 'social', 'services', 'experience', 'education', 'testimonials', 'certifications']
 
 export function AddSectionModal({ onClose, onAdd }: Props) {
+  const t = useTranslations('builder')
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
@@ -24,8 +26,8 @@ export function AddSectionModal({ onClose, onAdd }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100 dark:border-stone-800">
           <div>
-            <h2 className="text-lg font-semibold text-stone-900 dark:text-white">เพิ่มเซคชัน</h2>
-            <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">เลือกประเภทเซคชันที่ต้องการเพิ่ม</p>
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-white">{t('buttons.addSection')}</h2>
+            <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{t('noSectionsHint')}</p>
           </div>
           <button
             onClick={onClose}

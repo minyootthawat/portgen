@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import { useTranslations } from 'next-intl'
 import { Loader2 } from 'lucide-react'
 import { BuilderEditor } from '@/components/builder/BuilderEditor'
 import { createDefaultSection, type Section } from '@/types/builder'
@@ -101,12 +102,14 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
     bootstrap()
   }, [params.id, isNew, status, session, router])
 
+  const t = useTranslations('builder')
+
   if (loading || status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-3 text-teal-500" />
-          <p className="text-stone-500 dark:text-stone-400 text-sm">กำลังโหลด...</p>
+          <p className="text-stone-500 dark:text-stone-400 text-sm">{t('loading')}</p>
         </div>
       </div>
     )

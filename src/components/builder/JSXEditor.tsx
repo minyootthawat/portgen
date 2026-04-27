@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { X, Code, Save, Loader2, AlertCircle, Info, Check } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import type { Portfolio } from '@/types'
 
 // This is a simplified JSX template editor
@@ -169,6 +170,7 @@ interface Props {
 }
 
 export function JSXEditor({ portfolio, onChange, onClose }: Props) {
+  const t = useTranslations()
   const [code, setCode] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -252,7 +254,7 @@ export function JSXEditor({ portfolio, onChange, onClose }: Props) {
       {success && (
         <div className="px-4 py-2 bg-teal-500/10 border-t border-teal-500/30 text-teal-400 text-sm flex items-center gap-2">
           <Check className="w-4 h-4" />
-บันทึก JSX แล้ว! ตอนนี้คุณสามารถ export เป็น HTML ได้
+JSX saved! You can now export as HTML
         </div>
       )}
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { Check, Lock } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 const THEMES = [
   {
@@ -53,6 +54,7 @@ interface Props {
 }
 
 export function ThemeSelector({ selected, onSelect }: Props) {
+  const t = useTranslations('stats')
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       {THEMES.map((theme) => {
@@ -101,7 +103,7 @@ export function ThemeSelector({ selected, onSelect }: Props) {
                     Pro
                   </span>
                 ) : (
-                  <span className="text-xs text-sky-400 dark:text-teal-400">ฟรี</span>
+                  <span className="text-xs text-sky-400 dark:text-teal-400">{t('freeStart')}</span>
                 )}
               </div>
             </div>

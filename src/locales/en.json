@@ -178,14 +178,17 @@
     "newItems": {
       "experience": "New experience",
       "education": "New education",
-      "testimonial": "New review"
+      "testimonial": "New review",
+      "certification": "New certification"
     },
     "currentJob": "Currently working here",
     "aboutYou": "About you",
     "addButtons": {
       "services": "Add service",
       "experience": "Add experience",
-      "education": "Add education"
+      "education": "Add education",
+      "review": "Add review",
+      "certification": "Add certification"
     },
     "placeholders": {
       "serviceName": "Service name",
@@ -193,7 +196,60 @@
       "icon": "Icon (emoji or name)",
       "reviewerName": "Reviewer name",
       "role": "Role",
-      "company": "Company"
+      "company": "Company",
+      "name": "Name",
+      "tagline": "Tagline",
+      "about": "About you",
+      "avatarUrl": "Profile photo URL",
+      "typeSkillEnter": "Type a skill and press Enter",
+      "add": "Add",
+      "addProject": "Add project",
+      "projectName": "Project name",
+      "projectDesc": "Project description",
+      "websiteUrl": "Website URL",
+      "githubUrl": "GitHub URL",
+      "jobDescription": "Job details",
+      "periodHint": "Period, e.g. Jan 2020 - Present",
+      "school": "School",
+      "degree": "Degree / Major",
+      "additionalDetails": "Additional details",
+      "reviewQuote": "\"Review quote...\"",
+      "reviewerRole": "Role",
+      "reviewerCompany": "Company",
+      "certificationName": "Certification name",
+      "issuer": "Issuer",
+      "year": "Year",
+      "certificationUrl": "URL (if any)"
+    },
+    "labels": {
+      "name": "Name",
+      "tagline": "Tagline",
+      "about": "About you",
+      "avatarUrl": "Profile photo URL",
+      "projectIndex": "Project",
+      "portfolioName": "New portfolio",
+      "theme": "Theme",
+      "delete": "Delete"
+    },
+    "nav": {
+      "dashboard": "Dashboard"
+    },
+    "status": {
+      "saving": "Saving...",
+      "saved": "✓ Saved",
+      "published": "Portfolio published!"
+    },
+    "buttons": {
+      "add": "Add",
+      "addProject": "Add project",
+      "publish": "Publish",
+      "addSection": "Add section",
+      "addItem": "Add item"
+    },
+    "countable": {
+      "skills": "{n} skills",
+      "projects": "{n} projects",
+      "links": "{n} links"
     },
     "noName": "No name"
   },

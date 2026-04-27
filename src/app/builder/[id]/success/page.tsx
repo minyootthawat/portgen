@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import { useTranslations } from 'next-intl'
 import { Loader2, CheckCircle2, Link2, Twitter, Facebook, Linkedin, ExternalLink, Home, Plus, Sparkles } from 'lucide-react'
 import confetti from 'canvas-confetti'
 import Link from 'next/link'
@@ -98,6 +99,9 @@ function MiniPreview({ portfolio }: { portfolio: any }) {
 
 // ─── Success Page ────────────────────────────────────────────────────────────
 export default function SuccessPage() {
+  const t = useTranslations('success')
+  const tBuilder = useTranslations('builder')
+  const tDashboard = useTranslations('dashboard')
   const router = useRouter()
   const params = useParams()
   const { data: session, status } = useSession()
@@ -148,7 +152,7 @@ export default function SuccessPage() {
         if (!json.data) throw new Error('Portfolio not found')
         setPortfolio(json.data)
       } catch (err: any) {
-        setError(err.message || 'เกิดข้อผิดพลาด')
+        setError(err.message || t('errorTitle'))
       }
       setLoading(false)
     }
@@ -162,13 +166,13 @@ export default function SuccessPage() {
   const handleCopy = () => {
     navigator.clipboard.writeText(fullUrl).then(() => {
       setCopied(true)
-      setToast('คุณคัดลอกลิงก์แล้ว!')
+      setToast(t('linkCopied'))
       setTimeout(() => { setCopied(false); setToast('') }, 2500)
     })
   }
 
   const shareTwitter = () => {
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`ดู portfolio ของผมได้เลย! ${fullUrl}`)}`, '_blank', 'noopener,noreferrer')
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${t('shareText')} ${fullUrl}`)}`, '_blank', 'noopener,noreferrer')
   }
 
   const shareFacebook = () => {
@@ -184,7 +188,7 @@ export default function SuccessPage() {
       <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950">
         <div className="text-center space-y-3">
           <Loader2 className="w-8 h-8 animate-spin mx-auto text-teal-500" />
-          <p className="text-sm text-stone-500 dark:text-stone-400">กำลังโหลด...</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400">{t('loading')}</p>
         </div>
       </div>
     )
@@ -195,11 +199,11 @@ export default function SuccessPage() {
       <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950 px-4">
         <div className="text-center max-w-sm mx-auto space-y-4">
           <div className="text-5xl">😕</div>
-          <h1 className="text-xl font-bold text-stone-900 dark:text-white">เกิดข้อผิดพลาด</h1>
+          <h1 className="text-xl font-bold text-stone-900 dark:text-white">{t('errorTitle')}</h1>
           <p className="text-sm text-stone-500 dark:text-stone-400">{error}</p>
           <Link href="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-stone-900 dark:bg-white text-white dark:text-stone-900 font-medium text-sm hover:bg-stone-700 dark:hover:bg-stone-100 transition-all">
             <Home className="w-4 h-4" />
-            ไป Dashboard
+            {t('goDashboard')}
           </Link>
         </div>
       </div>
@@ -225,8 +229,8 @@ export default function SuccessPage() {
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-teal-500 text-white shadow-lg shadow-teal-500/30">
             <CheckCircle2 className="w-7 h-7" />
           </div>
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">สำเร็จ!</h1>
-          <p className="text-sm text-stone-500 dark:text-stone-400">พอร์ตโฟลิโอของคุณพร้อมแล้ว</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">{t('success')}</h1>
+          <p className="text-sm text-stone-500 dark:text-stone-400">{t('portfolioReady')}</p>
         </div>
 
         {/* Preview */}
@@ -240,7 +244,7 @@ export default function SuccessPage() {
               <Link2 className="w-4 h-4" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-stone-400 dark:text-stone-500 mb-0.5">ลิงก์ของคุณ</p>
+              <p className="text-xs text-stone-400 dark:text-stone-500 mb-0.5">{t('yourLink')}</p>
               <p className="text-sm font-mono text-stone-700 dark:text-stone-200 truncate">{portfolioUrl}</p>
             </div>
             <button
@@ -248,7 +252,7 @@ export default function SuccessPage() {
               className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${copied ? 'bg-teal-500 text-white shadow-sm' : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:border-teal-400 dark:hover:border-teal-600'}`}
             >
               {copied ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
-              {copied ? 'คัดลอกแล้ว' : 'คัดลอก'}
+              {copied ? t('copied') : t('copy')}
             </button>
           </div>
 
@@ -258,7 +262,7 @@ export default function SuccessPage() {
           {/* Stats row */}
           <div className="flex items-center gap-2 px-5 py-3 bg-stone-50/50 dark:bg-stone-900/50">
             <Sparkles className="w-3.5 h-3.5 text-teal-500" />
-            <span className="text-xs text-stone-500 dark:text-stone-400">วิวทั้งหมด:</span>
+            <span className="text-xs text-stone-500 dark:text-stone-400">{t('totalViews')}</span>
             <span className="text-xs font-bold text-teal-600 dark:text-teal-400">{portfolio?.view_count ?? 0}</span>
           </div>
 
@@ -279,9 +283,9 @@ export default function SuccessPage() {
               <Linkedin className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">LinkedIn</span>
             </button>
-            <a href={portfolioUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:border-teal-400 dark:hover:border-teal-600 hover:shadow-sm transition-all duration-200" title="เปิดดู">
+            <a href={portfolioUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:border-teal-400 dark:hover:border-teal-600 hover:shadow-sm transition-all duration-200" title={t('open')}>
               <ExternalLink className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">เปิดดู</span>
+              <span className="hidden sm:inline">{t('open')}</span>
             </a>
           </div>
         </div>
@@ -290,11 +294,11 @@ export default function SuccessPage() {
         <div className="flex flex-col sm:flex-row gap-2">
           <Link href="/dashboard" className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-stone-900 dark:bg-white text-white dark:text-stone-900 text-sm font-medium hover:bg-stone-700 dark:hover:bg-stone-100 transition-all">
             <Home className="w-4 h-4" />
-            Dashboard
+            {tDashboard('title')}
           </Link>
           <Link href="/builder/new" className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium transition-all shadow-sm shadow-teal-500/20">
             <Plus className="w-4 h-4" />
-            สร้างอีกอัน
+            {t('createAnother')}
           </Link>
         </div>
 

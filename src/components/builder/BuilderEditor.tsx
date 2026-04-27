@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import {
   ChevronLeft, ChevronDown, ChevronRight, ChevronUp,
   Plus, GripVertical, Trash2, Eye, EyeOff, Rocket,
@@ -68,22 +69,23 @@ function DragHandle({ sectionId }: { sectionId: string }) {
 // ─── Section Editors ──────────────────────────────────────────────────────────
 
 function InfoEditor({ data, onChange }: { data: InfoData; onChange: (d: InfoData) => void }) {
+  const t = useTranslations('builder')
   return (
     <div className="space-y-3">
       <div>
-        <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">ชื่อ</label>
-        <input className="input text-sm" value={data.name} onChange={e => onChange({ ...data, name: e.target.value })} placeholder="เช่น สมชาย ดีเจริญ" />
+        <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">{t('labels.name')}</label>
+        <input className="input text-sm" value={data.name} onChange={e => onChange({ ...data, name: e.target.value })} placeholder={t('placeholders.name')} />
       </div>
       <div>
-        <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">แท็กไลน์</label>
+        <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">{t('labels.tagline')}</label>
         <input className="input text-sm" value={data.tagline} onChange={e => onChange({ ...data, tagline: e.target.value })} placeholder="Full-Stack Developer" />
       </div>
       <div>
-        <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">เกี่ยวกับคุณ</label>
-        <textarea className="input text-sm resize-none" rows={4} value={data.about} onChange={e => onChange({ ...data, about: e.target.value })} placeholder="แนะนำตัวสั้นๆ..." />
+        <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">{t('labels.about')}</label>
+        <textarea className="input text-sm resize-none" rows={4} value={data.about} onChange={e => onChange({ ...data, about: e.target.value })} placeholder={t('placeholders.about')} />
       </div>
       <div>
-        <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">URL รูปโปรไฟล์</label>
+        <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">{t('labels.avatarUrl')}</label>
         <input className="input text-sm" type="url" value={data.avatar_url} onChange={e => onChange({ ...data, avatar_url: e.target.value })} placeholder="https://..." />
       </div>
     </div>
@@ -91,6 +93,7 @@ function InfoEditor({ data, onChange }: { data: InfoData; onChange: (d: InfoData
 }
 
 function SkillsEditor({ data, onChange }: { data: SkillsData; onChange: (d: SkillsData) => void }) {
+  const t = useTranslations('builder')
   const [inputVal, setInputVal] = useState('')
 
   const addSkill = (name: string) => {
@@ -122,11 +125,11 @@ function SkillsEditor({ data, onChange }: { data: SkillsData; onChange: (d: Skil
           value={inputVal}
           onChange={e => setInputVal(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="พิมพ์ทักษะแล้วกด Enter"
+          placeholder={t('placeholders.typeSkillEnter')}
         />
         {inputVal.trim() && (
           <button onClick={() => { addSkill(inputVal); setInputVal('') }} className="btn-secondary text-sm shrink-0">
-            เพิ่ม
+            {t('buttons.add')}
           </button>
         )}
       </div>
@@ -150,13 +153,14 @@ function SkillsEditor({ data, onChange }: { data: SkillsData; onChange: (d: Skil
         ))}
       </div>
       {data.items.length === 0 && (
-        <p className="text-sm text-stone-400 dark:text-stone-500 py-2">ยังไม่มีทักษะ — พิมพ์ด้านบนเพื่อเพิ่ม</p>
+        <p className="text-sm text-stone-400 dark:text-stone-500 py-2">{t('emptyMessages.skills')}</p>
       )}
     </div>
   )
 }
 
 function ProjectsEditor({ data, onChange }: { data: ProjectsData; onChange: (d: ProjectsData) => void }) {
+  const t = useTranslations('builder')
   const addProject = () => {
     onChange({ items: [...data.items, { id: `proj_${Date.now()}`, title: '', description: '', tags: [], live_url: '', repo_url: '' }] })
   }
@@ -173,24 +177,24 @@ function ProjectsEditor({ data, onChange }: { data: ProjectsData; onChange: (d: 
     <div className="space-y-4">
       <div className="flex justify-end">
         <button onClick={addProject} className="btn-primary text-sm">
-          <Plus className="w-4 h-4" /> เพิ่มโปรเจกต์
+          <Plus className="w-4 h-4" /> {t('buttons.addProject')}
         </button>
       </div>
       {data.items.map((item, i) => (
         <div key={item.id} className="card p-4 space-y-2.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-stone-500 dark:text-stone-400">โปรเจกต์ {i + 1}</span>
-            <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-700 text-xs transition">ลบ</button>
+            <span className="text-xs font-medium text-stone-500 dark:text-stone-400">{t('labels.projectIndex')} {i + 1}</span>
+            <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-700 text-xs transition">{t('labels.delete')}</button>
           </div>
-          <input className="input text-sm" value={item.title} onChange={e => updateItem(item.id, { title: e.target.value })} placeholder="ชื่อโปรเจกต์" />
-          <textarea className="input text-sm resize-none" rows={2} value={item.description} onChange={e => updateItem(item.id, { description: e.target.value })} placeholder="คำอธิบายโปรเจกต์" />
-          <input className="input text-sm" value={item.live_url} onChange={e => updateItem(item.id, { live_url: e.target.value })} placeholder="URL เว็บไซต์" />
-          <input className="input text-sm" value={item.repo_url} onChange={e => updateItem(item.id, { repo_url: e.target.value })} placeholder="GitHub URL" />
+          <input className="input text-sm" value={item.title} onChange={e => updateItem(item.id, { title: e.target.value })} placeholder={t('placeholders.projectName')} />
+          <textarea className="input text-sm resize-none" rows={2} value={item.description} onChange={e => updateItem(item.id, { description: e.target.value })} placeholder={t('placeholders.projectDesc')} />
+          <input className="input text-sm" value={item.live_url} onChange={e => updateItem(item.id, { live_url: e.target.value })} placeholder={t('placeholders.websiteUrl')} />
+          <input className="input text-sm" value={item.repo_url} onChange={e => updateItem(item.id, { repo_url: e.target.value })} placeholder={t('placeholders.githubUrl')} />
         </div>
       ))}
       {data.items.length === 0 && (
         <div className="text-center py-8 text-stone-400 dark:text-stone-500">
-          <p className="text-sm">ยังไม่มีโปรเจกต์ — คลิก &quot;เพิ่มโปรเจกต์&quot; เพื่อเริ่มต้น</p>
+          <p className="text-sm">{t('emptyMessages.projects')}</p>
         </div>
       )}
     </div>
@@ -198,6 +202,7 @@ function ProjectsEditor({ data, onChange }: { data: ProjectsData; onChange: (d: 
 }
 
 function SocialEditor({ data, onChange }: { data: SocialData; onChange: (d: SocialData) => void }) {
+  const t = useTranslations('builder')
   const [platform, setPlatform] = useState('github')
   const [url, setUrl] = useState('')
   const platforms = ['github', 'linkedin', 'twitter', 'email', 'website', 'facebook', 'instagram', 'youtube', 'tiktok']
@@ -217,7 +222,7 @@ function SocialEditor({ data, onChange }: { data: SocialData; onChange: (d: Soci
           {platforms.map(p => <option key={p} value={p} className="capitalize">{p}</option>)}
         </select>
         <input className="input text-sm flex-1" type="url" value={url} onChange={e => setUrl(e.target.value)} placeholder="https://..." />
-        <button type="submit" className="btn-primary text-sm">เพิ่ม</button>
+        <button type="submit" className="btn-primary text-sm">{t('buttons.add')}</button>
       </form>
       <div className="space-y-2">
         {data.items.map(link => (
@@ -240,6 +245,7 @@ function SocialEditor({ data, onChange }: { data: SocialData; onChange: (d: Soci
 }
 
 function ServicesEditor({ data, onChange }: { data: ServicesData; onChange: (d: ServicesData) => void }) {
+  const t = useTranslations('builder')
   const addItem = () => {
     onChange({ items: [...data.items, { id: `svc_${Date.now()}`, title: '', description: '', icon: '' }] })
   }
@@ -251,24 +257,25 @@ function ServicesEditor({ data, onChange }: { data: ServicesData; onChange: (d: 
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <button onClick={addItem} className="btn-primary text-sm"><Plus className="w-4 h-4" /> เพิ่มบริการ</button>
+        <button onClick={addItem} className="btn-primary text-sm"><Plus className="w-4 h-4" /> {t('addButtons.services')}</button>
       </div>
       {data.items.map(item => (
         <div key={item.id} className="card p-4 space-y-2">
           <div className="flex items-center justify-between">
-            <input className="input text-sm flex-1" value={item.title} onChange={e => updateItem(item.id, { title: e.target.value })} placeholder="ชื่อบริการ" />
+            <input className="input text-sm flex-1" value={item.title} onChange={e => updateItem(item.id, { title: e.target.value })} placeholder={t('placeholders.serviceName')} />
             <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-700 ml-2"><Trash2 className="w-4 h-4" /></button>
           </div>
-          <textarea className="input text-sm resize-none" rows={2} value={item.description} onChange={e => updateItem(item.id, { description: e.target.value })} placeholder="คำอธิบายบริการ" />
-          <input className="input text-sm" value={item.icon} onChange={e => updateItem(item.id, { icon: e.target.value })} placeholder="ไอคอน (emoji หรือชื่อ)" />
+          <textarea className="input text-sm resize-none" rows={2} value={item.description} onChange={e => updateItem(item.id, { description: e.target.value })} placeholder={t('placeholders.serviceDesc')} />
+          <input className="input text-sm" value={item.icon} onChange={e => updateItem(item.id, { icon: e.target.value })} placeholder={t('placeholders.icon')} />
         </div>
       ))}
-      {data.items.length === 0 && <p className="text-sm text-stone-400 dark:text-stone-500 text-center py-4">ยังไม่มีบริการ</p>}
+      {data.items.length === 0 && <p className="text-sm text-stone-400 dark:text-stone-500 text-center py-4">{t('emptyMessages.services')}</p>}
     </div>
   )
 }
 
 function ExperienceEditor({ data, onChange }: { data: ExperienceData; onChange: (d: ExperienceData) => void }) {
+  const t = useTranslations('builder')
   const addItem = () => {
     onChange({ items: [...data.items, { id: `exp_${Date.now()}`, company: '', role: '', period: '', description: '', current: false }] })
   }
@@ -280,32 +287,33 @@ function ExperienceEditor({ data, onChange }: { data: ExperienceData; onChange: 
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <button onClick={addItem} className="btn-primary text-sm"><Plus className="w-4 h-4" /> เพิ่มประสบการณ์</button>
+        <button onClick={addItem} className="btn-primary text-sm"><Plus className="w-4 h-4" /> {t('addButtons.experience')}</button>
       </div>
       {data.items.map(item => (
         <div key={item.id} className="card p-4 space-y-2.5">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-stone-700 dark:text-stone-200">{item.company || 'ประสบการณ์ใหม่'}</span>
+            <span className="text-sm font-medium text-stone-700 dark:text-stone-200">{item.company || t('newItems.experience')}</span>
             <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-700"><Trash2 className="w-4 h-4" /></button>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <input className="input text-sm" value={item.company} onChange={e => updateItem(item.id, { company: e.target.value })} placeholder="บริษัท" />
-            <input className="input text-sm" value={item.role} onChange={e => updateItem(item.id, { role: e.target.value })} placeholder="ตำแหน่ง" />
+            <input className="input text-sm" value={item.company} onChange={e => updateItem(item.id, { company: e.target.value })} placeholder={t('placeholders.company')} />
+            <input className="input text-sm" value={item.role} onChange={e => updateItem(item.id, { role: e.target.value })} placeholder={t('placeholders.role')} />
           </div>
-          <input className="input text-sm" value={item.period} onChange={e => updateItem(item.id, { period: e.target.value })} placeholder="ระยะเวลา เช่น ม.ค. 2020 - ปัจจุบัน" />
-          <textarea className="input text-sm resize-none" rows={2} value={item.description} onChange={e => updateItem(item.id, { description: e.target.value })} placeholder="รายละเอียดงาน" />
+          <input className="input text-sm" value={item.period} onChange={e => updateItem(item.id, { period: e.target.value })} placeholder={t('placeholders.periodHint')} />
+          <textarea className="input text-sm resize-none" rows={2} value={item.description} onChange={e => updateItem(item.id, { description: e.target.value })} placeholder={t('placeholders.jobDescription')} />
           <label className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-400 cursor-pointer">
             <input type="checkbox" checked={item.current} onChange={e => updateItem(item.id, { current: e.target.checked })} className="rounded" />
-            ทำงานอยู่ปัจจุบัน
+            {t('currentJob')}
           </label>
         </div>
       ))}
-      {data.items.length === 0 && <p className="text-sm text-stone-400 dark:text-stone-500 text-center py-4">ยังไม่มีประสบการณ์</p>}
+      {data.items.length === 0 && <p className="text-sm text-stone-400 dark:text-stone-500 text-center py-4">{t('emptyMessages.experience')}</p>}
     </div>
   )
 }
 
 function EducationEditor({ data, onChange }: { data: EducationData; onChange: (d: EducationData) => void }) {
+  const t = useTranslations('builder')
   const addItem = () => {
     onChange({ items: [...data.items, { id: `edu_${Date.now()}`, school: '', degree: '', period: '', description: '' }] })
   }
@@ -317,26 +325,27 @@ function EducationEditor({ data, onChange }: { data: EducationData; onChange: (d
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <button onClick={addItem} className="btn-primary text-sm"><Plus className="w-4 h-4" /> เพิ่มการศึกษา</button>
+        <button onClick={addItem} className="btn-primary text-sm"><Plus className="w-4 h-4" /> {t('addButtons.education')}</button>
       </div>
       {data.items.map(item => (
         <div key={item.id} className="card p-4 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-stone-700 dark:text-stone-200">{item.school || 'การศึกษาใหม่'}</span>
+            <span className="text-sm font-medium text-stone-700 dark:text-stone-200">{item.school || t('newItems.education')}</span>
             <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-700"><Trash2 className="w-4 h-4" /></button>
           </div>
-          <input className="input text-sm" value={item.school} onChange={e => updateItem(item.id, { school: e.target.value })} placeholder="สถานศึกษา" />
-          <input className="input text-sm" value={item.degree} onChange={e => updateItem(item.id, { degree: e.target.value })} placeholder="วุฒิ / สาขา" />
-          <input className="input text-sm" value={item.period} onChange={e => updateItem(item.id, { period: e.target.value })} placeholder="ระยะเวลา" />
-          <textarea className="input text-sm resize-none" rows={2} value={item.description} onChange={e => updateItem(item.id, { description: e.target.value })} placeholder="รายละเอียดเพิ่มเติม" />
+          <input className="input text-sm" value={item.school} onChange={e => updateItem(item.id, { school: e.target.value })} placeholder={t('placeholders.school')} />
+          <input className="input text-sm" value={item.degree} onChange={e => updateItem(item.id, { degree: e.target.value })} placeholder={t('placeholders.degree')} />
+          <input className="input text-sm" value={item.period} onChange={e => updateItem(item.id, { period: e.target.value })} placeholder={t('placeholders.periodHint')} />
+          <textarea className="input text-sm resize-none" rows={2} value={item.description} onChange={e => updateItem(item.id, { description: e.target.value })} placeholder={t('placeholders.additionalDetails')} />
         </div>
       ))}
-      {data.items.length === 0 && <p className="text-sm text-stone-400 dark:text-stone-500 text-center py-4">ยังไม่มีการศึกษา</p>}
+      {data.items.length === 0 && <p className="text-sm text-stone-400 dark:text-stone-500 text-center py-4">{t('emptyMessages.education')}</p>}
     </div>
   )
 }
 
 function TestimonialsEditor({ data, onChange }: { data: TestimonialsData; onChange: (d: TestimonialsData) => void }) {
+  const t = useTranslations('builder')
   const addItem = () => {
     onChange({ items: [...data.items, { id: `test_${Date.now()}`, quote: '', author: '', authorRole: '', authorCompany: '' }] })
   }
@@ -348,28 +357,29 @@ function TestimonialsEditor({ data, onChange }: { data: TestimonialsData; onChan
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <button onClick={addItem} className="btn-primary text-sm"><Plus className="w-4 h-4" /> เพิ่มรีวิว</button>
+        <button onClick={addItem} className="btn-primary text-sm"><Plus className="w-4 h-4" /> {t('addButtons.review')}</button>
       </div>
       {data.items.map(item => (
         <div key={item.id} className="card p-4 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-stone-500 dark:text-stone-400">รีวิว {item.author || 'ใหม่'}</span>
+            <span className="text-sm text-stone-500 dark:text-stone-400">{t('sectionTypes.testimonials')} {item.author || t('newItems.testimonial')}</span>
             <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-700"><Trash2 className="w-4 h-4" /></button>
           </div>
-          <textarea className="input text-sm resize-none" rows={3} value={item.quote} onChange={e => updateItem(item.id, { quote: e.target.value })} placeholder="&quot;คำรีวิว...&quot;" />
-          <input className="input text-sm" value={item.author} onChange={e => updateItem(item.id, { author: e.target.value })} placeholder="ชื่อผู้รีวิว" />
+          <textarea className="input text-sm resize-none" rows={3} value={item.quote} onChange={e => updateItem(item.id, { quote: e.target.value })} placeholder={t('placeholders.reviewQuote')} />
+          <input className="input text-sm" value={item.author} onChange={e => updateItem(item.id, { author: e.target.value })} placeholder={t('placeholders.reviewerName')} />
           <div className="grid grid-cols-2 gap-2">
-            <input className="input text-sm" value={item.authorRole} onChange={e => updateItem(item.id, { authorRole: e.target.value })} placeholder="ตำแหน่ง" />
-            <input className="input text-sm" value={item.authorCompany} onChange={e => updateItem(item.id, { authorCompany: e.target.value })} placeholder="บริษัท" />
+            <input className="input text-sm" value={item.authorRole} onChange={e => updateItem(item.id, { authorRole: e.target.value })} placeholder={t('placeholders.reviewerRole')} />
+            <input className="input text-sm" value={item.authorCompany} onChange={e => updateItem(item.id, { authorCompany: e.target.value })} placeholder={t('placeholders.reviewerCompany')} />
           </div>
         </div>
       ))}
-      {data.items.length === 0 && <p className="text-sm text-stone-400 dark:text-stone-500 text-center py-4">ยังไม่มีรีวิว</p>}
+      {data.items.length === 0 && <p className="text-sm text-stone-400 dark:text-stone-500 text-center py-4">{t('emptyMessages.testimonials')}</p>}
     </div>
   )
 }
 
 function CertificationsEditor({ data, onChange }: { data: CertificationsData; onChange: (d: CertificationsData) => void }) {
+  const t = useTranslations('builder')
   const addItem = () => {
     onChange({ items: [...data.items, { id: `cert_${Date.now()}`, name: '', issuer: '', year: '', url: '' }] })
   }
@@ -381,23 +391,23 @@ function CertificationsEditor({ data, onChange }: { data: CertificationsData; on
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <button onClick={addItem} className="btn-primary text-sm"><Plus className="w-4 h-4" /> เพิ่มใบรับรอง</button>
+        <button onClick={addItem} className="btn-primary text-sm"><Plus className="w-4 h-4" /> {t('addButtons.certification')}</button>
       </div>
       {data.items.map(item => (
         <div key={item.id} className="card p-4 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-stone-700 dark:text-stone-200">{item.name || 'ใบรับรองใหม่'}</span>
+            <span className="text-sm font-medium text-stone-700 dark:text-stone-200">{item.name || t('newItems.certification')}</span>
             <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-700"><Trash2 className="w-4 h-4" /></button>
           </div>
-          <input className="input text-sm" value={item.name} onChange={e => updateItem(item.id, { name: e.target.value })} placeholder="ชื่อใบรับรอง" />
+          <input className="input text-sm" value={item.name} onChange={e => updateItem(item.id, { name: e.target.value })} placeholder={t('placeholders.certificationName')} />
           <div className="grid grid-cols-2 gap-2">
-            <input className="input text-sm" value={item.issuer} onChange={e => updateItem(item.id, { issuer: e.target.value })} placeholder="ผู้ออก" />
-            <input className="input text-sm" value={item.year} onChange={e => updateItem(item.id, { year: e.target.value })} placeholder="ปี" />
+            <input className="input text-sm" value={item.issuer} onChange={e => updateItem(item.id, { issuer: e.target.value })} placeholder={t('placeholders.issuer')} />
+            <input className="input text-sm" value={item.year} onChange={e => updateItem(item.id, { year: e.target.value })} placeholder={t('placeholders.year')} />
           </div>
-          <input className="input text-sm" value={item.url} onChange={e => updateItem(item.id, { url: e.target.value })} placeholder="URL (ถ้ามี)" />
+          <input className="input text-sm" value={item.url} onChange={e => updateItem(item.id, { url: e.target.value })} placeholder={t('placeholders.certificationUrl')} />
         </div>
       ))}
-      {data.items.length === 0 && <p className="text-sm text-stone-400 dark:text-stone-500 text-center py-4">ยังไม่มีใบรับรอง</p>}
+      {data.items.length === 0 && <p className="text-sm text-stone-400 dark:text-stone-500 text-center py-4">{t('emptyMessages.certifications')}</p>}
     </div>
   )
 }
@@ -524,6 +534,7 @@ export function BuilderEditor({
   const [draggedId, setDraggedId] = useState<string | null>(null)
   const autoSaveTimer = useRef<NodeJS.Timeout | null>(null)
   const router = useRouter()
+  const t = useTranslations('builder')
 
   const showToast = (type: 'success' | 'error', message: string) => {
     setToast({ type, message })
@@ -606,7 +617,7 @@ export function BuilderEditor({
 
   const handlePublish = async () => {
     if (!name.trim()) {
-      showToast('error', 'กรุณาเพิ่มชื่อของคุณก่อน!')
+      showToast('error', t('addNameFirst'))
       return
     }
     setPublishing(true)
@@ -631,7 +642,7 @@ export function BuilderEditor({
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${userId}` },
           body: JSON.stringify({ is_published: true }),
         })
-        showToast('success', 'พอร์ตโฟลิโอเผยแพร่แล้ว!')
+        showToast('success', t('status.published'))
         setTimeout(() => router.push(`/builder/${id}/success`), 1500)
       }
     } catch (err: any) {
@@ -656,7 +667,7 @@ export function BuilderEditor({
             className="flex items-center gap-1 text-sm text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition"
           >
             <ChevronLeft className="w-4 h-4" />
-            แดชบอร์ด
+            {t('nav.dashboard')}
           </button>
           <span className="text-stone-300 dark:text-stone-600 hidden sm:block">|</span>
           {editingName ? (
@@ -673,17 +684,17 @@ export function BuilderEditor({
               onClick={() => setEditingName(true)}
               className="flex items-center gap-1 text-sm font-medium text-stone-900 dark:text-white hover:text-teal-600 dark:hover:text-teal-400 transition max-w-[200px] truncate"
             >
-              {name || 'พอร์ตโฟลิโอใหม่'}
+              {name || t('labels.portfolioName')}
               <Edit3 className="w-3 h-3 text-stone-400 shrink-0" />
             </button>
           )}
           {/* Auto-save */}
           <div className="hidden sm:flex items-center gap-1.5 text-xs">
             {autoSaveStatus === 'saving' && (
-              <><Loader2 className="w-3 h-3 animate-spin text-stone-400" /><span className="text-stone-400">กำลังบันทึก...</span></>
+              <><Loader2 className="w-3 h-3 animate-spin text-stone-400" /><span className="text-stone-400">{t('status.saving')}</span></>
             )}
             {autoSaveStatus === 'saved' && (
-              <><CheckCircle2 className="w-3 h-3 text-teal-500 animate-checkmark" /><span className="text-teal-600 dark:text-teal-400">✓ บันทึกแล้ว</span></>
+              <><CheckCircle2 className="w-3 h-3 text-teal-500 animate-checkmark" /><span className="text-teal-600 dark:text-teal-400">{t('status.saved')}</span></>
             )}
           </div>
         </div>
@@ -712,7 +723,7 @@ export function BuilderEditor({
             }`}
           >
             {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            <span className="hidden sm:inline">{showPreview ? 'ซ่อน' : 'ตัวอย่าง'}</span>
+            <span className="hidden sm:inline">{showPreview ? t('hide') : t('preview')}</span>
           </button>
 
           <button
@@ -721,7 +732,7 @@ export function BuilderEditor({
             className="btn-primary text-sm shadow-sm"
           >
             {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
-            <span className="hidden sm:inline">เผยแพร่</span>
+            <span className="hidden sm:inline">{t('buttons.publish')}</span>
           </button>
         </div>
       </nav>
@@ -746,7 +757,7 @@ export function BuilderEditor({
         <div className={`${showPreview ? 'w-1/2' : 'w-full'} flex flex-col overflow-hidden border-r border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900`}>
           {/* Editor Header: Theme Selector */}
           <div className="px-4 py-3 border-b border-stone-100 dark:border-stone-800 flex items-center justify-between">
-            <span className="text-sm font-medium text-stone-700 dark:text-stone-200">ธีม</span>
+            <span className="text-sm font-medium text-stone-700 dark:text-stone-200">{t('labels.theme')}</span>
             <select
               value={theme}
               onChange={e => setTheme(e.target.value)}
@@ -763,8 +774,8 @@ export function BuilderEditor({
                 <div className="w-14 h-14 rounded-2xl bg-stone-100 dark:bg-stone-800 flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">📋</span>
                 </div>
-                <p className="text-stone-500 dark:text-stone-400 mb-1">ยังไม่มีเซคชัน</p>
-                <p className="text-sm text-stone-400 dark:text-stone-500">คลิกปุ่มด้านล่างเพื่อเพิ่มเซคชันแรก</p>
+                <p className="text-stone-500 dark:text-stone-400 mb-1">{t('noSections')}</p>
+                <p className="text-sm text-stone-400 dark:text-stone-500">{t('noSectionsHint')}</p>
               </div>
             ) : (
               sections.map((section, index) => (
@@ -781,10 +792,10 @@ export function BuilderEditor({
                     <div className="flex-1 min-w-0">
                       <span className="text-sm font-medium text-stone-700 dark:text-stone-200">{section.title}</span>
                       <span className="text-xs text-stone-400 dark:text-stone-500 ml-2">
-                        {section.type === 'info' && `${((section.data as InfoData).name || 'ไม่มีชื่อ').substring(0, 20)}`}
-                        {section.type === 'skills' && `${(section.data as SkillsData).items.length} ทักษะ`}
-                        {section.type === 'projects' && `${(section.data as ProjectsData).items.length} โปรเจกต์`}
-                        {section.type === 'social' && `${(section.data as SocialData).items.length} ลิงก์`}
+                        {section.type === 'info' && `${((section.data as InfoData).name || t('noName')).substring(0, 20)}`}
+                        {section.type === 'skills' && t('countable.skills', { n: (section.data as SkillsData).items.length })}
+                        {section.type === 'projects' && t('countable.projects', { n: (section.data as ProjectsData).items.length })}
+                        {section.type === 'social' && t('countable.links', { n: (section.data as SocialData).items.length })}
                         {!['info', 'skills', 'projects', 'social'].includes(section.type) && `${SECTION_TYPE_META[section.type].description}`}
                       </span>
                     </div>
@@ -820,7 +831,7 @@ export function BuilderEditor({
               className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-600 text-stone-500 dark:text-stone-400 hover:border-teal-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/10 transition-all"
             >
               <Plus className="w-4 h-4" />
-              <span className="text-sm font-medium">เพิ่มเซคชัน</span>
+              <span className="text-sm font-medium">{t('buttons.addSection')}</span>
             </button>
           </div>
         </div>

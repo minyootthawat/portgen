@@ -178,14 +178,17 @@
     "newItems": {
       "experience": "ประสบการณ์ใหม่",
       "education": "การศึกษาใหม่",
-      "testimonial": "รีวิวใหม่"
+      "testimonial": "รีวิวใหม่",
+      "certification": "ใบรับรองใหม่"
     },
     "currentJob": "ทำงานอยู่ปัจจุบัน",
     "aboutYou": "เกี่ยวกับคุณ",
     "addButtons": {
       "services": "เพิ่มบริการ",
       "experience": "เพิ่มประสบการณ์",
-      "education": "เพิ่มการศึกษา"
+      "education": "เพิ่มการศึกษา",
+      "review": "เพิ่มรีวิว",
+      "certification": "เพิ่มใบรับรอง"
     },
     "placeholders": {
       "serviceName": "ชื่อบริการ",
@@ -193,7 +196,60 @@
       "icon": "ไอคอน (emoji หรือชื่อ)",
       "reviewerName": "ชื่อผู้รีวิว",
       "role": "ตำแหน่ง",
-      "company": "บริษัท"
+      "company": "บริษัท",
+      "name": "ชื่อ",
+      "tagline": "แท็กไลน์",
+      "about": "เกี่ยวกับคุณ",
+      "avatarUrl": "URL รูปโปรไฟล์",
+      "typeSkillEnter": "พิมพ์ทักษะแล้วกด Enter",
+      "add": "เพิ่ม",
+      "addProject": "เพิ่มโปรเจกต์",
+      "projectName": "ชื่อโปรเจกต์",
+      "projectDesc": "คำอธิบายโปรเจกต์",
+      "websiteUrl": "URL เว็บไซต์",
+      "githubUrl": "GitHub URL",
+      "jobDescription": "รายละเอียดงาน",
+      "periodHint": "ระยะเวลา เช่น ม.ค. 2020 - ปัจจุบัน",
+      "school": "สถานศึกษา",
+      "degree": "วุฒิ / สาขา",
+      "additionalDetails": "รายละเอียดเพิ่มเติม",
+      "reviewQuote": "\"คำรีวิว...\"",
+      "reviewerRole": "ตำแหน่ง",
+      "reviewerCompany": "บริษัท",
+      "certificationName": "ชื่อใบรับรอง",
+      "issuer": "ผู้ออก",
+      "year": "ปี",
+      "certificationUrl": "URL (ถ้ามี)"
+    },
+    "labels": {
+      "name": "ชื่อ",
+      "tagline": "แท็กไลน์",
+      "about": "เกี่ยวกับคุณ",
+      "avatarUrl": "URL รูปโปรไฟล์",
+      "projectIndex": "โปรเจกต์",
+      "portfolioName": "พอร์ตโฟลิโอใหม่",
+      "theme": "ธีม",
+      "delete": "ลบ"
+    },
+    "nav": {
+      "dashboard": "แดชบอร์ด"
+    },
+    "status": {
+      "saving": "กำลังบันทึก...",
+      "saved": "✓ บันทึกแล้ว",
+      "published": "พอร์ตโฟลิโอเผยแพร่แล้ว!"
+    },
+    "buttons": {
+      "add": "เพิ่ม",
+      "addProject": "เพิ่มโปรเจกต์",
+      "publish": "เผยแพร่",
+      "addSection": "เพิ่มเซคชัน",
+      "addItem": "เพิ่มรายการ"
+    },
+    "countable": {
+      "skills": "{n} ทักษะ",
+      "projects": "{n} โปรเจกต์",
+      "links": "{n} ลิงก์"
     },
     "noName": "ไม่มีชื่อ"
   },
