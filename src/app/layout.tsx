@@ -3,7 +3,8 @@ import type { Metadata } from 'next'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { AuthProvider } from '@/components/AuthProvider'
 import { NextIntlClientProvider } from 'next-intl'
-import { getLocale } from 'next-intl/server'
+import { LocaleProvider } from '@/components/LocaleProvider'
+import { routing } from '@/i18n/routing'
 
 const BASE_URL = 'https://portgen.com'
 
@@ -104,7 +105,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const locale = await getLocale()
+  const locale = routing.defaultLocale
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -122,11 +123,13 @@ export default async function RootLayout({
       </head>
       <body className="antialiased">
         <NextIntlClientProvider locale={locale}>
-          <ThemeProvider>
+          <LocaleProvider>
+            <ThemeProvider>
             <AuthProvider>
               {children}
             </AuthProvider>
           </ThemeProvider>
+          </LocaleProvider>
         </NextIntlClientProvider>
       </body>
     </html>
